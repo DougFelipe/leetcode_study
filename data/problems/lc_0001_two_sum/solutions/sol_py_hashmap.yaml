@@ -1,0 +1,85 @@
+schema_version: 3
+solution_id: "sol:lc:1:two_sum:python:hashmap:v1"
+problem_id: "lc:1:two_sum"
+language: "python"
+paradigm: "imperative"
+
+approach:
+  name: "Hash Map Single Pass"
+  tags:
+    - "hash-map"
+    - "single-pass"
+    - "complement-search"
+
+complexity:
+  time: "O(n)"
+  space: "O(n)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Python's dictionary (dict) is implemented as a hash table, providing O(1) average lookup time.
+    This makes it perfect for the complement search pattern.
+
+    Key advantages in Python:
+    - Clean, readable syntax
+    - Built-in enumerate() for index tracking
+    - Dynamic typing reduces boilerplate
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `nums = [2, 7, 11, 15]` and `target = 9`:
+
+    1. **i=0, num=2**: complement = 9-2 = 7
+       - 7 not in seen dict
+       - Add seen[2] = 0
+       - Dict: {2: 0}
+
+    2. **i=1, num=7**: complement = 9-7 = 2
+       - 2 in seen dict! (index 0)
+       - Return [0, 1]
+
+    Python's `in` operator makes the check very readable.
+
+pitfalls:
+  - "Must use 'in' keyword to check dict membership before accessing"
+  - "Remember enumerate() gives (index, value), not (value, index)"
+  - "Don't forget to return a list, not tuple"
+
+tradeoffs:
+  - "Python dict has slight memory overhead vs Go map"
+  - "Dynamic typing means runtime vs compile-time checks"
+  - "More concise code than statically typed languages"
+
+comparison_notes:
+  highlights:
+    - "enumerate() makes index tracking elegant"
+    - "in operator is more readable than Go's ok check"
+    - "No type declarations needed"
+  gotchas_language_specific:
+    - "dict[key] raises KeyError if key missing (use 'in' first)"
+    - "enumerate() starts at 0 by default"
+    - "List is mutable, returned list can be modified by caller"
+
+review_questions:
+  - "What's the difference between 'in dict' and 'in dict.keys()'?"
+  - "Why use enumerate() instead of range(len(nums))?"
+  - "Could we use dict.get() instead of 'in' check?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:1:two_sum:python:hashmap:v1:solution"
+    lang: "python"
+    role: "solution"
+    path: "../code/sol_py_hashmap.py"
+    render:
+      syntax: "python"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-01-15"
+    change: "Initial Python solution"
+  - at: "2024-01-16"
+    change: "Added comparison notes"

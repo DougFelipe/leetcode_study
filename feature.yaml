@@ -1,0 +1,144 @@
+# BOLT_PROMPT_DEEP_DIVE.yaml
+# Cole este prompt no Bolt para implementar a nova aba "Deep Dive" + ajustes no schema editorial (YAML v3)
+
+task:
+  title: "Add Deep Dive tab with editorial accordions + extend YAML schema v3"
+  goal: >
+    Implement a new ProblemDetail tab called "Deep Dive" that renders long-form editorial content
+    from problem.yaml (schema v3). The tab must be scalable, readable, and organized in accordions.
+
+stack_context:
+  app: "React + Vite + TypeScript + Tailwind"
+  parsing: "js-yaml"
+  markdown: "react-markdown + remark-gfm"
+  routing: "react-router"
+  data_loading: "import.meta.glob for YAML files under /data/problems/**"
+
+ui_changes:
+  add_tab:
+    problem_detail_tabs:
+      - id: "overview"
+        label: "Overview"
+        existing: true
+      - id: "solutions"
+        label: "Solutions"
+        existing: true
+      - id: "deep_dive"
+        label: "Deep Dive"
+        new: true
+      - id: "history"
+        label: "History"
+        existing: true
+
+  deep_dive_layout:
+    description: >
+      The Deep Dive tab must show 4 accordions in a consistent order. Each accordion renders either
+      Markdown blocks or structured tables/lists with clear headings and badges.
+    accordions:
+      - id: "alt_approaches"
+        title: "Alternative Approaches"
+        content: "Table + details"
+      - id: "when_not_to_use"
+        title: "When NOT to use"
+        content: "Heuristics + scenarios/examples"
+      - id: "common_mistakes"
+        title: "Common Mistakes (Canonical)"
+        content: "Mistake cards with why/fix/examples"
+      - id: "complexity_deep"
+        title: "Complexity Notes (Deep)"
+        content: "Detailed notes: average/worst-case, amortized, tradeoffs"
+
+  rendering_rules:
+    - "If a deep dive section is missing in YAML, hide that accordion entirely"
+    - "Prefer structured rendering (tables/cards) when YAML provides structured fields; fallback to Markdown when provided"
+    - "Accordions should be collapsed by default, but remember last opened accordion in localStorage (optional)"
+    - "All long text fields are Markdown-rendered with GFM support"
+    - "Provide a 'Copy section' button for each accordion to copy rendered text (optional but recommended)"
+
+schema_changes:
+  target_file: "data/problems/**/problem.yaml"
+  schema_version: 3
+  add_or_extend_fields:
+    editorial:
+      complexity_notes:
+        compact_md: "string (already used in Overview or optional)"
+        detailed_md: "string (Markdown; used in Deep Dive)"
+        notes:
+          - "string (optional bullet list for quick scanning)"
+        gotchas:
+          - "string (optional bullet list)"
+        references:
+          - label: "string"
+            url: "string"
+
+      alternative_approaches:
+        # structured, so we can render a clean comparison table
+        - name: "string"
+          idea_md: "string (short Markdown explanation)"
+          time: "string (e.g., O(n^2), O(n log n))"
+          space: "string (e.g., O(1), O(n))"
+          preserve_indices: "boolean (optional)"
+          when_to_use_md: "string (Markdown)"
+          why_not_md: "string (Markdown, optional)"
+          pitfalls:
+            - "string (optional)"
+          example_md: "string (optional; Markdown snippet)"
+
+      when_not_to_use:
+        heuristics_md: "string (Markdown; general rules of thumb)"
+        scenarios:
+          - scenario: "string"
+            why_md: "string (Markdown)"
+            recommended_instead:
+              - name: "string"
+                note_md: "string (Markdown)"
+            example_md: "string (optional)"
+
+      common_mistakes:
+        - mistake: "string (short)"
+          why_md: "string (Markdown explanation)"
+          fix_md: "string (Markdown: what to do instead)"
+          example_bad_md: "string (optional; Markdown with pseudo/code)"
+          example_good_md: "string (optional; Markdown with pseudo/code)"
+          tags: ["string (optional)"]
+
+  backward_compatibility:
+    - "If editorial.complexity_notes is a string in older data, treat it as compact_md"
+    - "If alternative_approaches is missing, render nothing"
+    - "If when_not_to_use is missing, render nothing"
+    - "If common_mistakes is missing, render nothing"
+
+components_to_add_or_refactor:
+  - name: "DeepDiveTab.tsx"
+    responsibilities:
+      - "Read problem.editorial fields and render accordions"
+      - "Hide missing sections"
+  - name: "AlternativeApproachesTable.tsx"
+    responsibilities:
+      - "Render a table with columns: Approach | Time | Space | When to use | Pitfalls"
+      - "Each row expandable/collapsible to show idea_md, why_not_md, example_md"
+  - name: "WhenNotToUsePanel.tsx"
+    responsibilities:
+      - "Render heuristics_md at top"
+      - "Render scenarios as cards with 'Recommended instead' list"
+  - name: "CommonMistakesList.tsx"
+    responsibilities:
+      - "Render canonical mistakes as cards with Why/Fix/Examples"
+      - "Support optional tags and formatting"
+  - name: "ComplexityDeepPanel.tsx"
+    responsibilities:
+      - "Render detailed_md and optional bullets/gotchas/references"
+
+data_examples_to_update:
+  required:
+    - "Update the sample problem.yaml (Two Sum) to include editorial.alternative_approaches, editorial.when_not_to_use, editorial.common_mistakes, and editorial.complexity_notes.detailed_md"
+
+acceptance_criteria:
+  - "A new 'Deep Dive' tab appears on the ProblemDetail page"
+  - "Deep Dive renders the 4 accordions in the specified order"
+  - "Alternative Approaches displays a comparison table and supports expanded details per row"
+  - "When NOT to use shows heuristics + scenarios with recommendations"
+  - "Common Mistakes shows canonical mistakes with why/fix and optional examples"
+  - "Complexity Notes (Deep) shows detailed_md and optional bullet sections"
+  - "No crashes if any editorial sections are missing"
+  - "All content comes from YAML problem.yaml schema v3"

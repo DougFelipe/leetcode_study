@@ -1,0 +1,86 @@
+schema_version: 3
+solution_id: "sol:lc:1:two_sum:go:hashmap:v1"
+problem_id: "lc:1:two_sum"
+language: "go"
+paradigm: "imperative"
+
+approach:
+  name: "Hash Map Single Pass"
+  tags:
+    - "hash-map"
+    - "single-pass"
+    - "complement-search"
+
+complexity:
+  time: "O(n)"
+  space: "O(n)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    The hash map approach is optimal because:
+
+    1. **Fast lookups**: Hash maps provide O(1) average case lookup time
+    2. **Single pass**: We only need to iterate through the array once
+    3. **Space-time tradeoff**: We trade O(n) space for O(n) time complexity
+
+    The key insight is that for each number, we can calculate its complement (target - current).
+    If the complement exists in our map, we've found our answer.
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `nums = [2, 7, 11, 15]` and `target = 9`:
+
+    1. **i=0, num=2**: complement = 9-2 = 7
+       - Check map: 7 not found
+       - Add 2→0 to map
+       - Map: {2: 0}
+
+    2. **i=1, num=7**: complement = 9-7 = 2
+       - Check map: 2 found at index 0!
+       - Return [0, 1]
+
+    The algorithm terminates early when a match is found.
+
+pitfalls:
+  - "Must check for complement BEFORE adding current to map to avoid self-matching"
+  - "Go maps require explicit initialization with make()"
+  - "Remember to return []int{}, not just indices"
+
+tradeoffs:
+  - "Uses O(n) extra space vs O(1) for brute force"
+  - "Much faster than O(n²) brute force"
+  - "Not suitable if memory is extremely constrained"
+
+comparison_notes:
+  highlights:
+    - "Go's built-in map is very efficient"
+    - "Statically typed, so type safety at compile time"
+    - "No need for enumerate() like Python"
+  gotchas_language_specific:
+    - "Go requires explicit type declarations"
+    - "Map lookups return (value, bool) tuple"
+    - "Must use := for short variable declaration"
+
+review_questions:
+  - "Why do we check the map before adding to it?"
+  - "What would happen if we added first, then checked?"
+  - "How does Go's map lookup differ from Python's dict?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:1:two_sum:go:hashmap:v1:solution"
+    lang: "go"
+    role: "solution"
+    path: "../code/sol_go_hashmap.go"
+    render:
+      syntax: "go"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-01-15"
+    change: "Initial Go solution"
+  - at: "2024-01-16"
+    change: "Added detailed walkthrough"

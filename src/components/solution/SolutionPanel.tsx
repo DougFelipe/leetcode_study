@@ -1,9 +1,10 @@
 import { SolutionV3 } from '../../types/schema';
 import { SolutionHeader } from './SolutionHeader';
-import { SolutionContent } from './SolutionContent';
 import { SolutionCode } from './SolutionCode';
 import { InsightCard } from './InsightCard';
-import { AlertTriangle, Scale, Brain, Zap, Bug } from 'lucide-react';
+import { MarkdownRenderer } from '../MarkdownRenderer';
+import { Accordion, AccordionGroup } from '../Accordion';
+import { AlertTriangle, Scale, Brain, Zap, Bug, BookOpen, Route } from 'lucide-react';
 
 interface SolutionPanelProps {
     solution: SolutionV3;
@@ -16,11 +17,29 @@ export function SolutionPanel({ solution, problemSlug }: SolutionPanelProps) {
             {/* Header com badges e complexidade */}
             <SolutionHeader solution={solution} />
 
-            {/* Rationale + Walkthrough em accordions */}
-            <SolutionContent solution={solution} />
+            {/* AccordionGroup unificado: Code primeiro, depois Rationale e Walkthrough */}
+            <AccordionGroup showControls={true}>
+                {/* Code primeiro e aberto por padrão */}
+                <SolutionCode solution={solution} problemSlug={problemSlug} />
 
-            {/* Code artifacts */}
-            <SolutionCode solution={solution} problemSlug={problemSlug} />
+                {/* Rationale */}
+                <Accordion
+                    title="Rationale"
+                    icon={<BookOpen className="w-4 h-4 text-slate-600" />}
+                    defaultOpen={false}
+                >
+                    <MarkdownRenderer content={solution.text.rationale_md} />
+                </Accordion>
+
+                {/* Walkthrough */}
+                <Accordion
+                    title="Walkthrough"
+                    icon={<Route className="w-4 h-4 text-slate-600" />}
+                    defaultOpen={false}
+                >
+                    <MarkdownRenderer content={solution.text.walkthrough_md} />
+                </Accordion>
+            </AccordionGroup>
 
             {/* Insight cards */}
             <div className="grid gap-4 md:grid-cols-2">

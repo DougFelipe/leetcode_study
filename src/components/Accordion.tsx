@@ -1,12 +1,16 @@
 import { useState, ReactNode, createContext, useContext } from 'react';
-import { ChevronDown, ChevronRight, ChevronsUpDown } from 'lucide-react';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 
 // Context para controle global dos accordions
 interface AccordionContextType {
     forceState: 'expanded' | 'collapsed' | null;
+    clearForceState: () => void;
 }
 
-const AccordionContext = createContext<AccordionContextType>({ forceState: null });
+const AccordionContext = createContext<AccordionContextType>({
+    forceState: null,
+    clearForceState: () => { }
+});
 
 interface AccordionProps {
     title: string;
@@ -28,7 +32,7 @@ export function Accordion({
     onToggle,
 }: AccordionProps) {
     const [internalIsOpen, setInternalIsOpen] = useState(defaultOpen);
-    const { forceState } = useContext(AccordionContext);
+    const { forceState, clearForceState } = useContext(AccordionContext);
 
     // Determinar estado: forceState > controlledIsOpen > internalIsOpen
     const isOpen = forceState === 'expanded'
@@ -40,6 +44,11 @@ export function Accordion({
                 : internalIsOpen;
 
     const handleToggle = () => {
+        // Limpar forceState ao clicar manualmente
+        if (forceState !== null) {
+            clearForceState();
+        }
+
         const newState = !isOpen;
         if (onToggle) {
             onToggle(newState);
@@ -85,10 +94,10 @@ export function AccordionGroup({ children, className = '', showControls = false 
 
     const handleExpandAll = () => setForceState('expanded');
     const handleCollapseAll = () => setForceState('collapsed');
-    const handleReset = () => setForceState(null);
+    const clearForceState = () => setForceState(null);
 
     return (
-        <AccordionContext.Provider value={{ forceState }}>
+        <AccordionContext.Provider value={{ forceState, clearForceState }}>
             {showControls && (
                 <div className="flex items-center gap-2 mb-3">
                     <button
@@ -104,18 +113,6 @@ export function AccordionGroup({ children, className = '', showControls = false 
                     >
                         Collapse All
                     </button>
-                    {forceState && (
-                        <>
-                            <span className="text-slate-300">|</span>
-                            <button
-                                onClick={handleReset}
-                                className="text-xs text-slate-500 hover:text-slate-700 flex items-center gap-1"
-                            >
-                                <ChevronsUpDown className="w-3 h-3" />
-                                Reset
-                            </button>
-                        </>
-                    )}
                 </div>
             )}
             <div className={`space-y-2 ${className}`}>
@@ -124,4 +121,3 @@ export function AccordionGroup({ children, className = '', showControls = false 
         </AccordionContext.Provider>
     );
 }
-

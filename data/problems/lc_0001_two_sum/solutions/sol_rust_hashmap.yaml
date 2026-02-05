@@ -1,0 +1,89 @@
+schema_version: 3
+solution_id: "sol:lc:1:two_sum:rust:hashmap:v1"
+problem_id: "lc:1:two_sum"
+language: "rust"
+paradigm: "functional"
+
+approach:
+  name: "Hash Map Iterator"
+  tags:
+    - "hash-map"
+    - "functional"
+    - "iterator"
+    - "ownership"
+    - "zero-cost-abstractions"
+
+complexity:
+  time: "O(n)"
+  space: "O(n)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Rust combines functional programming with systems-level control.
+    This solution uses iterators and HashMap for efficient, safe implementation.
+
+    Key advantages in Rust:
+    - Zero-cost abstractions (iterators compile to loops)
+    - HashMap provides O(1) lookups
+    - Ownership system prevents memory bugs
+    - Pattern matching with `if let` for concise code
+    - LeetCode provides the struct, we only implement methods
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `nums = [2, 7, 11, 15]` and `target = 9`:
+
+    1. **i=0, num=2**: complement = 7
+       - seen.get(&7) returns None
+       - seen.insert(2, 0)
+       - HashMap: {2: 0}
+
+    2. **i=1, num=7**: complement = 2
+       - seen.get(&2) returns Some(&0)
+       - `if let Some(&j)` matches!
+       - Return vec![0, 1]
+
+    The `if let` pattern elegantly handles the Option.
+
+pitfalls:
+  - "Use &num in pattern to borrow, not move"
+  - "HashMap::get returns Option<&V>, not Option<V>"
+  - "Vec indices are usize, LeetCode expects i32"
+  - "Don't define struct Solution (LeetCode provides it)"
+
+tradeoffs:
+  - "More verbose than dynamic languages"
+  - "Compile-time guarantees prevent runtime bugs"
+  - "Learning curve for ownership/borrowing"
+
+comparison_notes:
+  highlights:
+    - "if let for concise Option handling"
+    - "Iterators are zero-cost abstractions"
+    - "Tests built into the language"
+  gotchas_language_specific:
+    - "& and * for borrowing and dereferencing"
+    - "usize vs i32 for indices"
+    - "impl block adds methods to existing struct"
+
+review_questions:
+  - "Why use &complement in get() instead of complement?"
+  - "How does ownership affect the solution design?"
+  - "What's the difference between iter() and into_iter()?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:1:two_sum:rust:hashmap:v1:solution"
+    lang: "rust"
+    role: "solution"
+    path: "../code/sol_rust_hashmap.rs"
+    render:
+      syntax: "rust"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-01-20"
+    change: "Initial Rust solution with functional patterns"

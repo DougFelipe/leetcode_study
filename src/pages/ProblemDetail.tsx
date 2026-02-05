@@ -8,6 +8,7 @@ import { SolutionPanel, ComparePanel } from '../components/solution';
 import { HistoryTimeline } from '../components/HistoryTimeline';
 import { Accordion } from '../components/Accordion';
 import { MermaidDiagram } from '../components/MermaidDiagram';
+import { DeepDiveTab } from '../components/deepdive';
 import { ArrowLeft, ExternalLink, Target, Brain, AlertTriangle, Workflow, FileText } from 'lucide-react';
 
 export function ProblemDetail() {
@@ -148,17 +149,19 @@ export function ProblemDetail() {
             <div className="text-center py-12 text-slate-500">No solutions available yet</div>
           ) : (
             <div>
-              <div className="flex gap-2 mb-6 flex-wrap">
+              {/* Botões compactos de linguagem em linha horizontal */}
+              <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
                 {problem.solutions_index.map((sol, index) => (
                   <button
                     key={sol.solution_id}
                     onClick={() => setActiveSolutionIndex(index)}
-                    className={`px-4 py-2 rounded-lg transition-colors ${activeSolutionIndex === index
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors flex-shrink-0 ${activeSolutionIndex === index
                       ? 'bg-blue-600 text-white'
-                      : 'bg-white text-slate-700 border border-slate-300 hover:border-slate-400'
+                      : 'bg-white text-slate-700 border border-slate-300 hover:border-slate-400 hover:bg-slate-50'
                       }`}
+                    title={sol.title}
                   >
-                    {sol.title}
+                    {sol.language.charAt(0).toUpperCase() + sol.language.slice(1)}
                   </button>
                 ))}
               </div>
@@ -180,6 +183,13 @@ export function ProblemDetail() {
           }).filter(Boolean) as any}
           problemSlug={problemSlug || ''}
         />
+      ),
+    },
+    {
+      id: 'deep_dive',
+      label: 'Deep Dive',
+      content: (
+        <DeepDiveTab editorial={problem.content.editorial || {}} />
       ),
     },
     {

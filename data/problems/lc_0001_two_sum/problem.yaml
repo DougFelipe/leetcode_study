@@ -101,6 +101,94 @@ content:
             G --> C
             C --> H[End]
 
+    alternative_approaches:
+      - name: "Brute Force"
+        idea_md: "Try every pair of elements using nested loops."
+        time: "O(n²)"
+        space: "O(1)"
+        preserve_indices: true
+        when_to_use_md: "When n is very small (< 100) or if you want to avoid extra space."
+        why_not_md: "Quadratic time is too slow for large inputs. The problem constraints allow up to 10^4 elements."
+        pitfalls:
+          - "Don't compare an element with itself"
+          - "Inner loop should start at i+1 to avoid duplicates"
+
+      - name: "Sort + Two Pointers"
+        idea_md: "Sort the array, then use two pointers from both ends to find a pair that sums to target."
+        time: "O(n log n)"
+        space: "O(n)"
+        preserve_indices: false
+        when_to_use_md: "When you only need to know IF a pair exists, or when the array is already sorted."
+        why_not_md: "Sorting destroys original indices. This problem requires returning original indices."
+        pitfalls:
+          - "Must store original indices before sorting"
+          - "More complex implementation"
+
+    when_not_to_use:
+      heuristics_md: |
+        The HashMap approach may NOT be optimal when:
+        - Memory is extremely constrained
+        - The array is already sorted
+        - You need all pairs, not just one
+      scenarios:
+        - scenario: "Array is already sorted"
+          why_md: "Two pointers achieves O(n) time with O(1) extra space if indices aren't needed."
+          recommended_instead:
+            - name: "Two Pointers"
+              note_md: "More space-efficient for sorted input"
+        - scenario: "Need all pairs summing to target"
+          why_md: "HashMap approach returns early on first match; need to continue scanning."
+          recommended_instead:
+            - name: "Modified HashMap"
+              note_md: "Don't return early; collect all valid pairs"
+
+    common_mistakes:
+      - mistake: "Using the same element twice"
+        why_md: "If `nums = [3, 3]` and `target = 6`, returning `[0, 0]` is wrong."
+        fix_md: "Check complement BEFORE inserting current element into the map."
+        example_bad_md: |
+          ```python
+          seen[x] = i  # Wrong order!
+          if complement in seen:
+              return [seen[complement], i]
+          ```
+        example_good_md: |
+          ```python
+          if complement in seen:
+              return [seen[complement], i]
+          seen[x] = i  # Correct order
+          ```
+        tags:
+          - "off-by-one"
+          - "duplicate"
+
+      - mistake: "Returning values instead of indices"
+        why_md: "The problem asks for indices, not the values themselves."
+        fix_md: "Store indices in the map, not values."
+        tags:
+          - "requirements"
+
+    complexity_notes:
+      compact_md: "Time: O(n), Space: O(n)"
+      detailed_md: |
+        ## Time Complexity: O(n)
+        - Single pass through the array
+        - HashMap lookup and insertion are O(1) average case
+        - No nested loops
+
+        ## Space Complexity: O(n)
+        - In the worst case, we store n-1 elements before finding the answer
+        - The HashMap can grow linearly with input size
+      notes:
+        - "Average case is actually O(n/2) since we often find the pair before scanning everything"
+        - "Best case is O(1) when the first two elements are the answer"
+      gotchas:
+        - "HashMap worst-case lookup is O(n) due to hash collisions, but this is rare with good hash functions"
+        - "Space complexity doesn't count input or output, only auxiliary space"
+      references:
+        - label: "Hash Table Time Complexity Analysis"
+          url: "https://en.wikipedia.org/wiki/Hash_table#Performance"
+
 solutions_index:
   - solution_id: "sol:lc:1:two_sum:go:hashmap:v1"
     language: "go"
@@ -121,6 +209,61 @@ solutions_index:
       - "hash-map"
       - "single-pass"
     solution_ref: "solutions/sol_py_hashmap.yaml"
+
+  - solution_id: "sol:lc:1:two_sum:java:hashmap:v1"
+    language: "java"
+    paradigm: "oop_classic"
+    title: "Java OOP HashMap Solution"
+    status: "done"
+    approach_tags:
+      - "hash-map"
+      - "single-pass"
+      - "oop"
+    solution_ref: "solutions/sol_java_hashmap.yaml"
+
+  - solution_id: "sol:lc:1:two_sum:kotlin:hashmap:v1"
+    language: "kotlin"
+    paradigm: "oop_classic"
+    title: "Kotlin OOP HashMap Solution"
+    status: "done"
+    approach_tags:
+      - "hash-map"
+      - "single-pass"
+      - "null-safety"
+    solution_ref: "solutions/sol_kotlin_hashmap.yaml"
+
+  - solution_id: "sol:lc:1:two_sum:javascript:hashmap:v1"
+    language: "javascript"
+    paradigm: "oop_prototype"
+    title: "JavaScript Prototype HashMap Solution"
+    status: "done"
+    approach_tags:
+      - "hash-map"
+      - "prototype-pattern"
+      - "es6-map"
+    solution_ref: "solutions/sol_js_hashmap.yaml"
+
+  - solution_id: "sol:lc:1:two_sum:scala:hashmap:v1"
+    language: "scala"
+    paradigm: "functional"
+    title: "Scala Functional HashMap Solution"
+    status: "done"
+    approach_tags:
+      - "hash-map"
+      - "functional"
+      - "fold-left"
+    solution_ref: "solutions/sol_scala_hashmap.yaml"
+
+  - solution_id: "sol:lc:1:two_sum:rust:hashmap:v1"
+    language: "rust"
+    paradigm: "functional"
+    title: "Rust Functional HashMap Solution"
+    status: "done"
+    approach_tags:
+      - "hash-map"
+      - "functional"
+      - "iterator"
+    solution_ref: "solutions/sol_rust_hashmap.yaml"
 
 history:
   - at: "2024-01-15"

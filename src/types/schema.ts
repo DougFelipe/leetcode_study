@@ -54,6 +54,41 @@ export interface ProblemV3 {
           code: string;
         };
       };
+      complexity_notes?: {
+        compact_md?: string;
+        detailed_md?: string;
+        notes?: string[];
+        gotchas?: string[];
+        references?: Array<{ label: string; url: string }>;
+      };
+      alternative_approaches?: Array<{
+        name: string;
+        idea_md: string;
+        time: string;
+        space: string;
+        preserve_indices?: boolean;
+        when_to_use_md?: string;
+        why_not_md?: string;
+        pitfalls?: string[];
+        example_md?: string;
+      }>;
+      when_not_to_use?: {
+        heuristics_md?: string;
+        scenarios?: Array<{
+          scenario: string;
+          why_md: string;
+          recommended_instead?: Array<{ name: string; note_md?: string }>;
+          example_md?: string;
+        }>;
+      };
+      common_mistakes?: Array<{
+        mistake: string;
+        why_md: string;
+        fix_md: string;
+        example_bad_md?: string;
+        example_good_md?: string;
+        tags?: string[];
+      }>;
     };
   };
   solutions_index: SolutionIndexEntry[];

@@ -1,0 +1,79 @@
+schema_version: 3
+solution_id: "sol:lc:2:add_two_numbers:java:iterative:v1"
+problem_id: "lc:2:add_two_numbers"
+language: "java"
+paradigm: "oop_classic"
+
+approach:
+  name: "Iterative Digit-by-Digit Addition"
+  tags:
+    - "linked-list"
+    - "carry-handling"
+    - "oop"
+
+complexity:
+  time: "O(max(m, n))"
+  space: "O(max(m, n))"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Java's OOP approach with explicit ListNode class makes the structure clear.
+    Ternary operators provide concise null handling.
+
+    Key advantages in Java:
+    - Strong typing catches errors at compile time
+    - Well-defined ListNode class structure
+    - Familiar OOP patterns
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `l1 = [2,4,3]` and `l2 = [5,6,4]`:
+
+    1. Create dummy node with val 0
+    2. While loop continues while l1 != null OR l2 != null OR carry != 0
+    3. Extract values with ternary: (l1 != null) ? l1.val : 0
+    4. Calculate sum and new carry
+    5. Create new node and advance current pointer
+    6. Return dummy.next (skip dummy head)
+
+pitfalls:
+  - "Use != null not == null in while condition"
+  - "Advance pointers only if they are not null"
+  - "Return dummy.next, not dummy"
+
+tradeoffs:
+  - "More verbose than Python but clearer types"
+  - "new ListNode() allocates on heap"
+  - "Ternary operator vs if-else for null checks"
+
+comparison_notes:
+  highlights:
+    - "Ternary operator for concise null-safe value extraction"
+    - "Explicit new keyword for object creation"
+    - "Strong typing prevents type errors"
+  gotchas_language_specific:
+    - "null vs 0 (null is reference, 0 is primitive)"
+    - "int division in Java is automatically integer"
+    - "ListNode is typically provided by LeetCode"
+
+review_questions:
+  - "Why use a dummy head node?"
+  - "What happens if we forget to check carry in the while condition?"
+  - "How would you solve this recursively in Java?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:2:add_two_numbers:java:iterative:v1:solution"
+    lang: "java"
+    role: "solution"
+    path: "../code/sol_java_iterative.java"
+    render:
+      syntax: "java"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-01-20"
+    change: "Initial Java OOP iterative solution"

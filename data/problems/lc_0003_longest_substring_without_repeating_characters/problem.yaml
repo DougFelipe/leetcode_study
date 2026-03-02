@@ -1,0 +1,281 @@
+schema_version: 3
+problem_id: "lc:3:longest_substring_without_repeating_characters"
+slug: "lc_0003_longest_substring_without_repeating_characters"
+title: "3. Longest Substring Without Repeating Characters"
+
+source:
+  platform: "leetcode"
+  id: 3
+  slug: "longest-substring-without-repeating-characters"
+  url: "https://leetcode.com/problems/longest-substring-without-repeating-characters/"
+
+catalog:
+  difficulty: "medium"
+  topics:
+    - "Hash Table"
+    - "String"
+    - "Sliding Window"
+  patterns:
+    - "Sliding Window"
+    - "Two Pointers"
+    - "Hash Map Tracking"
+  companies:
+    - "Amazon"
+    - "Microsoft"
+    - "Google"
+    - "Facebook"
+    - "Apple"
+    - "Bloomberg"
+
+constraints:
+  summary: "0 <= s.length <= 5 * 10^4; s consists of English letters, digits, symbols and spaces"
+  notes_md: |
+    - 0 <= s.length <= 5 * 10^4
+    - s consists of English letters, digits, symbols and spaces
+
+study:
+  status: "solved"
+  priority: 5
+  confidence: 4
+  created_at: "2024-01-25"
+  solved_at: "2024-01-25"
+  time_spent_min: 30
+  review:
+    srs_enabled: true
+    next_review: "2024-02-25"
+    interval_days: 30
+  mistakes:
+    - "Not updating left pointer correctly when duplicate found"
+    - "Off-by-one error when calculating window length"
+
+content:
+  statement_md: |
+    Given a string `s`, find the length of the **longest substring** without duplicate characters.
+
+    **Example 1:**
+    ```
+    Input: s = "abcabcbb"
+    Output: 3
+    Explanation: The answer is "abc", with the length of 3.
+    Note that "bca" and "cab" are also correct answers.
+    ```
+
+    **Example 2:**
+    ```
+    Input: s = "bbbbb"
+    Output: 1
+    Explanation: The answer is "b", with the length of 1.
+    ```
+
+    **Example 3:**
+    ```
+    Input: s = "pwwkew"
+    Output: 3
+    Explanation: The answer is "wke", with the length of 3.
+    Notice that the answer must be a substring, "pwke" is a subsequence and not a substring.
+    ```
+
+  editorial_summary_md: |
+    The optimal approach uses a sliding window with a hash set/map.
+    We maintain a window [left, right] that always contains unique characters.
+    When a duplicate is found, we shrink the window from the left until the duplicate is removed.
+    We track the maximum window size seen throughout the traversal.
+
+  key_insights:
+    - "Sliding window maintains a valid substring without duplicates"
+    - "Hash set tracks characters in the current window efficiently"
+    - "Optimized version uses hash map to jump left pointer directly past the duplicate"
+    - "Window size is right - left + 1 at any point"
+
+  pitfalls:
+    - "Don't forget to update maxLen at each step"
+    - "When using hash map optimization, ensure left only moves forward (use max)"
+    - "Empty string should return 0"
+
+  review_questions:
+    - "What is the time complexity of the sliding window approach?"
+    - "How does the hash map optimization improve over the hash set approach?"
+    - "Why do we use max(left, map[char]+1) instead of just map[char]+1?"
+
+  editorial:
+    algorithm_blueprint:
+      compact_md: "Initialize window [left=0] → Expand right → If duplicate found, shrink left → Track max length"
+      mermaid:
+        type: "flowchart"
+        direction: "TD"
+        code: |
+          flowchart TD
+            A[Start] --> B[Initialize left=0, maxLen=0, set=empty]
+            B --> C{right < s.length?}
+            C -- Yes --> D{s[right] in set?}
+            D -- Yes --> E[Remove s[left] from set]
+            E --> F[left++]
+            F --> D
+            D -- No --> G[Add s[right] to set]
+            G --> H[maxLen = max of maxLen and right-left+1]
+            H --> I[right++]
+            I --> C
+            C -- No --> J[Return maxLen]
+
+    alternative_approaches:
+      - name: "Brute Force"
+        idea_md: "Generate all substrings and check each for uniqueness."
+        time: "O(n^3)"
+        space: "O(min(n, m))"
+        preserve_indices: true
+        when_to_use_md: "Never in practice — only for understanding the problem."
+        why_not_md: "Too slow for large inputs."
+        pitfalls:
+          - "Time limit exceeded on large strings"
+          - "Redundant checks"
+
+      - name: "Sliding Window with Hash Map (Optimized)"
+        idea_md: "Use a hash map to store the last index of each character, allowing the left pointer to jump directly."
+        time: "O(n)"
+        space: "O(min(n, m))"
+        preserve_indices: true
+        when_to_use_md: "When you want to avoid the inner while loop for shrinking the window."
+        why_not_md: "Slightly more complex to implement correctly."
+        pitfalls:
+          - "Must use max(left, map[char]+1) to prevent left from moving backwards"
+          - "Map stores indices, not just presence"
+
+    when_not_to_use:
+      heuristics_md: |
+        The sliding window approach is almost always optimal for substring problems.
+        Consider alternatives when:
+        - Working with fixed-size windows (simpler sliding window)
+        - The constraint is on subsequences, not substrings
+      scenarios:
+        - scenario: "Fixed-size window required"
+          why_md: "A simpler fixed-size sliding window would be more appropriate."
+          recommended_instead:
+            - name: "Fixed Sliding Window"
+              note_md: "When window size is predetermined"
+
+    common_mistakes:
+      - mistake: "Not using max() when updating left pointer with hash map"
+        why_md: "Without max(), left can move backwards if a character's stored index is behind current left."
+        fix_md: "Always use left = max(left, map[char] + 1)."
+        example_bad_md: |
+          ```python
+          if s[right] in char_map:
+              left = char_map[s[right]] + 1  # Can go backwards!
+          ```
+        example_good_md: |
+          ```python
+          if s[right] in char_map:
+              left = max(left, char_map[s[right]] + 1)  # Always moves forward
+          ```
+        tags:
+          - "edge-case"
+          - "pointer-direction"
+
+      - mistake: "Forgetting to handle empty string"
+        why_md: "s can be empty (length 0), and the function should return 0."
+        fix_md: "Initialize maxLen = 0; the loop won't execute for empty string."
+        tags:
+          - "edge-case"
+          - "empty-input"
+
+    complexity_notes:
+      compact_md: "Time: O(n), Space: O(min(n, m)) where m is charset size"
+      detailed_md: |
+        ## Time Complexity: O(n)
+        - Each character is visited at most twice (once by right, once by left)
+        - Hash set/map operations are O(1) average
+
+        ## Space Complexity: O(min(n, m))
+        - The set stores at most min(n, m) characters
+        - n is the string length, m is the size of the character set
+        - For ASCII, m = 128; for extended ASCII, m = 256
+      notes:
+        - "The sliding window with hash set has worst case 2n operations"
+        - "The hash map optimization reduces this to exactly n operations"
+      gotchas:
+        - "Space depends on character set size, not just input length"
+        - "For Unicode strings, space could be much larger"
+      references:
+        - label: "Sliding Window Technique"
+          url: "https://leetcode.com/explore/learn/card/array-and-string/205/array-two-pointer-technique/"
+
+solutions_index:
+  - solution_id: "sol:lc:3:longest_substring:python:sliding_window:v1"
+    language: "python"
+    paradigm: "imperative"
+    title: "Python Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "hash-set"
+    solution_ref: "solutions/sol_py_sliding_window.yaml"
+
+  - solution_id: "sol:lc:3:longest_substring:go:sliding_window:v1"
+    language: "go"
+    paradigm: "imperative"
+    title: "Go Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "hash-map"
+    solution_ref: "solutions/sol_go_sliding_window.yaml"
+
+  - solution_id: "sol:lc:3:longest_substring:java:sliding_window:v1"
+    language: "java"
+    paradigm: "oop_classic"
+    title: "Java OOP Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "hash-set"
+      - "oop"
+    solution_ref: "solutions/sol_java_sliding_window.yaml"
+
+  - solution_id: "sol:lc:3:longest_substring:kotlin:sliding_window:v1"
+    language: "kotlin"
+    paradigm: "oop_classic"
+    title: "Kotlin Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "hash-set"
+      - "null-safety"
+    solution_ref: "solutions/sol_kotlin_sliding_window.yaml"
+
+  - solution_id: "sol:lc:3:longest_substring:javascript:sliding_window:v1"
+    language: "javascript"
+    paradigm: "oop_prototype"
+    title: "JavaScript Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "set"
+    solution_ref: "solutions/sol_js_sliding_window.yaml"
+
+  - solution_id: "sol:lc:3:longest_substring:scala:sliding_window:v1"
+    language: "scala"
+    paradigm: "functional"
+    title: "Scala Functional Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "functional"
+      - "tail-recursion"
+    solution_ref: "solutions/sol_scala_sliding_window.yaml"
+
+  - solution_id: "sol:lc:3:longest_substring:rust:sliding_window:v1"
+    language: "rust"
+    paradigm: "functional"
+    title: "Rust Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "hash-set"
+      - "ownership"
+    solution_ref: "solutions/sol_rust_sliding_window.yaml"
+
+history:
+  - at: "2024-01-25"
+    change: "Initial problem setup"
+  - at: "2024-01-25"
+    change: "Added multi-language solutions"

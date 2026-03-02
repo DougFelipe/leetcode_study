@@ -1,0 +1,79 @@
+schema_version: 3
+solution_id: "sol:lc:3:longest_substring:scala:sliding_window:v1"
+problem_id: "lc:3:longest_substring_without_repeating_characters"
+language: "scala"
+paradigm: "functional"
+
+approach:
+  name: "Sliding Window with Mutable Set"
+  tags:
+    - "sliding-window"
+    - "mutable-set"
+    - "functional"
+
+complexity:
+  time: "O(n)"
+  space: "O(min(n, m))"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Scala's mutable.Set provides O(1) operations for the sliding window.
+    The for-comprehension iterates over string indices cleanly.
+
+    Key advantages in Scala:
+    - scala.collection.mutable.Set for O(1) operations
+    - s.indices for idiomatic index iteration
+    - math.max for comparison
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `s = "abcabcbb"`:
+
+    1. charSet = mutable.Set(), left=0, maxLen=0
+    2. right=0: s(0)='a' not in set → add, maxLen=1
+    3. right=1: s(1)='b' not in set → add, maxLen=2
+    4. right=2: s(2)='c' not in set → add, maxLen=3
+    5. right=3: s(3)='a' in set → remove s(0)='a', left=1 → add 'a', maxLen=3
+    6. Continue... final answer = 3
+
+pitfalls:
+  - "Use mutable.Set, not immutable Set"
+  - "s(i) for character access (apply method)"
+  - "math.max for comparison (lowercase m)"
+
+tradeoffs:
+  - "Mutable set is less functional but necessary for performance"
+  - "Could use a pure recursive approach but would be more complex"
+  - "s.indices creates a Range object"
+
+comparison_notes:
+  highlights:
+    - "import scala.collection.mutable for mutable collections"
+    - "s(i) for character access (apply method)"
+    - "s.indices for index range"
+  gotchas_language_specific:
+    - "mutable.Set.contains() vs operator()"
+    - "s(i) returns Char via apply method"
+    - "+= and -= for set add/remove"
+
+review_questions:
+  - "Why not use an immutable Set here?"
+  - "How would a pure functional recursive approach look?"
+  - "What is the difference between contains and operator()?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:3:longest_substring:scala:sliding_window:v1:solution"
+    lang: "scala"
+    role: "solution"
+    path: "../code/sol_scala_sliding_window.scala"
+    render:
+      syntax: "scala"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-01-25"
+    change: "Initial Scala functional sliding window solution"

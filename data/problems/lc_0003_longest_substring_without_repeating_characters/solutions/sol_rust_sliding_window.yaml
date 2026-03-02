@@ -1,0 +1,80 @@
+schema_version: 3
+solution_id: "sol:lc:3:longest_substring:rust:sliding_window:v1"
+problem_id: "lc:3:longest_substring_without_repeating_characters"
+language: "rust"
+paradigm: "functional"
+
+approach:
+  name: "Sliding Window with HashSet"
+  tags:
+    - "sliding-window"
+    - "hash-set"
+    - "ownership"
+
+complexity:
+  time: "O(n)"
+  space: "O(min(n, m))"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Rust's HashSet from std::collections provides O(1) operations.
+    Working with byte slices (as_bytes()) avoids UTF-8 complexity for ASCII strings.
+
+    Key advantages in Rust:
+    - HashSet::contains/insert/remove for O(1) operations
+    - as_bytes() for efficient byte-level access
+    - .max() method on numeric types
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `s = "abcabcbb"`:
+
+    1. Convert to bytes: s = s.as_bytes()
+    2. char_set = HashSet::new(), left=0, max_len=0
+    3. right=0: b'a' not in set → insert, max_len=1
+    4. right=1: b'b' not in set → insert, max_len=2
+    5. right=2: b'c' not in set → insert, max_len=3
+    6. right=3: b'a' in set → remove s[0]=b'a', left=1 → insert, max_len=3
+    7. Continue... return max_len=3 as i32
+
+pitfalls:
+  - "Return type is i32, so cast max_len at the end"
+  - "Use &s[i] for reference when checking HashSet"
+  - "as_bytes() works for ASCII but not Unicode"
+
+tradeoffs:
+  - "Byte-level processing is fast but limited to ASCII/Latin1"
+  - "HashSet borrows references, need & for contains/remove"
+  - "Could use a [bool; 128] array for ASCII for zero-allocation"
+
+comparison_notes:
+  highlights:
+    - "use std::collections::HashSet"
+    - "s.as_bytes() for efficient byte access"
+    - ".max() method on usize type"
+  gotchas_language_specific:
+    - "&s[right] for borrow when checking set"
+    - "max_len as i32 for return type conversion"
+    - "HashSet::new() creates empty set"
+
+review_questions:
+  - "Why convert the string to bytes first?"
+  - "What are the ownership implications of HashSet<u8>?"
+  - "How would you handle full Unicode strings in Rust?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:3:longest_substring:rust:sliding_window:v1:solution"
+    lang: "rust"
+    role: "solution"
+    path: "../code/sol_rust_sliding_window.rs"
+    render:
+      syntax: "rust"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-01-25"
+    change: "Initial Rust sliding window solution"

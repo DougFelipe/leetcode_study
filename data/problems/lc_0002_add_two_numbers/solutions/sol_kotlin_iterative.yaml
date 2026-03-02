@@ -1,0 +1,79 @@
+schema_version: 3
+solution_id: "sol:lc:2:add_two_numbers:kotlin:iterative:v1"
+problem_id: "lc:2:add_two_numbers"
+language: "kotlin"
+paradigm: "oop_classic"
+
+approach:
+  name: "Iterative Digit-by-Digit Addition"
+  tags:
+    - "linked-list"
+    - "carry-handling"
+    - "null-safety"
+
+complexity:
+  time: "O(max(m, n))"
+  space: "O(max(m, n))"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Kotlin's null-safety features make linked list code more robust.
+    Elvis operator (?:) provides concise null handling.
+
+    Key advantages in Kotlin:
+    - Null-safe operators prevent NPEs
+    - Elvis operator for default values
+    - val/var distinction prevents accidental mutation
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `l1 = [2,4,3]` and `l2 = [5,6,4]`:
+
+    1. Create dummy node, use mutable pointers p1, p2
+    2. While p1 != null OR p2 != null OR carry != 0
+    3. Use Elvis operator: p1?.`val` ?: 0
+    4. Calculate sum and carry
+    5. Create new node and advance current
+    6. Use safe call operator: p1?.next
+
+pitfalls:
+  - "Use ?: 0 to handle null values"
+  - "Backticks around `val` since it's a keyword"
+  - "!! operator on current.next is safe here"
+
+tradeoffs:
+  - "More concise than Java with same safety"
+  - "Null-safety adds slight visual complexity"
+  - "Interop with Java ListNode class"
+
+comparison_notes:
+  highlights:
+    - "Elvis operator: p1?.`val` ?: 0"
+    - "Safe call: p1?.next"
+    - "Non-null assertion: current.next!!"
+  gotchas_language_specific:
+    - "`val` needs backticks (reserved keyword)"
+    - "?. returns null if receiver is null"
+    - "?: provides default when left side is null"
+
+review_questions:
+  - "Why do we need mutable pointers p1 and p2?"
+  - "What does the !! operator do and when is it safe?"
+  - "How does Kotlin's null-safety improve this code?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:2:add_two_numbers:kotlin:iterative:v1:solution"
+    lang: "kotlin"
+    role: "solution"
+    path: "../code/sol_kotlin_iterative.kt"
+    render:
+      syntax: "kotlin"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-01-20"
+    change: "Initial Kotlin OOP iterative solution"

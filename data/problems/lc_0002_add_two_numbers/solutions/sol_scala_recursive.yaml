@@ -1,0 +1,82 @@
+schema_version: 3
+solution_id: "sol:lc:2:add_two_numbers:scala:recursive:v1"
+problem_id: "lc:2:add_two_numbers"
+language: "scala"
+paradigm: "functional"
+
+approach:
+  name: "Recursive Digit-by-Digit Addition"
+  tags:
+    - "linked-list"
+    - "recursion"
+    - "functional"
+    - "pattern-matching"
+
+complexity:
+  time: "O(max(m, n))"
+  space: "O(max(m, n))"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Scala's functional style naturally fits recursive solutions.
+    The recursive approach elegantly handles carry propagation.
+
+    Key advantages in Scala:
+    - Recursion is idiomatic
+    - Pattern matching for null checks
+    - Expression-oriented (everything returns a value)
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `l1 = [2,4,3]` and `l2 = [5,6,4]`:
+
+    1. add(l1, l2, 0) - first call with carry=0
+    2. x=2, y=5, sum=7, carry=0
+    3. Create node(7), next = add(l1.next, l2.next, 0)
+    4. Recurse: x=4, y=6, sum=10, carry=1
+    5. Create node(0), next = add(l1.next, l2.next, 1)
+    6. Recurse: x=3, y=4+1=8, carry=0
+    7. Create node(8), next = add(null, null, 0) = null
+    8. Unwinding returns: 7 → 0 → 8
+
+pitfalls:
+  - "Base case must check all three: n1==null, n2==null, carry==0"
+  - "Recursion adds stack frames"
+  - "Not tail-recursive due to node.next assignment after recursive call"
+
+tradeoffs:
+  - "Elegant but uses more stack space"
+  - "Not tail-recursive (can't be optimized by compiler)"
+  - "More idiomatic Scala but less efficient for very long lists"
+
+comparison_notes:
+  highlights:
+    - "Nested function for clean interface"
+    - "Expression-oriented: every if returns a value"
+    - "null checks are explicit (Scala 2 style)"
+  gotchas_language_specific:
+    - "Not tail-recursive due to post-recursive assignment"
+    - "ListNode uses x instead of val (LeetCode Scala style)"
+    - "null is still used in Scala for Java interop"
+
+review_questions:
+  - "Why is this solution not tail-recursive?"
+  - "How would you convert this to an Option-based approach?"
+  - "What's the maximum recursion depth for this solution?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:2:add_two_numbers:scala:recursive:v1:solution"
+    lang: "scala"
+    role: "solution"
+    path: "../code/sol_scala_recursive.scala"
+    render:
+      syntax: "scala"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-01-20"
+    change: "Initial Scala recursive solution"

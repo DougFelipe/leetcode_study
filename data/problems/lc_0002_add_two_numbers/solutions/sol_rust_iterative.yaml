@@ -1,0 +1,80 @@
+schema_version: 3
+solution_id: "sol:lc:2:add_two_numbers:rust:iterative:v1"
+problem_id: "lc:2:add_two_numbers"
+language: "rust"
+paradigm: "functional"
+
+approach:
+  name: "Iterative Digit-by-Digit Addition"
+  tags:
+    - "linked-list"
+    - "carry-handling"
+    - "ownership"
+    - "option-handling"
+
+complexity:
+  time: "O(max(m, n))"
+  space: "O(max(m, n))"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Rust's ownership system makes linked list manipulation more complex but safer.
+    Option<Box<ListNode>> is the idiomatic way to represent nullable nodes.
+
+    Key advantages in Rust:
+    - Option type prevents null pointer errors
+    - Box for heap allocation
+    - map_or for concise Option handling
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `l1 = Some([2,4,3])` and `l2 = Some([5,6,4])`:
+
+    1. Create dummy Box<ListNode>
+    2. Use as_ref() to borrow without taking ownership
+    3. map_or(0, |node| node.val) extracts value or 0
+    4. Calculate sum and carry
+    5. Use as_mut().unwrap() to get mutable reference
+    6. and_then for chaining Option operations
+
+pitfalls:
+  - "Use as_ref() to borrow, not move"
+  - "Box::new for heap allocation"
+  - "Return dummy.next, not dummy"
+
+tradeoffs:
+  - "More verbose due to ownership rules"
+  - "Compile-time safety prevents runtime bugs"
+  - "Box adds indirection"
+
+comparison_notes:
+  highlights:
+    - "map_or(default, closure) for Option handling"
+    - "as_ref() to borrow Option contents"
+    - "and_then for Option chaining"
+  gotchas_language_specific:
+    - "Option<Box<T>> not *T for nullable pointers"
+    - "as_ref() vs as_mut() for borrowing"
+    - "LeetCode provides ListNode struct"
+
+review_questions:
+  - "Why use as_ref() instead of just accessing the Option?"
+  - "What's the difference between map and map_or?"
+  - "Why does current need to be mutable?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:2:add_two_numbers:rust:iterative:v1:solution"
+    lang: "rust"
+    role: "solution"
+    path: "../code/sol_rust_iterative.rs"
+    render:
+      syntax: "rust"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-01-20"
+    change: "Initial Rust iterative solution"

@@ -1,0 +1,283 @@
+schema_version: 3
+problem_id: "lc:2:add_two_numbers"
+slug: "lc_0002_add_two_numbers"
+title: "2. Add Two Numbers"
+
+source:
+  platform: "leetcode"
+  id: 2
+  slug: "add-two-numbers"
+  url: "https://leetcode.com/problems/add-two-numbers/"
+
+catalog:
+  difficulty: "medium"
+  topics:
+    - "Linked List"
+    - "Math"
+    - "Recursion"
+  patterns:
+    - "Linked List Traversal"
+    - "Carry Handling"
+    - "Digit-by-Digit Addition"
+  companies:
+    - "Amazon"
+    - "Microsoft"
+    - "Google"
+    - "Facebook"
+    - "Apple"
+
+constraints:
+  summary: "1 <= nodes <= 100; 0 <= Node.val <= 9; No leading zeros"
+  notes_md: |
+    - The number of nodes in each linked list is in the range [1, 100]
+    - 0 <= Node.val <= 9
+    - It is guaranteed that the list represents a number that does not have leading zeros
+
+study:
+  status: "solved"
+  priority: 5
+  confidence: 4
+  created_at: "2024-01-20"
+  solved_at: "2024-01-20"
+  time_spent_min: 45
+  review:
+    srs_enabled: true
+    next_review: "2024-02-20"
+    interval_days: 30
+  mistakes:
+    - "Forgot to handle carry after both lists are exhausted"
+    - "Early termination when one list is shorter"
+
+content:
+  statement_md: |
+    You are given two **non-empty** linked lists representing two non-negative integers.
+    The digits are stored in **reverse order**, and each of their nodes contains a single digit.
+    Add the two numbers and return the sum as a linked list.
+
+    You may assume the two numbers do not contain any leading zero, except the number 0 itself.
+
+    **Example 1:**
+    ```
+    Input: l1 = [2,4,3], l2 = [5,6,4]
+    Output: [7,0,8]
+    Explanation: 342 + 465 = 807
+    ```
+    The linked lists are: 2 → 4 → 3 and 5 → 6 → 4
+    Result: 7 → 0 → 8
+
+    **Example 2:**
+    ```
+    Input: l1 = [0], l2 = [0]
+    Output: [0]
+    ```
+
+    **Example 3:**
+    ```
+    Input: l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]
+    Output: [8,9,9,9,0,0,0,1]
+    Explanation: 9999999 + 9999 = 10009998
+    ```
+
+  editorial_summary_md: |
+    The optimal approach simulates grade-school addition digit by digit.
+    We traverse both lists simultaneously, adding corresponding digits plus any carry from the previous sum.
+    If the sum exceeds 9, we carry 1 to the next position.
+
+  key_insights:
+    - "Digits are conveniently stored in reverse order (least significant first)"
+    - "Handle carry that may extend beyond both lists"
+    - "Use a dummy head node to simplify result list construction"
+    - "Both lists may have different lengths"
+
+  pitfalls:
+    - "Don't forget the final carry (e.g., 1 + 999 = 1000)"
+    - "Handle different length lists correctly"
+    - "Initialize carry to 0, not 1"
+
+  review_questions:
+    - "What is the time complexity of this solution?"
+    - "Why are the digits stored in reverse order?"
+    - "How would you handle this if digits were in normal order?"
+
+  editorial:
+    algorithm_blueprint:
+      compact_md: "Traverse both lists → Add digits + carry → Create new node → Handle final carry"
+      mermaid:
+        type: "flowchart"
+        direction: "TD"
+        code: |
+          flowchart TD
+            A[Start] --> B[Initialize dummy head, carry = 0]
+            B --> C{l1 or l2 or carry?}
+            C -- Yes --> D[Get x from l1 or 0]
+            D --> E[Get y from l2 or 0]
+            E --> F[sum = x + y + carry]
+            F --> G[carry = sum / 10]
+            G --> H[Create node with sum % 10]
+            H --> I[Advance l1, l2 if exist]
+            I --> C
+            C -- No --> J[Return dummy.next]
+
+    alternative_approaches:
+      - name: "Recursive Solution"
+        idea_md: "Use recursion to handle digit addition and carry propagation."
+        time: "O(max(m, n))"
+        space: "O(max(m, n))"
+        preserve_indices: true
+        when_to_use_md: "When you prefer a more elegant, functional approach."
+        why_not_md: "Adds stack overhead; iterative is more efficient for very long lists."
+        pitfalls:
+          - "Stack overflow on very long lists"
+          - "Must pass carry as parameter"
+
+      - name: "Convert to Integer"
+        idea_md: "Convert lists to integers, add them, convert back to list."
+        time: "O(m + n)"
+        space: "O(max(m, n))"
+        preserve_indices: true
+        when_to_use_md: "Never for this problem - doesn't work for very large numbers."
+        why_not_md: "Integer overflow for lists with more than ~19 nodes (exceeds 64-bit int)."
+        pitfalls:
+          - "Integer overflow"
+          - "Not the intended approach"
+
+    when_not_to_use:
+      heuristics_md: |
+        The digit-by-digit approach is almost always optimal for linked list addition.
+        Consider alternatives when:
+        - Working with arrays instead of linked lists
+        - Numbers fit in standard integer types
+      scenarios:
+        - scenario: "Numbers fit in 64-bit integers"
+          why_md: "Direct integer arithmetic would be simpler."
+          recommended_instead:
+            - name: "Integer Conversion"
+              note_md: "Only if numbers guaranteed to be small"
+
+    common_mistakes:
+      - mistake: "Forgetting the final carry"
+        why_md: "If l1 = [9] and l2 = [1], the sum is [0, 1], not [0]."
+        fix_md: "After the loop, check if carry > 0 and add one more node."
+        example_bad_md: |
+          ```python
+          while l1 or l2:
+              # process...
+          return dummy.next  # Missing carry check!
+          ```
+        example_good_md: |
+          ```python
+          while l1 or l2 or carry:  # Include carry in condition
+              # process...
+          return dummy.next
+          ```
+        tags:
+          - "edge-case"
+          - "carry"
+
+      - mistake: "Not handling different length lists"
+        why_md: "l1 = [9,9] and l2 = [1] are different lengths."
+        fix_md: "Use 0 for the value when a list has ended."
+        tags:
+          - "edge-case"
+          - "null-check"
+
+    complexity_notes:
+      compact_md: "Time: O(max(m, n)), Space: O(max(m, n))"
+      detailed_md: |
+        ## Time Complexity: O(max(m, n))
+        - We traverse both lists once
+        - Each node operation is O(1)
+        - m and n are the lengths of the two lists
+
+        ## Space Complexity: O(max(m, n))
+        - The result list has at most max(m, n) + 1 nodes
+        - The extra node is for the final carry
+      notes:
+        - "Best case is when both lists have one digit each"
+        - "Worst case adds one extra node due to carry"
+      gotchas:
+        - "The result can be one node longer than the longest input"
+        - "Example: 999 + 1 = 1000 (3 digits + 3 digits = 4 digits)"
+      references:
+        - label: "Linked List Addition Visualization"
+          url: "https://visualgo.net/en/list"
+
+solutions_index:
+  - solution_id: "sol:lc:2:add_two_numbers:python:iterative:v1"
+    language: "python"
+    paradigm: "imperative"
+    title: "Python Iterative Solution"
+    status: "done"
+    approach_tags:
+      - "linked-list"
+      - "carry-handling"
+    solution_ref: "solutions/sol_py_iterative.yaml"
+
+  - solution_id: "sol:lc:2:add_two_numbers:go:iterative:v1"
+    language: "go"
+    paradigm: "imperative"
+    title: "Go Iterative Solution"
+    status: "done"
+    approach_tags:
+      - "linked-list"
+      - "carry-handling"
+    solution_ref: "solutions/sol_go_iterative.yaml"
+
+  - solution_id: "sol:lc:2:add_two_numbers:java:iterative:v1"
+    language: "java"
+    paradigm: "oop_classic"
+    title: "Java OOP Iterative Solution"
+    status: "done"
+    approach_tags:
+      - "linked-list"
+      - "carry-handling"
+      - "oop"
+    solution_ref: "solutions/sol_java_iterative.yaml"
+
+  - solution_id: "sol:lc:2:add_two_numbers:kotlin:iterative:v1"
+    language: "kotlin"
+    paradigm: "oop_classic"
+    title: "Kotlin OOP Iterative Solution"
+    status: "done"
+    approach_tags:
+      - "linked-list"
+      - "carry-handling"
+      - "null-safety"
+    solution_ref: "solutions/sol_kotlin_iterative.yaml"
+
+  - solution_id: "sol:lc:2:add_two_numbers:javascript:iterative:v1"
+    language: "javascript"
+    paradigm: "oop_prototype"
+    title: "JavaScript Prototype Solution"
+    status: "done"
+    approach_tags:
+      - "linked-list"
+      - "carry-handling"
+    solution_ref: "solutions/sol_js_iterative.yaml"
+
+  - solution_id: "sol:lc:2:add_two_numbers:scala:recursive:v1"
+    language: "scala"
+    paradigm: "functional"
+    title: "Scala Recursive Solution"
+    status: "done"
+    approach_tags:
+      - "linked-list"
+      - "recursion"
+      - "functional"
+    solution_ref: "solutions/sol_scala_recursive.yaml"
+
+  - solution_id: "sol:lc:2:add_two_numbers:rust:iterative:v1"
+    language: "rust"
+    paradigm: "functional"
+    title: "Rust Iterative Solution"
+    status: "done"
+    approach_tags:
+      - "linked-list"
+      - "ownership"
+    solution_ref: "solutions/sol_rust_iterative.yaml"
+
+history:
+  - at: "2024-01-20"
+    change: "Initial problem setup"
+  - at: "2024-01-20"
+    change: "Added multi-language solutions"

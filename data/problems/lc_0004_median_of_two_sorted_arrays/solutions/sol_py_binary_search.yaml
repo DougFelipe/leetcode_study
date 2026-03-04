@@ -1,0 +1,82 @@
+schema_version: 3
+solution_id: "sol:lc:4:median_two_arrays:python:binary_search:v1"
+problem_id: "lc:4:median_of_two_sorted_arrays"
+language: "python"
+paradigm: "imperative"
+
+approach:
+  name: "Binary Search Partition"
+  tags:
+    - "binary-search"
+    - "partition"
+    - "two-arrays"
+
+complexity:
+  time: "O(log(min(m, n)))"
+  space: "O(1)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Python's float('inf') and float('-inf') serve as natural sentinel values.
+    Tuple unpacking simplifies the array swap when ensuring nums1 is smaller.
+
+    Key advantages in Python:
+    - float('inf') / float('-inf') for sentinels
+    - Tuple swap: nums1, nums2 = nums2, nums1
+    - Integer division with // operator
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `nums1 = [1,3]`, `nums2 = [2]`:
+
+    1. m=2, n=1 → nums1 is larger, swap → nums1=[2], nums2=[1,3]
+    2. m=1, n=2, lo=0, hi=1
+    3. **Iteration 1**: partition1=0, partition2=2
+       - maxLeft1=-∞, minRight1=2, maxLeft2=3, minRight2=∞
+       - maxLeft2(3) > minRight1(2) → lo = 1
+    4. **Iteration 2**: partition1=1, partition2=1
+       - maxLeft1=2, minRight1=∞, maxLeft2=1, minRight2=3
+       - 2 <= 3 AND 1 <= ∞ → Valid!
+       - Total is odd (3) → return max(2, 1) = 2.0
+
+pitfalls:
+  - "Swap arrays so nums1 is always smaller"
+  - "Use float('inf') as sentinel, not sys.maxsize"
+  - "Return float for consistency with expected output"
+
+tradeoffs:
+  - "Binary search is harder to implement but optimal"
+  - "Sentinels avoid special-casing edge partitions"
+  - "More complex than merge approach but O(log) vs O(n)"
+
+comparison_notes:
+  highlights:
+    - "float('inf') / float('-inf') for clean sentinel values"
+    - "Tuple swap for concise array reassignment"
+    - "// operator for integer division"
+  gotchas_language_specific:
+    - "float('inf') comparisons work correctly with ints"
+    - "list[int] type hint (Python 3.9+)"
+    - "Division by 2.0 ensures float result"
+
+review_questions:
+  - "Why is it essential to binary search on the smaller array?"
+  - "What happens if both arrays are empty?"
+  - "How do sentinels simplify the edge cases?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:4:median_two_arrays:python:binary_search:v1:solution"
+    lang: "python"
+    role: "solution"
+    path: "../code/sol_py_binary_search.py"
+    render:
+      syntax: "python"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-01-28"
+    change: "Initial Python binary search partition solution"

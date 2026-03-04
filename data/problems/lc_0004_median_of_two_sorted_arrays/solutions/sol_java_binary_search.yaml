@@ -1,0 +1,81 @@
+schema_version: 3
+solution_id: "sol:lc:4:median_two_arrays:java:binary_search:v1"
+problem_id: "lc:4:median_of_two_sorted_arrays"
+language: "java"
+paradigm: "oop_classic"
+
+approach:
+  name: "Binary Search Partition"
+  tags:
+    - "binary-search"
+    - "partition"
+    - "oop"
+
+complexity:
+  time: "O(log(min(m, n)))"
+  space: "O(1)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Java's Integer.MIN_VALUE and Integer.MAX_VALUE serve as natural sentinels.
+    Ternary operators make partition edge checks concise.
+
+    Key advantages in Java:
+    - Integer.MIN_VALUE / Integer.MAX_VALUE as sentinels
+    - Math.max() / Math.min() for comparisons
+    - Strong typing prevents accidental type errors
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `nums1 = [1,2]`, `nums2 = [3,4]`:
+
+    1. m=2, n=2, lo=0, hi=2
+    2. **Iteration 1**: partition1=1, partition2=1
+       - maxLeft1=1, minRight1=2, maxLeft2=3, minRight2=4
+       - maxLeft2(3) > minRight1(2) → lo = 2
+    3. **Iteration 2**: partition1=2, partition2=0
+       - maxLeft1=2, minRight1=MAX, maxLeft2=MIN, minRight2=3
+       - 2 <= 3 AND MIN <= MAX → Valid!
+       - Total is even (4) → return (max(2, MIN) + min(MAX, 3)) / 2.0 = 2.5
+
+pitfalls:
+  - "Array swap requires temp variable in Java"
+  - "Use Integer.MIN_VALUE not 0 for sentinel"
+  - "Division by 2.0 (not 2) for double result"
+
+tradeoffs:
+  - "More verbose than Python but type-safe"
+  - "Integer sentinels work since constraints are -10^6 to 10^6"
+  - "Ternary expressions keep code compact"
+
+comparison_notes:
+  highlights:
+    - "Integer.MIN_VALUE / Integer.MAX_VALUE as sentinels"
+    - "Ternary operator for conditional assignment"
+    - "Math.max() / Math.min() for comparison"
+  gotchas_language_specific:
+    - "int division truncates; use 2.0 for double result"
+    - "Array swap needs temp variable (no destructuring)"
+    - "IllegalArgumentException for invalid input"
+
+review_questions:
+  - "Why use Integer.MIN_VALUE instead of a smaller custom constant?"
+  - "Could we use int[] or Integer[] here? What's the difference?"
+  - "How does Java handle the division to ensure a double result?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:4:median_two_arrays:java:binary_search:v1:solution"
+    lang: "java"
+    role: "solution"
+    path: "../code/sol_java_binary_search.java"
+    render:
+      syntax: "java"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-01-28"
+    change: "Initial Java OOP binary search partition solution"

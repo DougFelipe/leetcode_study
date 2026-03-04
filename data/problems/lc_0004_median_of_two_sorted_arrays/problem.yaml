@@ -1,0 +1,283 @@
+schema_version: 3
+problem_id: "lc:4:median_of_two_sorted_arrays"
+slug: "lc_0004_median_of_two_sorted_arrays"
+title: "4. Median of Two Sorted Arrays"
+
+source:
+  platform: "leetcode"
+  id: 4
+  slug: "median-of-two-sorted-arrays"
+  url: "https://leetcode.com/problems/median-of-two-sorted-arrays/"
+
+catalog:
+  difficulty: "hard"
+  topics:
+    - "Array"
+    - "Binary Search"
+    - "Divide and Conquer"
+  patterns:
+    - "Binary Search on Partition"
+    - "Two-Array Partition"
+    - "Median Finding"
+  companies:
+    - "Amazon"
+    - "Microsoft"
+    - "Google"
+    - "Facebook"
+    - "Apple"
+    - "Goldman Sachs"
+
+constraints:
+  summary: "0 <= m, n <= 1000; 1 <= m+n <= 2000; -10^6 <= nums1[i], nums2[i] <= 10^6"
+  notes_md: |
+    - nums1.length == m
+    - nums2.length == n
+    - 0 <= m <= 1000
+    - 0 <= n <= 1000
+    - 1 <= m + n <= 2000
+    - -10^6 <= nums1[i], nums2[i] <= 10^6
+
+study:
+  status: "solved"
+  priority: 5
+  confidence: 3
+  created_at: "2024-01-28"
+  solved_at: "2024-01-28"
+  time_spent_min: 90
+  review:
+    srs_enabled: true
+    next_review: "2024-02-28"
+    interval_days: 30
+  mistakes:
+    - "Off-by-one error when calculating partition indices"
+    - "Not handling edge cases when one array is empty"
+    - "Forgetting to ensure binary search is on the smaller array"
+
+content:
+  statement_md: |
+    Given two sorted arrays `nums1` and `nums2` of size `m` and `n` respectively,
+    return the **median** of the two sorted arrays.
+
+    The overall run time complexity should be **O(log (m+n))**.
+
+    **Example 1:**
+    ```
+    Input: nums1 = [1,3], nums2 = [2]
+    Output: 2.00000
+    Explanation: merged array = [1,2,3] and median is 2.
+    ```
+
+    **Example 2:**
+    ```
+    Input: nums1 = [1,2], nums2 = [3,4]
+    Output: 2.50000
+    Explanation: merged array = [1,2,3,4] and median is (2 + 3) / 2 = 2.5.
+    ```
+
+  editorial_summary_md: |
+    The optimal approach uses binary search on the smaller array to find the correct partition.
+    We partition both arrays such that all elements on the left are ≤ all elements on the right,
+    and the left half has exactly half the total elements. This gives O(log(min(m, n))) time.
+
+  key_insights:
+    - "Binary search on the smaller array for O(log(min(m, n))) time"
+    - "Partition both arrays so left half size = (m + n + 1) / 2"
+    - "Valid partition: maxLeft1 <= minRight2 AND maxLeft2 <= minRight1"
+    - "Use -∞ and +∞ sentinels for edge partitions"
+
+  pitfalls:
+    - "Always binary search on the smaller array to avoid index out of bounds"
+    - "Handle edge cases where partition is at 0 or array length"
+    - "Even vs odd total length changes how median is calculated"
+
+  review_questions:
+    - "Why must we binary search on the smaller array?"
+    - "How do we handle the case when one array is empty?"
+    - "What are the sentinel values used for edge partitions?"
+
+  editorial:
+    algorithm_blueprint:
+      compact_md: "Ensure nums1 is smaller → Binary search partition on nums1 → Derive partition on nums2 → Check valid partition → Calculate median"
+      mermaid:
+        type: "flowchart"
+        direction: "TD"
+        code: |
+          flowchart TD
+            A[Start] --> B{len nums1 > len nums2?}
+            B -- Yes --> C[Swap nums1 and nums2]
+            C --> D[Binary search on nums1]
+            B -- No --> D
+            D --> E[partition1 = mid]
+            E --> F["partition2 = (m+n+1)/2 - partition1"]
+            F --> G{maxLeft1 <= minRight2 AND maxLeft2 <= minRight1?}
+            G -- Yes --> H{Total is odd?}
+            H -- Yes --> I["Return max(maxLeft1, maxLeft2)"]
+            H -- No --> J["Return avg of max(lefts) and min(rights)"]
+            G -- maxLeft1 > minRight2 --> K[Move partition1 left]
+            K --> D
+            G -- maxLeft2 > minRight1 --> L[Move partition1 right]
+            L --> D
+
+    alternative_approaches:
+      - name: "Merge and Find Median"
+        idea_md: "Merge both arrays and find the middle element(s)."
+        time: "O(m + n)"
+        space: "O(m + n)"
+        preserve_indices: true
+        when_to_use_md: "When simplicity is more important than optimal time complexity."
+        why_not_md: "Does not meet the O(log(m+n)) requirement."
+        pitfalls:
+          - "Uses extra space for merged array"
+          - "Not optimal time complexity"
+
+      - name: "Merge Without Extra Space"
+        idea_md: "Count through both arrays without merging to find the median position."
+        time: "O(m + n)"
+        space: "O(1)"
+        preserve_indices: true
+        when_to_use_md: "When space is a concern but O(m+n) time is acceptable."
+        why_not_md: "Still does not meet the O(log(m+n)) requirement."
+        pitfalls:
+          - "Tricky to handle even/odd total length"
+          - "Not optimal time complexity"
+
+    when_not_to_use:
+      heuristics_md: |
+        The binary search partition approach is the gold standard for this problem.
+        Consider alternatives when:
+        - Arrays are very small (merge is simpler)
+        - Time complexity requirement is relaxed
+      scenarios:
+        - scenario: "Both arrays have fewer than 10 elements"
+          why_md: "Merge approach is simpler and fast enough."
+          recommended_instead:
+            - name: "Merge and Find"
+              note_md: "Simpler code for small inputs"
+
+    common_mistakes:
+      - mistake: "Not searching on the smaller array"
+        why_md: "If nums1 is larger, partition2 can become negative, causing index out of bounds."
+        fix_md: "Always swap so nums1 is the smaller array before binary search."
+        example_bad_md: |
+          ```python
+          # Doesn't swap — partition2 can be negative
+          def findMedian(nums1, nums2):
+              lo, hi = 0, len(nums1)  # nums1 might be larger!
+          ```
+        example_good_md: |
+          ```python
+          def findMedian(nums1, nums2):
+              if len(nums1) > len(nums2):
+                  nums1, nums2 = nums2, nums1  # Ensure nums1 is smaller
+              lo, hi = 0, len(nums1)
+          ```
+        tags:
+          - "edge-case"
+          - "binary-search"
+
+      - mistake: "Wrong median calculation for even total"
+        why_md: "When total elements is even, median is the average of two middle elements."
+        fix_md: "Check (m + n) % 2 and compute accordingly."
+        tags:
+          - "edge-case"
+          - "even-odd"
+
+    complexity_notes:
+      compact_md: "Time: O(log(min(m, n))), Space: O(1)"
+      detailed_md: |
+        ## Time Complexity: O(log(min(m, n)))
+        - Binary search on the smaller array
+        - Each iteration halves the search space
+        - Strictly better than O(log(m+n))
+
+        ## Space Complexity: O(1)
+        - Only a constant number of variables used
+        - No extra arrays or data structures needed
+      notes:
+        - "The problem asks for O(log(m+n)) but we achieve O(log(min(m,n)))"
+        - "This is strictly better than the requirement"
+      gotchas:
+        - "The binary search partition approach can be confusing at first"
+        - "Edge cases with empty arrays need careful sentinel handling"
+      references:
+        - label: "Binary Search on Two Arrays"
+          url: "https://leetcode.com/problems/median-of-two-sorted-arrays/editorial/"
+
+solutions_index:
+  - solution_id: "sol:lc:4:median_two_arrays:python:binary_search:v1"
+    language: "python"
+    paradigm: "imperative"
+    title: "Python Binary Search Partition Solution"
+    status: "done"
+    approach_tags:
+      - "binary-search"
+      - "partition"
+    solution_ref: "solutions/sol_py_binary_search.yaml"
+
+  - solution_id: "sol:lc:4:median_two_arrays:go:binary_search:v1"
+    language: "go"
+    paradigm: "imperative"
+    title: "Go Binary Search Partition Solution"
+    status: "done"
+    approach_tags:
+      - "binary-search"
+      - "partition"
+    solution_ref: "solutions/sol_go_binary_search.yaml"
+
+  - solution_id: "sol:lc:4:median_two_arrays:java:binary_search:v1"
+    language: "java"
+    paradigm: "oop_classic"
+    title: "Java OOP Binary Search Partition Solution"
+    status: "done"
+    approach_tags:
+      - "binary-search"
+      - "partition"
+      - "oop"
+    solution_ref: "solutions/sol_java_binary_search.yaml"
+
+  - solution_id: "sol:lc:4:median_two_arrays:kotlin:binary_search:v1"
+    language: "kotlin"
+    paradigm: "oop_classic"
+    title: "Kotlin Binary Search Partition Solution"
+    status: "done"
+    approach_tags:
+      - "binary-search"
+      - "partition"
+    solution_ref: "solutions/sol_kotlin_binary_search.yaml"
+
+  - solution_id: "sol:lc:4:median_two_arrays:javascript:binary_search:v1"
+    language: "javascript"
+    paradigm: "oop_prototype"
+    title: "JavaScript Binary Search Partition Solution"
+    status: "done"
+    approach_tags:
+      - "binary-search"
+      - "partition"
+    solution_ref: "solutions/sol_js_binary_search.yaml"
+
+  - solution_id: "sol:lc:4:median_two_arrays:scala:binary_search:v1"
+    language: "scala"
+    paradigm: "functional"
+    title: "Scala Functional Binary Search Partition Solution"
+    status: "done"
+    approach_tags:
+      - "binary-search"
+      - "functional"
+    solution_ref: "solutions/sol_scala_binary_search.yaml"
+
+  - solution_id: "sol:lc:4:median_two_arrays:rust:binary_search:v1"
+    language: "rust"
+    paradigm: "functional"
+    title: "Rust Binary Search Partition Solution"
+    status: "done"
+    approach_tags:
+      - "binary-search"
+      - "partition"
+      - "ownership"
+    solution_ref: "solutions/sol_rust_binary_search.yaml"
+
+history:
+  - at: "2024-01-28"
+    change: "Initial problem setup"
+  - at: "2024-01-28"
+    change: "Added multi-language solutions"

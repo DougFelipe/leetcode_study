@@ -1,0 +1,83 @@
+schema_version: 3
+solution_id: "sol:lc:4:median_two_arrays:scala:binary_search:v1"
+problem_id: "lc:4:median_of_two_sorted_arrays"
+language: "scala"
+paradigm: "functional"
+
+approach:
+  name: "Recursive Binary Search Partition"
+  tags:
+    - "binary-search"
+    - "recursion"
+    - "functional"
+    - "pattern-matching"
+
+complexity:
+  time: "O(log(min(m, n)))"
+  space: "O(log(min(m, n)))"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Scala's functional style naturally expresses the binary search as tail recursion.
+    Pattern matching with if-guards cleanly handles the three cases.
+
+    Key advantages in Scala:
+    - Recursive binary search is idiomatic
+    - Tuple destructuring for clean array assignment
+    - Int.MinValue / Int.MaxValue for sentinels
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `nums1 = [1,2]`, `nums2 = [3,4]`:
+
+    1. a=[1,2], b=[3,4] (a.length <= b.length)
+    2. search(0, 2):
+       - partition1=1, partition2=1
+       - maxLeft1=1, minRight1=2, maxLeft2=3, minRight2=4
+       - maxLeft2(3) > minRight1(2) → search(2, 2)
+    3. search(2, 2):
+       - partition1=2, partition2=0
+       - maxLeft1=2, minRight1=MaxValue, maxLeft2=MinValue, minRight2=3
+       - Valid! Even total → (max(2, MinValue) + min(MaxValue, 3)) / 2.0 = 2.5
+
+pitfalls:
+  - "Recursive approach adds stack frames (O(log(min(m,n))) space)"
+  - "Tuple destructuring: val (a, b) = if (...) (...) else (...)"
+  - "Int.MinValue / Int.MaxValue for sentinels"
+
+tradeoffs:
+  - "Recursive is idiomatic Scala but uses stack space"
+  - "Could be made tail-recursive with @tailrec annotation"
+  - "Expression-oriented style (every if returns a value)"
+
+comparison_notes:
+  highlights:
+    - "val (a, b) = ... for tuple destructuring"
+    - "Nested def for encapsulated recursion"
+    - "Expression-oriented if blocks"
+  gotchas_language_specific:
+    - "a(i) for array access (apply method)"
+    - ".toDouble for type conversion"
+    - "math.max / math.min (lowercase)"
+
+review_questions:
+  - "Is this solution tail-recursive? Could it be made so?"
+  - "How does tuple destructuring work in Scala?"
+  - "What is the space complexity due to recursion?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:4:median_two_arrays:scala:binary_search:v1:solution"
+    lang: "scala"
+    role: "solution"
+    path: "../code/sol_scala_binary_search.scala"
+    render:
+      syntax: "scala"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-01-28"
+    change: "Initial Scala functional binary search partition solution"

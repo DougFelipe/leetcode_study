@@ -1,0 +1,81 @@
+schema_version: 3
+solution_id: "sol:lc:4:median_two_arrays:kotlin:binary_search:v1"
+problem_id: "lc:4:median_of_two_sorted_arrays"
+language: "kotlin"
+paradigm: "oop_classic"
+
+approach:
+  name: "Binary Search Partition"
+  tags:
+    - "binary-search"
+    - "partition"
+    - "when-expression"
+
+complexity:
+  time: "O(log(min(m, n)))"
+  space: "O(1)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Kotlin's when expression replaces complex if-else chains cleanly.
+    Int.MIN_VALUE / Int.MAX_VALUE serve as natural sentinels.
+
+    Key advantages in Kotlin:
+    - when expression for multi-branch control flow
+    - maxOf() / minOf() built-in functions
+    - .toDouble() for explicit type conversion
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `nums1 = [1,2]`, `nums2 = [3,4]`:
+
+    1. a=[1,2], b=[3,4] (already a.size <= b.size)
+    2. m=2, n=2, lo=0, hi=2
+    3. partition1=1, partition2=1
+       - maxLeft1=1, minRight1=2, maxLeft2=3, minRight2=4
+       - maxLeft2(3) > minRight1(2) → lo = 2
+    4. partition1=2, partition2=0
+       - maxLeft1=2, minRight1=MAX, maxLeft2=MIN, minRight2=3
+       - Valid! Total even → (maxOf(2, MIN) + minOf(MAX, 3)) / 2.0 = 2.5
+
+pitfalls:
+  - "Use `when` expression instead of nested if-else"
+  - "Int.MIN_VALUE / Int.MAX_VALUE for sentinels"
+  - ".toDouble() for type conversion"
+
+tradeoffs:
+  - "when expression is more readable than if-else chains"
+  - "val vs var distinction prevents accidental mutation"
+  - "IntArray parameter type matches LeetCode signature"
+
+comparison_notes:
+  highlights:
+    - "when expression for clean branching"
+    - "maxOf() / minOf() top-level functions"
+    - "if-expression returns value (no ternary needed)"
+  gotchas_language_specific:
+    - "IntArray (primitive) vs Array<Int> (boxed)"
+    - "val for immutable, var for mutable references"
+    - "when must be exhaustive or have else branch"
+
+review_questions:
+  - "Why use when instead of if-else in Kotlin?"
+  - "What is the difference between IntArray and Array<Int>?"
+  - "How does Kotlin's if-expression differ from Java's ternary?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:4:median_two_arrays:kotlin:binary_search:v1:solution"
+    lang: "kotlin"
+    role: "solution"
+    path: "../code/sol_kotlin_binary_search.kt"
+    render:
+      syntax: "kotlin"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-01-28"
+    change: "Initial Kotlin binary search partition solution"

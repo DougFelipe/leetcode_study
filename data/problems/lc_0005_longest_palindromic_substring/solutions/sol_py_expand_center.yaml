@@ -1,0 +1,82 @@
+schema_version: 3
+solution_id: "sol:lc:5:longest_palindrome:python:expand_center:v1"
+problem_id: "lc:5:longest_palindromic_substring"
+language: "python"
+paradigm: "imperative"
+
+approach:
+  name: "Expand Around Center"
+  tags:
+    - "expand-around-center"
+    - "two-pointers"
+    - "palindrome"
+
+complexity:
+  time: "O(n²)"
+  space: "O(1)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Python's `nonlocal` keyword allows the inner expand function to update outer variables.
+    String slicing `s[start:start+max_len]` cleanly extracts the result.
+
+    Key advantages in Python:
+    - nonlocal for closure variable mutation
+    - Clean string slicing for substring extraction
+    - Nested functions for encapsulation
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `s = "babad"`:
+
+    1. **i=0** ('b'): expand(0,0) → "b" (len=1); expand(0,1) → no match
+    2. **i=1** ('a'): expand(1,1) → "a"; expand(1,2) → no match
+       - expand(1,1): left=0,right=2 → s[0]='b' != s[2]='b'... wait, 'b'='b'!
+       - "bab" (len=3) → update start=0, maxLen=3
+    3. **i=2** ('b'): expand(2,2) → "b"; expand from (2,2) → "aba" (len=3), tied
+    4. **i=3** ('a'): expand(3,3) → "a"; expand(3,4) → no match
+    5. **i=4** ('d'): expand(4,4) → "d"
+
+    Result: s[0:3] = "bab"
+
+pitfalls:
+  - "nonlocal required to modify outer scope variables in nested function"
+  - "Update max before decrementing/incrementing in expand"
+  - "String slicing is s[start:start+max_len], not s[start:end]"
+
+tradeoffs:
+  - "Nested function with nonlocal vs returning tuple"
+  - "Checking inside loop vs after loop for max update"
+  - "O(1) space vs DP's O(n²) space"
+
+comparison_notes:
+  highlights:
+    - "nonlocal keyword for closure mutation"
+    - "s[start:start+max_len] for substring extraction"
+    - "range(len(s)) for index iteration"
+  gotchas_language_specific:
+    - "nonlocal != global (nested scope only)"
+    - "String slicing creates new string object"
+    - "Negative indices work but not needed here"
+
+review_questions:
+  - "Why use nonlocal instead of returning values from expand?"
+  - "How many times does expand get called in total?"
+  - "What's the worst case for this approach?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:5:longest_palindrome:python:expand_center:v1:solution"
+    lang: "python"
+    role: "solution"
+    path: "../code/sol_py_expand_center.py"
+    render:
+      syntax: "python"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-01"
+    change: "Initial Python expand around center solution"

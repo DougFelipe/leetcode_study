@@ -1,0 +1,81 @@
+schema_version: 3
+solution_id: "sol:lc:15:3sum:java:two_pointers:v1"
+problem_id: "lc:15:3sum"
+language: "java"
+paradigm: "oop_classic"
+
+approach:
+  name: "Sort + Two Pointers"
+  tags:
+    - "sorting"
+    - "two-pointers"
+    - "oop"
+
+complexity:
+  time: "O(n²)"
+  space: "O(log n)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Java's Arrays.sort() provides an efficient O(n log n) sort.
+    Arrays.asList() creates immutable lists for triplet results.
+
+    Key advantages in Java:
+    - Arrays.sort() for efficient sorting
+    - Arrays.asList() for clean list creation
+    - Strong typing with List<List<Integer>>
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `nums = [-1,0,1,2,-1,-4]`:
+
+    1. Arrays.sort(nums) → [-4,-1,-1,0,1,2]
+    2. i=0: nums[0]=-4, search pairs summing to 4 → none
+    3. i=1: nums[1]=-1, search pairs summing to 1
+       - left=2, right=5 → -1+2=1 → found [-1,-1,2]
+       - left=3, right=4 → 0+1=1 → found [-1,0,1]
+    4. i=2: nums[2]=-1 == nums[1] → skip
+
+    Result: [[-1,-1,2], [-1,0,1]]
+
+pitfalls:
+  - "Arrays.sort() sorts in-place, modifies input"
+  - "Arrays.asList() returns fixed-size list"
+  - "Use continue for outer loop skip, not return"
+
+tradeoffs:
+  - "ArrayList + Arrays.asList is verbose but type-safe"
+  - "Strong typing prevents accidental type mixing"
+  - "In-place sort modifies caller's array"
+
+comparison_notes:
+  highlights:
+    - "Arrays.sort(nums) for in-place sort"
+    - "Arrays.asList() for triplet creation"
+    - "List<List<Integer>> generic type"
+  gotchas_language_specific:
+    - "Arrays.asList creates fixed-size list (add/remove throws)"
+    - "int[] autoboxed to Integer in asList"
+    - "ArrayList is dynamically resized"
+
+review_questions:
+  - "Why use Arrays.asList instead of List.of?"
+  - "What happens if we modify the asList result?"
+  - "How does Java's sort handle the int[] primitive array?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:15:3sum:java:two_pointers:v1:solution"
+    lang: "java"
+    role: "solution"
+    path: "../code/sol_java_two_pointers.java"
+    render:
+      syntax: "java"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-05"
+    change: "Initial Java OOP sort + two pointers solution"

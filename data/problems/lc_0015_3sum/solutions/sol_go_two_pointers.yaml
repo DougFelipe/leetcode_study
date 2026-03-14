@@ -1,0 +1,79 @@
+schema_version: 3
+solution_id: "sol:lc:15:3sum:go:two_pointers:v1"
+problem_id: "lc:15:3sum"
+language: "go"
+paradigm: "imperative"
+
+approach:
+  name: "Sort + Two Pointers"
+  tags:
+    - "sorting"
+    - "two-pointers"
+    - "slice-manipulation"
+
+complexity:
+  time: "O(n²)"
+  space: "O(log n)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Go's sort.Ints() sorts int slices in-place efficiently.
+    Slice literals []int{a, b, c} create triplet results cleanly.
+
+    Key advantages in Go:
+    - sort.Ints() for clean int slice sorting
+    - Slice literals for triplet creation
+    - append() for result collection
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `nums = [-1,0,1,2,-1,-4]`:
+
+    1. sort.Ints(nums) → [-4,-1,-1,0,1,2]
+    2. i=0: nums[0]=-4 → no valid pairs
+    3. i=1: nums[1]=-1 → found [-1,-1,2] and [-1,0,1]
+    4. i=2: duplicate → continue
+
+    Result: [[-1,-1,2], [-1,0,1]]
+
+pitfalls:
+  - "sort.Ints() is in package sort (import required)"
+  - "Slice append creates new backing array when capacity exceeded"
+  - "No ternary; use if-else for conditional logic"
+
+tradeoffs:
+  - "sort.Ints is specific to int; sort.Slice is more generic"
+  - "Slice literals are concise for small slices"
+  - "append returns new slice; must reassign"
+
+comparison_notes:
+  highlights:
+    - "sort.Ints(nums) for int slice sort"
+    - "[]int{a, b, c} slice literal"
+    - "append(result, triplet) for collection"
+  gotchas_language_specific:
+    - "import 'sort' package required"
+    - "Slice comparison uses reflect.DeepEqual"
+    - "for loop with continue for skip logic"
+
+review_questions:
+  - "Why import the sort package separately?"
+  - "How does Go's slice grow when appending?"
+  - "What's the difference between sort.Ints and sort.Slice?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:15:3sum:go:two_pointers:v1:solution"
+    lang: "go"
+    role: "solution"
+    path: "../code/sol_go_two_pointers.go"
+    render:
+      syntax: "go"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-05"
+    change: "Initial Go sort + two pointers solution"

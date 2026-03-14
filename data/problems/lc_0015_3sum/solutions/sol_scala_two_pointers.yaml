@@ -1,0 +1,78 @@
+schema_version: 3
+solution_id: "sol:lc:15:3sum:scala:two_pointers:v1"
+problem_id: "lc:15:3sum"
+language: "scala"
+paradigm: "functional"
+
+approach:
+  name: "Sort + Two Pointers"
+  tags:
+    - "sorting"
+    - "two-pointers"
+    - "functional"
+
+complexity:
+  time: "O(n²)"
+  space: "O(n)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Scala's .sorted creates a new sorted array (non-destructive).
+    ListBuffer provides mutable list operations for result accumulation.
+
+    Key advantages in Scala:
+    - .sorted for non-destructive sort
+    - ListBuffer for mutable accumulation
+    - .toList for immutable result conversion
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `nums = [-1,0,1,2,-1,-4]`:
+
+    1. nums.sorted → Array(-4,-1,-1,0,1,2) (new array)
+    2. For i=1 (sorted(1)=-1): found [-1,-1,2] and [-1,0,1]
+    3. For i=2: duplicate → skip via else branch
+
+    Result: List(List(-1,-1,2), List(-1,0,1))
+
+pitfalls:
+  - ".sorted creates new array; .sortInPlace modifies existing"
+  - "ListBuffer += for append, .toList for conversion"
+  - "Early return with explicit return keyword"
+
+tradeoffs:
+  - "Non-destructive sort uses more memory"
+  - "ListBuffer is mutable but converts to immutable List"
+  - "Imperative inner loop mixed with functional outer"
+
+comparison_notes:
+  highlights:
+    - ".sorted for new sorted array"
+    - "ListBuffer += for append"
+    - "List(a, b, c) for immutable triplet"
+  gotchas_language_specific:
+    - "sorted(i) uses apply for indexed access"
+    - "return keyword needed for early return from for-comp"
+    - "ListBuffer from scala.collection.mutable"
+
+review_questions:
+  - "Why use ListBuffer instead of immutable List?"
+  - "What's the difference between sorted and sortInPlace?"
+  - "How does Scala handle the early return inside for?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:15:3sum:scala:two_pointers:v1:solution"
+    lang: "scala"
+    role: "solution"
+    path: "../code/sol_scala_two_pointers.scala"
+    render:
+      syntax: "scala"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-05"
+    change: "Initial Scala sort + two pointers solution"

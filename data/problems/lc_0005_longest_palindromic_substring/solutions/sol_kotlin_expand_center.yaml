@@ -1,0 +1,79 @@
+schema_version: 3
+solution_id: "sol:lc:5:longest_palindrome:kotlin:expand_center:v1"
+problem_id: "lc:5:longest_palindromic_substring"
+language: "kotlin"
+paradigm: "oop_classic"
+
+approach:
+  name: "Expand Around Center"
+  tags:
+    - "expand-around-center"
+    - "two-pointers"
+    - "nested-function"
+
+complexity:
+  time: "O(n²)"
+  space: "O(1)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Kotlin supports local functions that capture and mutate outer `var` variables.
+    s.indices provides an idiomatic range for iteration.
+
+    Key advantages in Kotlin:
+    - Local functions with closure over var
+    - s[i] operator for character access
+    - s.substring(start, end) for extraction
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `s = "babad"`:
+
+    1. Local function expand captures start and maxLen via closure
+    2. For each i in s.indices: expand(i, i) and expand(i, i+1)
+    3. expand grows outward while characters match
+    4. Returns s.substring(start, start + maxLen)
+
+    Result: "bab"
+
+pitfalls:
+  - "Local function params are val; need var copies inside"
+  - "s.substring(start, end) — end is exclusive"
+  - "s[i] returns Char (operator overload)"
+
+tradeoffs:
+  - "Local function cleaner than private method for this case"
+  - "var copies of params needed since Kotlin params are immutable"
+  - "s.indices is cleaner than 0 until s.length"
+
+comparison_notes:
+  highlights:
+    - "Local function with var closure"
+    - "s.indices for idiomatic range"
+    - "s[i] via operator overload"
+  gotchas_language_specific:
+    - "Function params are val in Kotlin (must copy to var)"
+    - "substring(start, end) — end exclusive"
+    - "Char comparison with == (not .equals)"
+
+review_questions:
+  - "Why copy params to var inside the local function?"
+  - "What's the difference between s.indices and 0 until s.length?"
+  - "How does Kotlin handle closure over var differently than Java?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:5:longest_palindrome:kotlin:expand_center:v1:solution"
+    lang: "kotlin"
+    role: "solution"
+    path: "../code/sol_kotlin_expand_center.kt"
+    render:
+      syntax: "kotlin"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-01"
+    change: "Initial Kotlin expand around center solution"

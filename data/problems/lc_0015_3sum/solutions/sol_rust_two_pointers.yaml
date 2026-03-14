@@ -1,0 +1,80 @@
+schema_version: 3
+solution_id: "sol:lc:15:3sum:rust:two_pointers:v1"
+problem_id: "lc:15:3sum"
+language: "rust"
+paradigm: "functional"
+
+approach:
+  name: "Sort + Two Pointers"
+  tags:
+    - "sorting"
+    - "two-pointers"
+    - "ownership"
+
+complexity:
+  time: "O(n²)"
+  space: "O(log n)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Rust's Vec::sort() sorts in-place with O(1) extra space.
+    The mut keyword on the parameter enables in-place sorting.
+    vec![] macro creates triplet vectors cleanly.
+
+    Key advantages in Rust:
+    - Vec::sort() for efficient in-place sort
+    - mut parameter allows modification
+    - vec![a, b, c] macro for triplet creation
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `nums = [-1,0,1,2,-1,-4]`:
+
+    1. nums.sort() → [-4,-1,-1,0,1,2] (in-place)
+    2. saturating_sub(2) prevents usize underflow
+    3. i=1: found [-1,-1,2] and [-1,0,1]
+    4. i=2: duplicate → continue
+
+    Result: vec![vec![-1,-1,2], vec![-1,0,1]]
+
+pitfalls:
+  - "mut nums in parameter for in-place sort"
+  - "n.saturating_sub(2) prevents usize underflow"
+  - "vec![] allocates on heap"
+
+tradeoffs:
+  - "mut parameter avoids cloning but modifies input"
+  - "saturating_sub for safe usize arithmetic"
+  - "vec! macro is convenient but allocates"
+
+comparison_notes:
+  highlights:
+    - "mut nums for in-place modification"
+    - "n.saturating_sub(2) for safe subtraction"
+    - "vec![a, b, c] for triplet creation"
+  gotchas_language_specific:
+    - "usize can't be negative; saturating_sub prevents panic"
+    - "Vec::sort() uses stable sort (TimSort)"
+    - "push() adds to Vec, no return needed"
+
+review_questions:
+  - "Why use saturating_sub instead of regular subtraction?"
+  - "What sort algorithm does Rust's Vec::sort() use?"
+  - "How does the ownership model affect parameter passing?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:15:3sum:rust:two_pointers:v1:solution"
+    lang: "rust"
+    role: "solution"
+    path: "../code/sol_rust_two_pointers.rs"
+    render:
+      syntax: "rust"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-05"
+    change: "Initial Rust sort + two pointers solution"

@@ -1,0 +1,298 @@
+schema_version: 3
+problem_id: "lc:15:3sum"
+slug: "lc_0015_3sum"
+title: "15. 3Sum"
+
+source:
+  platform: "leetcode"
+  id: 15
+  slug: "3sum"
+  url: "https://leetcode.com/problems/3sum/"
+
+catalog:
+  difficulty: "medium"
+  topics:
+    - "Array"
+    - "Two Pointers"
+    - "Sorting"
+  patterns:
+    - "Sort + Two Pointers"
+    - "Reduce to Two Sum"
+    - "Skip Duplicates"
+  companies:
+    - "Amazon"
+    - "Microsoft"
+    - "Google"
+    - "Facebook"
+    - "Apple"
+    - "Bloomberg"
+    - "Adobe"
+
+constraints:
+  summary: "3 <= nums.length <= 3000; -10^5 <= nums[i] <= 10^5"
+  notes_md: |
+    - 3 <= nums.length <= 3000
+    - -10^5 <= nums[i] <= 10^5
+
+study:
+  status: "solved"
+  priority: 5
+  confidence: 4
+  created_at: "2024-02-05"
+  solved_at: "2024-02-05"
+  time_spent_min: 35
+  review:
+    srs_enabled: true
+    next_review: "2024-03-05"
+    interval_days: 30
+  mistakes:
+    - "Forgetting to skip duplicate values for the outer loop"
+    - "Not skipping duplicates for the two-pointer inner loop"
+    - "Off-by-one in pointer movement after finding a triplet"
+
+content:
+  statement_md: |
+    Given an integer array `nums`, return all the triplets
+    `[nums[i], nums[j], nums[k]]` such that `i != j`, `i != k`, and `j != k`,
+    and `nums[i] + nums[j] + nums[k] == 0`.
+
+    Notice that the solution set must not contain duplicate triplets.
+
+    **Example 1:**
+    ```
+    Input: nums = [-1,0,1,2,-1,-4]
+    Output: [[-1,-1,2],[-1,0,1]]
+    Explanation:
+    nums[0] + nums[1] + nums[2] = (-1) + 0 + 1 = 0.
+    nums[1] + nums[2] + nums[4] = 0 + 1 + (-1) = 0.
+    nums[0] + nums[3] + nums[4] = (-1) + 2 + (-1) = 0.
+    The distinct triplets are [-1,0,1] and [-1,-1,2].
+    Notice that the order of the output and the order of the triplets does not matter.
+    ```
+
+    **Example 2:**
+    ```
+    Input: nums = [0,1,1]
+    Output: []
+    Explanation: The only possible triplet does not sum up to 0.
+    ```
+
+    **Example 3:**
+    ```
+    Input: nums = [0,0,0]
+    Output: [[0,0,0]]
+    Explanation: The only possible triplet sums up to 0.
+    ```
+
+  editorial_summary_md: |
+    The optimal approach sorts the array first, then iterates with a fixed element
+    and uses two pointers on the remaining subarray to find pairs that sum to
+    the negation of the fixed element. Duplicate skipping ensures unique triplets.
+
+  key_insights:
+    - "Sorting enables two-pointer technique and duplicate skipping"
+    - "Fix one element, then solve Two Sum with two pointers on the rest"
+    - "Skip duplicates at all three levels: outer loop, left pointer, right pointer"
+    - "Early termination: if nums[i] > 0, no triplet can sum to 0"
+
+  pitfalls:
+    - "Must skip duplicates for the fixed element AND both pointers"
+    - "Early termination when fixed element is positive"
+    - "Don't forget to move both pointers after finding a valid triplet"
+
+  review_questions:
+    - "Why do we sort the array first?"
+    - "How does duplicate skipping work at each level?"
+    - "What is the early termination condition and why?"
+
+  editorial:
+    algorithm_blueprint:
+      compact_md: "Sort array → Fix element i → Two pointers [left, right] on rest → Skip duplicates → Collect triplets"
+      mermaid:
+        type: "flowchart"
+        direction: "TD"
+        code: |
+          flowchart TD
+            A[Start] --> B[Sort nums]
+            B --> C{i < n-2?}
+            C -- Yes --> D{nums[i] > 0?}
+            D -- Yes --> J[Return result]
+            D -- No --> E{Duplicate i? skip}
+            E -- Yes --> C2[i++]
+            C2 --> C
+            E -- No --> F[left=i+1, right=n-1]
+            F --> G{left < right?}
+            G -- Yes --> H["sum = nums[i]+nums[left]+nums[right]"]
+            H --> I1{sum == 0?}
+            I1 -- Yes --> K[Add triplet, skip dups, move both]
+            I1 -- "sum < 0" --> L[left++]
+            I1 -- "sum > 0" --> M[right--]
+            K --> G
+            L --> G
+            M --> G
+            G -- No --> C2
+            C -- No --> J
+
+    alternative_approaches:
+      - name: "Brute Force"
+        idea_md: "Three nested loops checking all triplet combinations."
+        time: "O(n³)"
+        space: "O(1)"
+        preserve_indices: true
+        when_to_use_md: "Never in practice — only for understanding."
+        why_not_md: "Too slow for n ≤ 3000."
+        pitfalls:
+          - "TLE for large inputs"
+          - "Hard to handle duplicates"
+
+      - name: "Hash Set Approach"
+        idea_md: "Fix one element, use a hash set to find the other two."
+        time: "O(n²)"
+        space: "O(n)"
+        preserve_indices: true
+        when_to_use_md: "When you want to avoid sorting."
+        why_not_md: "Duplicate handling is more complex; extra space for hash set."
+        pitfalls:
+          - "Complex duplicate elimination logic"
+          - "Uses O(n) extra space"
+
+    when_not_to_use:
+      heuristics_md: |
+        The sort + two pointers approach is the gold standard for k-Sum problems.
+        Consider alternatives when:
+        - The array must not be modified (use hash set)
+        - Indices are needed instead of values
+      scenarios:
+        - scenario: "Original indices are required in the output"
+          why_md: "Sorting loses original index information."
+          recommended_instead:
+            - name: "Hash Set Approach"
+              note_md: "Preserves original indices"
+
+    common_mistakes:
+      - mistake: "Not skipping duplicates for the fixed element"
+        why_md: "Leads to duplicate triplets in the output."
+        fix_md: "After processing i, skip all identical values: while (i+1 < n && nums[i+1] == nums[i]) i++."
+        example_bad_md: |
+          ```python
+          for i in range(len(nums) - 2):
+              # No duplicate skip — [-1,-1,0,1] gives [-1,0,1] twice
+          ```
+        example_good_md: |
+          ```python
+          for i in range(len(nums) - 2):
+              if i > 0 and nums[i] == nums[i - 1]:
+                  continue  # Skip duplicate fixed element
+          ```
+        tags:
+          - "duplicates"
+          - "edge-case"
+
+      - mistake: "Not moving both pointers after finding a triplet"
+        why_md: "Moving only one pointer can lead to the same triplet being found again."
+        fix_md: "After finding sum == 0, increment left AND decrement right, then skip duplicates on both."
+        tags:
+          - "duplicates"
+          - "pointer-movement"
+
+    complexity_notes:
+      compact_md: "Time: O(n²), Space: O(log n) to O(n) depending on sort"
+      detailed_md: |
+        ## Time Complexity: O(n²)
+        - Sorting: O(n log n)
+        - Outer loop: O(n)
+        - Inner two-pointer: O(n) per iteration
+        - Total: O(n log n) + O(n²) = O(n²)
+
+        ## Space Complexity: O(log n) to O(n)
+        - Depends on the sorting algorithm used
+        - No additional data structures beyond the result
+      notes:
+        - "The sorting step is dominated by the O(n²) two-pointer step"
+        - "Early termination when nums[i] > 0 helps in practice"
+      gotchas:
+        - "Space for the output list is not counted"
+        - "In-place sort modifies the input array"
+      references:
+        - label: "3Sum Problem"
+          url: "https://leetcode.com/problems/3sum/editorial/"
+
+solutions_index:
+  - solution_id: "sol:lc:15:3sum:python:two_pointers:v1"
+    language: "python"
+    paradigm: "imperative"
+    title: "Python Sort + Two Pointers Solution"
+    status: "done"
+    approach_tags:
+      - "sorting"
+      - "two-pointers"
+    solution_ref: "solutions/sol_py_two_pointers.yaml"
+
+  - solution_id: "sol:lc:15:3sum:go:two_pointers:v1"
+    language: "go"
+    paradigm: "imperative"
+    title: "Go Sort + Two Pointers Solution"
+    status: "done"
+    approach_tags:
+      - "sorting"
+      - "two-pointers"
+    solution_ref: "solutions/sol_go_two_pointers.yaml"
+
+  - solution_id: "sol:lc:15:3sum:java:two_pointers:v1"
+    language: "java"
+    paradigm: "oop_classic"
+    title: "Java OOP Sort + Two Pointers Solution"
+    status: "done"
+    approach_tags:
+      - "sorting"
+      - "two-pointers"
+      - "oop"
+    solution_ref: "solutions/sol_java_two_pointers.yaml"
+
+  - solution_id: "sol:lc:15:3sum:kotlin:two_pointers:v1"
+    language: "kotlin"
+    paradigm: "oop_classic"
+    title: "Kotlin Sort + Two Pointers Solution"
+    status: "done"
+    approach_tags:
+      - "sorting"
+      - "two-pointers"
+    solution_ref: "solutions/sol_kotlin_two_pointers.yaml"
+
+  - solution_id: "sol:lc:15:3sum:javascript:two_pointers:v1"
+    language: "javascript"
+    paradigm: "oop_prototype"
+    title: "JavaScript Sort + Two Pointers Solution"
+    status: "done"
+    approach_tags:
+      - "sorting"
+      - "two-pointers"
+    solution_ref: "solutions/sol_js_two_pointers.yaml"
+
+  - solution_id: "sol:lc:15:3sum:scala:two_pointers:v1"
+    language: "scala"
+    paradigm: "functional"
+    title: "Scala Sort + Two Pointers Solution"
+    status: "done"
+    approach_tags:
+      - "sorting"
+      - "two-pointers"
+      - "functional"
+    solution_ref: "solutions/sol_scala_two_pointers.yaml"
+
+  - solution_id: "sol:lc:15:3sum:rust:two_pointers:v1"
+    language: "rust"
+    paradigm: "functional"
+    title: "Rust Sort + Two Pointers Solution"
+    status: "done"
+    approach_tags:
+      - "sorting"
+      - "two-pointers"
+      - "ownership"
+    solution_ref: "solutions/sol_rust_two_pointers.yaml"
+
+history:
+  - at: "2024-02-05"
+    change: "Initial problem setup"
+  - at: "2024-02-05"
+    change: "Added multi-language solutions"

@@ -1,0 +1,266 @@
+schema_version: 3
+problem_id: "lc:5:longest_palindromic_substring"
+slug: "lc_0005_longest_palindromic_substring"
+title: "5. Longest Palindromic Substring"
+
+source:
+  platform: "leetcode"
+  id: 5
+  slug: "longest-palindromic-substring"
+  url: "https://leetcode.com/problems/longest-palindromic-substring/"
+
+catalog:
+  difficulty: "medium"
+  topics:
+    - "String"
+    - "Dynamic Programming"
+    - "Two Pointers"
+  patterns:
+    - "Expand Around Center"
+    - "Two Pointers"
+    - "Palindrome Detection"
+  companies:
+    - "Amazon"
+    - "Microsoft"
+    - "Google"
+    - "Facebook"
+    - "Apple"
+    - "Adobe"
+
+constraints:
+  summary: "1 <= s.length <= 1000; s consists of only digits and English letters"
+  notes_md: |
+    - 1 <= s.length <= 1000
+    - s consists of only digits and English letters
+
+study:
+  status: "solved"
+  priority: 5
+  confidence: 4
+  created_at: "2024-02-01"
+  solved_at: "2024-02-01"
+  time_spent_min: 40
+  review:
+    srs_enabled: true
+    next_review: "2024-03-01"
+    interval_days: 30
+  mistakes:
+    - "Forgetting to handle both odd and even length palindromes"
+    - "Off-by-one error when extracting the palindrome substring"
+
+content:
+  statement_md: |
+    Given a string `s`, return the longest **palindromic substring** in `s`.
+
+    **Example 1:**
+    ```
+    Input: s = "babad"
+    Output: "bab"
+    Explanation: "aba" is also a valid answer.
+    ```
+
+    **Example 2:**
+    ```
+    Input: s = "cbbd"
+    Output: "bb"
+    ```
+
+  editorial_summary_md: |
+    The optimal practical approach expands around each character (and between each pair)
+    as potential palindrome centers. For each center, we expand outward while characters match.
+    This handles both odd-length ("aba") and even-length ("abba") palindromes.
+
+  key_insights:
+    - "A palindrome mirrors around its center"
+    - "There are 2n - 1 possible centers (n chars + n-1 gaps between chars)"
+    - "Expand from each center outward while characters match"
+    - "Track the start index and max length of the longest palindrome found"
+
+  pitfalls:
+    - "Must check both odd and even length palindromes"
+    - "Boundary checks during expansion (left >= 0, right < len)"
+    - "Extracting substring using start and length, not left and right directly"
+
+  review_questions:
+    - "Why are there 2n - 1 centers instead of n?"
+    - "How does Manacher's algorithm improve to O(n)?"
+    - "Why is DP O(n²) time AND O(n²) space, while expand is O(n²) time O(1) space?"
+
+  editorial:
+    algorithm_blueprint:
+      compact_md: "For each center (char and gap) → Expand outward while palindrome → Track max length"
+      mermaid:
+        type: "flowchart"
+        direction: "TD"
+        code: |
+          flowchart TD
+            A[Start] --> B[Initialize start=0, maxLen=1]
+            B --> C{i < s.length?}
+            C -- Yes --> D["Expand odd: center = i"]
+            D --> E["Expand even: center = i, i+1"]
+            E --> F["Update start/maxLen if longer found"]
+            F --> G[i++]
+            G --> C
+            C -- No --> H["Return s[start : start+maxLen]"]
+
+    alternative_approaches:
+      - name: "Dynamic Programming"
+        idea_md: "Build a 2D table dp[i][j] = true if s[i..j] is a palindrome."
+        time: "O(n²)"
+        space: "O(n²)"
+        preserve_indices: true
+        when_to_use_md: "When you need to know ALL palindromic substrings, not just the longest."
+        why_not_md: "Uses O(n²) space; expand around center achieves same time with O(1) space."
+        pitfalls:
+          - "O(n²) space for the DP table"
+          - "Table filling order matters (by substring length)"
+
+      - name: "Manacher's Algorithm"
+        idea_md: "Linear time algorithm that reuses previously computed palindrome information."
+        time: "O(n)"
+        space: "O(n)"
+        preserve_indices: true
+        when_to_use_md: "When O(n) time is strictly required for very large inputs."
+        why_not_md: "Complex to implement and understand; rarely asked to code from scratch."
+        pitfalls:
+          - "Very complex to implement correctly"
+          - "String transformation with separators"
+          - "Overkill for most interview settings"
+
+    when_not_to_use:
+      heuristics_md: |
+        The expand around center approach is the best balance of simplicity and efficiency.
+        Consider alternatives when:
+        - You need O(n) time (use Manacher's)
+        - You need ALL palindromic substrings (use DP)
+      scenarios:
+        - scenario: "Need to find all palindromic substrings"
+          why_md: "DP table stores all palindrome information."
+          recommended_instead:
+            - name: "Dynamic Programming"
+              note_md: "When full palindrome table is needed"
+
+    common_mistakes:
+      - mistake: "Only checking odd-length palindromes"
+        why_md: "Even-length palindromes like 'abba' have their center between two characters."
+        fix_md: "Call expand for both (i, i) and (i, i+1) at each position."
+        example_bad_md: |
+          ```python
+          for i in range(len(s)):
+              expand(s, i, i)  # Only odd-length!
+          ```
+        example_good_md: |
+          ```python
+          for i in range(len(s)):
+              expand(s, i, i)      # Odd-length
+              expand(s, i, i + 1)  # Even-length
+          ```
+        tags:
+          - "edge-case"
+          - "even-odd"
+
+      - mistake: "Wrong substring extraction after finding boundaries"
+        why_md: "After expansion, left and right are one step beyond the palindrome."
+        fix_md: "The palindrome is s[left+1 : right], not s[left : right+1]."
+        tags:
+          - "off-by-one"
+          - "boundary"
+
+    complexity_notes:
+      compact_md: "Time: O(n²), Space: O(1)"
+      detailed_md: |
+        ## Time Complexity: O(n²)
+        - 2n - 1 centers to check
+        - Each expansion can take up to O(n) in worst case
+        - Total: O(n) centers × O(n) expansion = O(n²)
+
+        ## Space Complexity: O(1)
+        - Only a few variables to track start and max length
+        - No additional data structures needed
+      notes:
+        - "Worst case is all same characters, e.g. 'aaaa'"
+        - "Average case is much better for diverse strings"
+      gotchas:
+        - "O(n²) is acceptable for n ≤ 1000"
+        - "Manacher's achieves O(n) but is rarely required"
+      references:
+        - label: "Palindromic Substrings"
+          url: "https://leetcode.com/problems/longest-palindromic-substring/editorial/"
+
+solutions_index:
+  - solution_id: "sol:lc:5:longest_palindrome:python:expand_center:v1"
+    language: "python"
+    paradigm: "imperative"
+    title: "Python Expand Around Center Solution"
+    status: "done"
+    approach_tags:
+      - "expand-around-center"
+      - "two-pointers"
+    solution_ref: "solutions/sol_py_expand_center.yaml"
+
+  - solution_id: "sol:lc:5:longest_palindrome:go:expand_center:v1"
+    language: "go"
+    paradigm: "imperative"
+    title: "Go Expand Around Center Solution"
+    status: "done"
+    approach_tags:
+      - "expand-around-center"
+      - "two-pointers"
+    solution_ref: "solutions/sol_go_expand_center.yaml"
+
+  - solution_id: "sol:lc:5:longest_palindrome:java:expand_center:v1"
+    language: "java"
+    paradigm: "oop_classic"
+    title: "Java OOP Expand Around Center Solution"
+    status: "done"
+    approach_tags:
+      - "expand-around-center"
+      - "two-pointers"
+      - "oop"
+    solution_ref: "solutions/sol_java_expand_center.yaml"
+
+  - solution_id: "sol:lc:5:longest_palindrome:kotlin:expand_center:v1"
+    language: "kotlin"
+    paradigm: "oop_classic"
+    title: "Kotlin Expand Around Center Solution"
+    status: "done"
+    approach_tags:
+      - "expand-around-center"
+      - "two-pointers"
+    solution_ref: "solutions/sol_kotlin_expand_center.yaml"
+
+  - solution_id: "sol:lc:5:longest_palindrome:javascript:expand_center:v1"
+    language: "javascript"
+    paradigm: "oop_prototype"
+    title: "JavaScript Expand Around Center Solution"
+    status: "done"
+    approach_tags:
+      - "expand-around-center"
+      - "two-pointers"
+    solution_ref: "solutions/sol_js_expand_center.yaml"
+
+  - solution_id: "sol:lc:5:longest_palindrome:scala:expand_center:v1"
+    language: "scala"
+    paradigm: "functional"
+    title: "Scala Functional Expand Around Center Solution"
+    status: "done"
+    approach_tags:
+      - "expand-around-center"
+      - "functional"
+    solution_ref: "solutions/sol_scala_expand_center.yaml"
+
+  - solution_id: "sol:lc:5:longest_palindrome:rust:expand_center:v1"
+    language: "rust"
+    paradigm: "functional"
+    title: "Rust Expand Around Center Solution"
+    status: "done"
+    approach_tags:
+      - "expand-around-center"
+      - "ownership"
+    solution_ref: "solutions/sol_rust_expand_center.yaml"
+
+history:
+  - at: "2024-02-01"
+    change: "Initial problem setup"
+  - at: "2024-02-01"
+    change: "Added multi-language solutions"

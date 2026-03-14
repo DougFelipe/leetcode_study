@@ -1,0 +1,79 @@
+schema_version: 3
+solution_id: "sol:lc:5:longest_palindrome:rust:expand_center:v1"
+problem_id: "lc:5:longest_palindromic_substring"
+language: "rust"
+paradigm: "functional"
+
+approach:
+  name: "Expand Around Center"
+  tags:
+    - "expand-around-center"
+    - "two-pointers"
+    - "ownership"
+
+complexity:
+  time: "O(n²)"
+  space: "O(1)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Rust works with byte slices (as_bytes()) for efficient ASCII character access.
+    Mutable references (&mut) pass start and max_len to the closure.
+
+    Key advantages in Rust:
+    - as_bytes() for efficient byte-level access
+    - Closure with mutable references for state
+    - Byte slice to String conversion at the end
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `s = "babad"`:
+
+    1. Convert to bytes: s = s.as_bytes()
+    2. Closure expand takes i32 indices (allows negative for bounds check)
+    3. For each i: expand(i, i) and expand(i, i+1)
+    4. Convert result bytes back to String
+
+    Result: "bab"
+
+pitfalls:
+  - "Use i32 for indices to handle negative values in bounds check"
+  - "as_bytes() works for ASCII only"
+  - "Must convert byte slice back to String at the end"
+
+tradeoffs:
+  - "i32 indices avoid usize underflow but need casting"
+  - "Closure with &mut references for shared state"
+  - "Byte-level processing limits to ASCII input"
+
+comparison_notes:
+  highlights:
+    - "as_bytes() for O(1) byte access"
+    - "Closure with &mut for state mutation"
+    - "i32 indices to safely handle negative values"
+  gotchas_language_specific:
+    - "i32 vs usize for signed/unsigned indexing"
+    - "&mut start, &mut max_len in closure signature"
+    - "String::from_utf8 + unwrap for byte-to-string"
+
+review_questions:
+  - "Why use i32 instead of usize for the closure indices?"
+  - "What are the ownership implications of the closure?"
+  - "How does Rust's borrow checker affect this pattern?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:5:longest_palindrome:rust:expand_center:v1:solution"
+    lang: "rust"
+    role: "solution"
+    path: "../code/sol_rust_expand_center.rs"
+    render:
+      syntax: "rust"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-01"
+    change: "Initial Rust expand around center solution"

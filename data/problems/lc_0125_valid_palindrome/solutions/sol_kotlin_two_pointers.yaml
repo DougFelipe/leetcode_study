@@ -1,0 +1,76 @@
+schema_version: 3
+solution_id: "sol:lc:125:valid_palindrome:kotlin:two_pointers:v1"
+problem_id: "lc:125:valid_palindrome"
+language: "kotlin"
+paradigm: "oop_classic"
+
+approach:
+  name: "Two Pointers with Extension Functions"
+  tags:
+    - "two-pointers"
+    - "extension-functions"
+    - "char-methods"
+
+complexity:
+  time: "O(n)"
+  space: "O(1)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Kotlin's Char extension functions isLetterOrDigit() and lowercaseChar()
+    provide idiomatic character operations.
+
+    Key advantages in Kotlin:
+    - .isLetterOrDigit() extension function
+    - .lowercaseChar() for case conversion
+    - s[i] operator overload for char access
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `s = "A man, a plan, a canal: Panama"`:
+
+    1. left=0('A'), right=29('a') → 'a'=='a' ✓
+    2. Skip non-alnum via inner while loops
+    3. All matching pairs found → return true
+
+pitfalls:
+  - ".lowercaseChar() not .lowercase() (latter returns String)"
+  - ".isLetterOrDigit() includes Unicode categories"
+  - "s[i] returns Char via operator overload"
+
+tradeoffs:
+  - "Extension functions are clean Kotlin idiom"
+  - "lowercaseChar() returns Char (not String like lowercase())"
+  - "Direct Char comparison"
+
+comparison_notes:
+  highlights:
+    - ".isLetterOrDigit() Char extension"
+    - ".lowercaseChar() returns Char"
+    - "s[i] operator overload"
+  gotchas_language_specific:
+    - "lowercaseChar() vs lowercase() (Char vs String)"
+    - "s.length not s.size for String"
+    - "Boolean return type"
+
+review_questions:
+  - "What's the difference between lowercaseChar() and lowercase()?"
+  - "Does isLetterOrDigit() handle Unicode?"
+  - "Why use while loops instead of a more functional approach?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:125:valid_palindrome:kotlin:two_pointers:v1:solution"
+    lang: "kotlin"
+    role: "solution"
+    path: "../code/sol_kotlin_two_pointers.kt"
+    render:
+      syntax: "kotlin"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-10"
+    change: "Initial Kotlin two pointers solution"

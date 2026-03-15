@@ -1,0 +1,80 @@
+schema_version: 3
+solution_id: "sol:lc:125:valid_palindrome:rust:two_pointers:v1"
+problem_id: "lc:125:valid_palindrome"
+language: "rust"
+paradigm: "functional"
+
+approach:
+  name: "Two Pointers with ASCII Methods"
+  tags:
+    - "two-pointers"
+    - "ascii-methods"
+    - "byte-manipulation"
+
+complexity:
+  time: "O(n)"
+  space: "O(1)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Rust's byte methods is_ascii_alphanumeric() and to_ascii_lowercase()
+    provide efficient ASCII character operations.
+    saturating_sub prevents usize underflow.
+
+    Key advantages in Rust:
+    - .is_ascii_alphanumeric() on u8
+    - .to_ascii_lowercase() for case conversion
+    - .saturating_sub(1) prevents underflow
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `s = "race a car"`:
+
+    1. Bytes: [114,97,99,101,32,97,32,99,97,114]
+    2. left=0(r), right=9(r) → match ✓
+    3. left=1(a), right=8(a) → match ✓
+    4. left=2(c), right=7(c) → match ✓
+    5. left=3(e), right=6(' ') skip → right=5(a)
+    6. e != a → return false
+
+pitfalls:
+  - ".saturating_sub(1) to prevent usize underflow"
+  - "as_bytes() for byte-level operations"
+  - "ASCII methods only; not Unicode-aware"
+
+tradeoffs:
+  - "Byte operations are fast but ASCII-only"
+  - "saturating_sub adds safety"
+  - "No heap allocation needed"
+
+comparison_notes:
+  highlights:
+    - ".is_ascii_alphanumeric() on u8"
+    - ".to_ascii_lowercase() on u8"
+    - ".saturating_sub(1) for safe decrement"
+  gotchas_language_specific:
+    - "usize cannot be negative; saturating_sub prevents panic"
+    - "as_bytes() returns &[u8] slice"
+    - "bool return type"
+
+review_questions:
+  - "Why is saturating_sub important here?"
+  - "What happens with non-ASCII input?"
+  - "How does Rust's type system help prevent index errors?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:125:valid_palindrome:rust:two_pointers:v1:solution"
+    lang: "rust"
+    role: "solution"
+    path: "../code/sol_rust_two_pointers.rs"
+    render:
+      syntax: "rust"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-10"
+    change: "Initial Rust two pointers solution"

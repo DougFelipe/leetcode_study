@@ -1,0 +1,78 @@
+schema_version: 3
+solution_id: "sol:lc:125:valid_palindrome:scala:two_pointers:v1"
+problem_id: "lc:125:valid_palindrome"
+language: "scala"
+paradigm: "functional"
+
+approach:
+  name: "Tail Recursive Two Pointers"
+  tags:
+    - "two-pointers"
+    - "tail-recursion"
+    - "functional"
+
+complexity:
+  time: "O(n)"
+  space: "O(1)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Scala's tail recursion elegantly expresses all four cases:
+    converged, skip left, skip right, and compare.
+    The @tailrec annotation optimizes to a loop.
+
+    Key advantages in Scala:
+    - @tailrec for compile-time optimization
+    - if-else chain as expression
+    - .isLetterOrDigit and .toLower on Char
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `s = "A man, a plan, a canal: Panama"`:
+
+    1. check(0, 29): 'A'.toLower=='a'.toLower → check(1, 28)
+    2. check(1, 28): ' ' not alnum → check(2, 28)
+    3. check(2, 28): 'm'=='m' → check(3, 27)
+    4. ... continues until converged → true
+
+pitfalls:
+  - "@tailrec annotation ensures optimization"
+  - ".isLetterOrDigit on Char type"
+  - ".toLower returns Char"
+
+tradeoffs:
+  - "Tail recursion is elegant and stack-safe"
+  - "Four if-else branches cover all cases"
+  - "No mutable variables needed"
+
+comparison_notes:
+  highlights:
+    - "@tailrec annotation"
+    - "if-else chain as expression"
+    - ".isLetterOrDigit and .toLower on Char"
+  gotchas_language_specific:
+    - "@tailrec fails at compile time if not tail-recursive"
+    - "Char.toLower returns Char"
+    - "s(i) uses apply for indexed access"
+
+review_questions:
+  - "Why is this tail-recursive?"
+  - "How many cases does the if-else chain handle?"
+  - "What's the advantage over mutable loop?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:125:valid_palindrome:scala:two_pointers:v1:solution"
+    lang: "scala"
+    role: "solution"
+    path: "../code/sol_scala_two_pointers.scala"
+    render:
+      syntax: "scala"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-10"
+    change: "Initial Scala tail-recursive two pointers solution"

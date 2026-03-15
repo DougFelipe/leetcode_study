@@ -1,0 +1,278 @@
+schema_version: 3
+problem_id: "lc:125:valid_palindrome"
+slug: "lc_0125_valid_palindrome"
+title: "125. Valid Palindrome"
+
+source:
+  platform: "leetcode"
+  id: 125
+  slug: "valid-palindrome"
+  url: "https://leetcode.com/problems/valid-palindrome/"
+
+catalog:
+  difficulty: "easy"
+  topics:
+    - "Two Pointers"
+    - "String"
+  patterns:
+    - "Two Pointers"
+    - "Character Filtering"
+    - "Palindrome Check"
+  companies:
+    - "Amazon"
+    - "Microsoft"
+    - "Facebook"
+    - "Apple"
+
+constraints:
+  summary: "1 <= s.length <= 2 * 10^5; s consists only of printable ASCII characters"
+  notes_md: |
+    - 1 <= s.length <= 2 * 10^5
+    - s consists only of printable ASCII characters
+
+study:
+  status: "solved"
+  priority: 3
+  confidence: 5
+  created_at: "2024-02-10"
+  solved_at: "2024-02-10"
+  time_spent_min: 10
+  review:
+    srs_enabled: true
+    next_review: "2024-03-10"
+    interval_days: 30
+  mistakes:
+    - "Forgetting to skip non-alphanumeric characters before comparing"
+    - "Not converting to lowercase before comparison"
+
+content:
+  statement_md: |
+    A phrase is a **palindrome** if, after converting all uppercase letters into lowercase letters
+    and removing all non-alphanumeric characters, it reads the same forward and backward.
+    Alphanumeric characters include letters and numbers.
+
+    Given a string `s`, return `true` if it is a **palindrome**, or `false` otherwise.
+
+    **Example 1:**
+    ```
+    Input: s = "A man, a plan, a canal: Panama"
+    Output: true
+    Explanation: "amanaplanacanalpanama" is a palindrome.
+    ```
+
+    **Example 2:**
+    ```
+    Input: s = "race a car"
+    Output: false
+    Explanation: "raceacar" is not a palindrome.
+    ```
+
+    **Example 3:**
+    ```
+    Input: s = " "
+    Output: true
+    Explanation: s is an empty string "" after removing non-alphanumeric characters.
+    Since an empty string reads the same forward and backward, it is a palindrome.
+    ```
+
+  editorial_summary_md: |
+    Use two pointers from opposite ends. Skip non-alphanumeric characters on both sides.
+    Compare lowercase versions of the characters at each pointer. If all comparisons match, it's a palindrome.
+
+  key_insights:
+    - "Two pointers skip non-alphanumeric characters inward"
+    - "Case-insensitive comparison (convert to lowercase)"
+    - "Empty string after filtering is considered a palindrome"
+    - "O(1) space — no need to create a filtered copy"
+
+  pitfalls:
+    - "Must skip non-alphanumeric characters, not just spaces"
+    - "Case-insensitive: 'A' must equal 'a'"
+    - "Digits are alphanumeric (e.g., '0' is valid)"
+
+  review_questions:
+    - "Why is the two-pointer approach O(1) space?"
+    - "What defines an alphanumeric character?"
+    - "How do you handle strings with only non-alphanumeric characters?"
+
+  editorial:
+    algorithm_blueprint:
+      compact_md: "left=0, right=n-1 → Skip non-alnum → Compare lowercase → Move inward"
+      mermaid:
+        type: "flowchart"
+        direction: "TD"
+        code: |
+          flowchart TD
+            A[Start] --> B[left=0, right=n-1]
+            B --> C{left < right?}
+            C -- Yes --> D{s[left] not alnum?}
+            D -- Yes --> E[left++]
+            E --> C
+            D -- No --> F{s[right] not alnum?}
+            F -- Yes --> G[right--]
+            G --> C
+            F -- No --> H{"lower(s[left]) == lower(s[right])?"}
+            H -- Yes --> I[left++, right--]
+            I --> C
+            H -- No --> J[Return false]
+            C -- No --> K[Return true]
+
+    alternative_approaches:
+      - name: "Filter + Reverse"
+        idea_md: "Filter alphanumeric chars, lowercase, then check if string equals its reverse."
+        time: "O(n)"
+        space: "O(n)"
+        preserve_indices: true
+        when_to_use_md: "When code simplicity is more important than space efficiency."
+        why_not_md: "Uses O(n) extra space for the filtered string."
+        pitfalls:
+          - "Extra space for filtered string"
+          - "String reversal creates another copy"
+
+      - name: "Regex + Compare"
+        idea_md: "Use regex to strip non-alphanumeric, then compare with reverse."
+        time: "O(n)"
+        space: "O(n)"
+        preserve_indices: true
+        when_to_use_md: "Quick one-liner in languages with good regex support."
+        why_not_md: "Regex overhead and O(n) space."
+        pitfalls:
+          - "Regex processing overhead"
+          - "Language-dependent syntax"
+
+    when_not_to_use:
+      heuristics_md: |
+        The two-pointer approach is ideal for palindrome validation.
+        Consider alternatives when:
+        - Code brevity is more important (use filter+reverse)
+        - Working with Unicode where character classification is complex
+      scenarios:
+        - scenario: "Need the actual filtered palindrome string"
+          why_md: "Two pointers only return boolean, not the cleaned string."
+          recommended_instead:
+            - name: "Filter + Reverse"
+              note_md: "When the filtered string is needed"
+
+    common_mistakes:
+      - mistake: "Not skipping non-alphanumeric characters"
+        why_md: "Comparing spaces, punctuation leads to false negatives."
+        fix_md: "Use while loops to skip non-alphanumeric chars before comparing."
+        example_bad_md: |
+          ```python
+          if s[left].lower() != s[right].lower():  # Comparing spaces!
+              return False
+          ```
+        example_good_md: |
+          ```python
+          while left < right and not s[left].isalnum():
+              left += 1
+          while left < right and not s[right].isalnum():
+              right -= 1
+          ```
+        tags:
+          - "character-filtering"
+          - "edge-case"
+
+      - mistake: "Forgetting case-insensitive comparison"
+        why_md: "'A' != 'a' without lowercase conversion."
+        fix_md: "Convert both characters to lowercase before comparing."
+        tags:
+          - "case-sensitivity"
+          - "comparison"
+
+    complexity_notes:
+      compact_md: "Time: O(n), Space: O(1)"
+      detailed_md: |
+        ## Time Complexity: O(n)
+        - Each character is visited at most once by each pointer
+        - Character checks (isalnum, toLower) are O(1)
+
+        ## Space Complexity: O(1)
+        - Only two pointer variables
+        - No filtered string copy created
+      notes:
+        - "Two-pointer approach avoids creating a filtered string"
+        - "Each pointer moves at most n/2 steps"
+      gotchas:
+        - "Filter+reverse approach uses O(n) space"
+        - "isalnum() includes digits, not just letters"
+      references:
+        - label: "Valid Palindrome"
+          url: "https://leetcode.com/problems/valid-palindrome/editorial/"
+
+solutions_index:
+  - solution_id: "sol:lc:125:valid_palindrome:python:two_pointers:v1"
+    language: "python"
+    paradigm: "imperative"
+    title: "Python Two Pointers Solution"
+    status: "done"
+    approach_tags:
+      - "two-pointers"
+      - "character-filtering"
+    solution_ref: "solutions/sol_py_two_pointers.yaml"
+
+  - solution_id: "sol:lc:125:valid_palindrome:go:two_pointers:v1"
+    language: "go"
+    paradigm: "imperative"
+    title: "Go Two Pointers Solution"
+    status: "done"
+    approach_tags:
+      - "two-pointers"
+      - "unicode"
+    solution_ref: "solutions/sol_go_two_pointers.yaml"
+
+  - solution_id: "sol:lc:125:valid_palindrome:java:two_pointers:v1"
+    language: "java"
+    paradigm: "oop_classic"
+    title: "Java OOP Two Pointers Solution"
+    status: "done"
+    approach_tags:
+      - "two-pointers"
+      - "character-class"
+    solution_ref: "solutions/sol_java_two_pointers.yaml"
+
+  - solution_id: "sol:lc:125:valid_palindrome:kotlin:two_pointers:v1"
+    language: "kotlin"
+    paradigm: "oop_classic"
+    title: "Kotlin Two Pointers Solution"
+    status: "done"
+    approach_tags:
+      - "two-pointers"
+      - "extension-functions"
+    solution_ref: "solutions/sol_kotlin_two_pointers.yaml"
+
+  - solution_id: "sol:lc:125:valid_palindrome:javascript:two_pointers:v1"
+    language: "javascript"
+    paradigm: "oop_prototype"
+    title: "JavaScript Two Pointers Solution"
+    status: "done"
+    approach_tags:
+      - "two-pointers"
+      - "regex"
+    solution_ref: "solutions/sol_js_two_pointers.yaml"
+
+  - solution_id: "sol:lc:125:valid_palindrome:scala:two_pointers:v1"
+    language: "scala"
+    paradigm: "functional"
+    title: "Scala Functional Two Pointers Solution"
+    status: "done"
+    approach_tags:
+      - "two-pointers"
+      - "tail-recursion"
+    solution_ref: "solutions/sol_scala_two_pointers.yaml"
+
+  - solution_id: "sol:lc:125:valid_palindrome:rust:two_pointers:v1"
+    language: "rust"
+    paradigm: "functional"
+    title: "Rust Two Pointers Solution"
+    status: "done"
+    approach_tags:
+      - "two-pointers"
+      - "iterators"
+    solution_ref: "solutions/sol_rust_two_pointers.yaml"
+
+history:
+  - at: "2024-02-10"
+    change: "Initial problem setup"
+  - at: "2024-02-10"
+    change: "Added multi-language solutions"

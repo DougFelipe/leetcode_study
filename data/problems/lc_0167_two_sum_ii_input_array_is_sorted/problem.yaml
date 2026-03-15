@@ -1,0 +1,288 @@
+schema_version: 3
+problem_id: "lc:167:two_sum_ii_input_array_is_sorted"
+slug: "lc_0167_two_sum_ii_input_array_is_sorted"
+title: "167. Two Sum II - Input Array Is Sorted"
+
+source:
+  platform: "leetcode"
+  id: 167
+  slug: "two-sum-ii-input-array-is-sorted"
+  url: "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/"
+
+catalog:
+  difficulty: "medium"
+  topics:
+    - "Array"
+    - "Two Pointers"
+    - "Binary Search"
+  patterns:
+    - "Two Pointers"
+    - "Sorted Array Traversal"
+    - "Opposite Direction Pointers"
+  companies:
+    - "Amazon"
+    - "Microsoft"
+    - "Google"
+    - "Facebook"
+    - "Apple"
+
+constraints:
+  summary: "2 <= numbers.length <= 3 * 10^4; -1000 <= numbers[i] <= 1000; sorted non-decreasing; exactly one solution; constant extra space"
+  notes_md: |
+    - 2 <= numbers.length <= 3 * 10^4
+    - -1000 <= numbers[i] <= 1000
+    - numbers is sorted in non-decreasing order
+    - -1000 <= target <= 1000
+    - The tests are generated such that there is exactly one solution
+    - You may not use the same element twice
+    - Your solution must use only constant extra space
+
+study:
+  status: "solved"
+  priority: 4
+  confidence: 5
+  created_at: "2024-02-08"
+  solved_at: "2024-02-08"
+  time_spent_min: 15
+  review:
+    srs_enabled: true
+    next_review: "2024-03-08"
+    interval_days: 30
+  mistakes:
+    - "Returning 0-indexed instead of 1-indexed result"
+    - "Not leveraging the sorted property"
+
+content:
+  statement_md: |
+    Given a **1-indexed** array of integers `numbers` that is already **sorted in non-decreasing order**,
+    find two numbers such that they add up to a specific `target` number.
+    Let these two numbers be `numbers[index1]` and `numbers[index2]` where
+    `1 <= index1 < index2 <= numbers.length`.
+
+    Return the indices of the two numbers, `index1` and `index2`, added by one
+    as an integer array `[index1, index2]` of length 2.
+
+    The tests are generated such that there is **exactly one solution**.
+    You **may not** use the same element twice.
+
+    Your solution must use only **constant extra space**.
+
+    **Example 1:**
+    ```
+    Input: numbers = [2,7,11,15], target = 9
+    Output: [1,2]
+    Explanation: The sum of 2 and 7 is 9. Therefore, index1 = 1, index2 = 2. We return [1, 2].
+    ```
+
+    **Example 2:**
+    ```
+    Input: numbers = [2,3,4], target = 6
+    Output: [1,3]
+    Explanation: The sum of 2 and 4 is 6. Therefore index1 = 1, index2 = 3. We return [1, 3].
+    ```
+
+    **Example 3:**
+    ```
+    Input: numbers = [-1,0], target = -1
+    Output: [1,2]
+    Explanation: The sum of -1 and 0 is -1. Therefore index1 = 1, index2 = 2. We return [1, 2].
+    ```
+
+  editorial_summary_md: |
+    Since the array is sorted, we use two pointers starting at opposite ends.
+    If the sum is too small, move the left pointer right. If too large, move the right pointer left.
+    This guarantees finding the unique solution in O(n) time with O(1) space.
+
+  key_insights:
+    - "Sorted array enables two-pointer technique from opposite ends"
+    - "Sum too small → move left pointer right (increase sum)"
+    - "Sum too large → move right pointer left (decrease sum)"
+    - "Return 1-indexed result (add 1 to both indices)"
+
+  pitfalls:
+    - "Return 1-indexed, not 0-indexed indices"
+    - "Don't use hash map — the problem requires O(1) space"
+    - "Exactly one solution guaranteed, so the pointers always converge"
+
+  review_questions:
+    - "Why can we guarantee finding the solution with two pointers?"
+    - "How does this differ from the original Two Sum problem?"
+    - "Could we also use binary search? What would the complexity be?"
+
+  editorial:
+    algorithm_blueprint:
+      compact_md: "Left = 0, Right = n-1 → Check sum → Move pointer based on comparison → Return 1-indexed"
+      mermaid:
+        type: "flowchart"
+        direction: "TD"
+        code: |
+          flowchart TD
+            A[Start] --> B[left=0, right=n-1]
+            B --> C{left < right?}
+            C -- Yes --> D["sum = numbers[left] + numbers[right]"]
+            D --> E{sum == target?}
+            E -- Yes --> F["Return [left+1, right+1]"]
+            E -- No --> G{sum < target?}
+            G -- Yes --> H[left++]
+            G -- No --> I[right--]
+            H --> C
+            I --> C
+            C -- No --> J[Should not reach here]
+
+    alternative_approaches:
+      - name: "Binary Search"
+        idea_md: "For each element, binary search for its complement (target - element)."
+        time: "O(n log n)"
+        space: "O(1)"
+        preserve_indices: true
+        when_to_use_md: "When you want to practice binary search; slightly slower but still valid."
+        why_not_md: "Two pointers is simpler and faster at O(n)."
+        pitfalls:
+          - "Must avoid using the same element twice"
+          - "Binary search boundaries need care"
+
+      - name: "Hash Map (Two Sum I approach)"
+        idea_md: "Store seen values in a hash map, look up complement."
+        time: "O(n)"
+        space: "O(n)"
+        preserve_indices: true
+        when_to_use_md: "When the array is NOT sorted."
+        why_not_md: "Violates the O(1) space constraint; doesn't leverage sorted property."
+        pitfalls:
+          - "Violates constant space requirement"
+          - "Ignores the sorted property"
+
+    when_not_to_use:
+      heuristics_md: |
+        The two-pointer approach is ideal for sorted arrays with a target sum.
+        Consider alternatives when:
+        - Array is not sorted (use hash map)
+        - Multiple pairs needed (may need to collect all, not just stop at first)
+      scenarios:
+        - scenario: "Array is not sorted"
+          why_md: "Two pointers require sorted input to work correctly."
+          recommended_instead:
+            - name: "Hash Map"
+              note_md: "Classic Two Sum approach for unsorted arrays"
+
+    common_mistakes:
+      - mistake: "Returning 0-indexed results"
+        why_md: "The problem uses 1-indexed arrays; indices must be incremented by 1."
+        fix_md: "Return [left + 1, right + 1] instead of [left, right]."
+        example_bad_md: |
+          ```python
+          return [left, right]  # 0-indexed!
+          ```
+        example_good_md: |
+          ```python
+          return [left + 1, right + 1]  # 1-indexed as required
+          ```
+        tags:
+          - "off-by-one"
+          - "1-indexed"
+
+      - mistake: "Using a hash map"
+        why_md: "The problem explicitly requires constant extra space."
+        fix_md: "Use the two-pointer technique instead."
+        tags:
+          - "constraint-violation"
+          - "space"
+
+    complexity_notes:
+      compact_md: "Time: O(n), Space: O(1)"
+      detailed_md: |
+        ## Time Complexity: O(n)
+        - Each pointer moves at most n-1 times
+        - Total pointer movements ≤ n - 1
+        - Each step is O(1)
+
+        ## Space Complexity: O(1)
+        - Only two pointer variables used
+        - Satisfies the constant space requirement
+      notes:
+        - "This is strictly better than binary search O(n log n)"
+        - "Guaranteed to find the solution since exactly one exists"
+      gotchas:
+        - "O(1) space is a hard requirement, not just a preference"
+        - "The sorted property is key to correctness"
+      references:
+        - label: "Two Pointers Technique"
+          url: "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/editorial/"
+
+solutions_index:
+  - solution_id: "sol:lc:167:two_sum_ii:python:two_pointers:v1"
+    language: "python"
+    paradigm: "imperative"
+    title: "Python Two Pointers Solution"
+    status: "done"
+    approach_tags:
+      - "two-pointers"
+      - "sorted-array"
+    solution_ref: "solutions/sol_py_two_pointers.yaml"
+
+  - solution_id: "sol:lc:167:two_sum_ii:go:two_pointers:v1"
+    language: "go"
+    paradigm: "imperative"
+    title: "Go Two Pointers Solution"
+    status: "done"
+    approach_tags:
+      - "two-pointers"
+      - "sorted-array"
+    solution_ref: "solutions/sol_go_two_pointers.yaml"
+
+  - solution_id: "sol:lc:167:two_sum_ii:java:two_pointers:v1"
+    language: "java"
+    paradigm: "oop_classic"
+    title: "Java OOP Two Pointers Solution"
+    status: "done"
+    approach_tags:
+      - "two-pointers"
+      - "sorted-array"
+      - "oop"
+    solution_ref: "solutions/sol_java_two_pointers.yaml"
+
+  - solution_id: "sol:lc:167:two_sum_ii:kotlin:two_pointers:v1"
+    language: "kotlin"
+    paradigm: "oop_classic"
+    title: "Kotlin Two Pointers Solution"
+    status: "done"
+    approach_tags:
+      - "two-pointers"
+      - "sorted-array"
+    solution_ref: "solutions/sol_kotlin_two_pointers.yaml"
+
+  - solution_id: "sol:lc:167:two_sum_ii:javascript:two_pointers:v1"
+    language: "javascript"
+    paradigm: "oop_prototype"
+    title: "JavaScript Two Pointers Solution"
+    status: "done"
+    approach_tags:
+      - "two-pointers"
+      - "sorted-array"
+    solution_ref: "solutions/sol_js_two_pointers.yaml"
+
+  - solution_id: "sol:lc:167:two_sum_ii:scala:two_pointers:v1"
+    language: "scala"
+    paradigm: "functional"
+    title: "Scala Functional Two Pointers Solution"
+    status: "done"
+    approach_tags:
+      - "two-pointers"
+      - "tail-recursion"
+    solution_ref: "solutions/sol_scala_two_pointers.yaml"
+
+  - solution_id: "sol:lc:167:two_sum_ii:rust:two_pointers:v1"
+    language: "rust"
+    paradigm: "functional"
+    title: "Rust Two Pointers Solution"
+    status: "done"
+    approach_tags:
+      - "two-pointers"
+      - "ownership"
+    solution_ref: "solutions/sol_rust_two_pointers.yaml"
+
+history:
+  - at: "2024-02-08"
+    change: "Initial problem setup"
+  - at: "2024-02-08"
+    change: "Added multi-language solutions"

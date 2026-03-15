@@ -1,0 +1,76 @@
+schema_version: 3
+solution_id: "sol:lc:167:two_sum_ii:rust:two_pointers:v1"
+problem_id: "lc:167:two_sum_ii_input_array_is_sorted"
+language: "rust"
+paradigm: "functional"
+
+approach:
+  name: "Two Pointers on Sorted Array"
+  tags:
+    - "two-pointers"
+    - "sorted-array"
+    - "ownership"
+
+complexity:
+  time: "O(n)"
+  space: "O(1)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Rust's Vec<i32> return type requires casting usize indices to i32.
+    The borrow checker doesn't create issues here since we only read.
+
+    Key advantages in Rust:
+    - vec![] macro for return value
+    - usize for safe indexing
+    - as i32 for type conversion
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `numbers = [2,7,11,15]`, `target = 9`:
+
+    1. left=0, right=3 → sum=17 > 9 → right -= 1
+    2. left=0, right=2 → sum=13 > 9 → right -= 1
+    3. left=0, right=1 → sum=9 == target → vec![1, 2]
+
+pitfalls:
+  - "(left + 1) as i32 for usize to i32 conversion"
+  - "numbers.len() - 1 for right init (safe since len >= 2)"
+  - "vec![] for return value (heap allocated)"
+
+tradeoffs:
+  - "usize for indices prevents negative index bugs"
+  - "as i32 cast needed for LeetCode's return type"
+  - "Vec<i32> return allocates on heap"
+
+comparison_notes:
+  highlights:
+    - "vec![(left+1) as i32, (right+1) as i32]"
+    - "numbers.len() - 1 for right pointer"
+    - "usize for safe indexing"
+  gotchas_language_specific:
+    - "usize – 1 can underflow (but len >= 2 guaranteed)"
+    - "as i32 cast is wrapping (safe for small values)"
+    - "Vec borrows with [] (no ownership issue)"
+
+review_questions:
+  - "Why cast to i32 at the end?"
+  - "Is there usize underflow risk?"
+  - "How does Rust's ownership affect this read-only problem?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:167:two_sum_ii:rust:two_pointers:v1:solution"
+    lang: "rust"
+    role: "solution"
+    path: "../code/sol_rust_two_pointers.rs"
+    render:
+      syntax: "rust"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-08"
+    change: "Initial Rust two pointers solution"

@@ -1,0 +1,76 @@
+schema_version: 3
+solution_id: "sol:lc:167:two_sum_ii:java:two_pointers:v1"
+problem_id: "lc:167:two_sum_ii_input_array_is_sorted"
+language: "java"
+paradigm: "oop_classic"
+
+approach:
+  name: "Two Pointers on Sorted Array"
+  tags:
+    - "two-pointers"
+    - "sorted-array"
+    - "oop"
+
+complexity:
+  time: "O(n)"
+  space: "O(1)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Java uses new int[]{} for array literal return. The standard
+    two-pointer pattern is clean with while loop and if-else chain.
+
+    Key advantages in Java:
+    - int[] return avoids autoboxing
+    - Simple while + if-else structure
+    - Array literal new int[]{a, b} for return
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `numbers = [2,3,4]`, `target = 6`:
+
+    1. left=0, right=2 → sum = 2+4 = 6 == target → return [1, 3]
+
+    Single iteration finds the answer.
+
+pitfalls:
+  - "new int[]{left+1, right+1} for array return"
+  - "int sum avoids overflow for constraints range"
+  - "Return empty array as unreachable fallback"
+
+tradeoffs:
+  - "int[] is primitive, no autoboxing overhead"
+  - "Simple if-else chain is clear"
+  - "No imports needed"
+
+comparison_notes:
+  highlights:
+    - "new int[]{a, b} for array literal"
+    - "numbers.length for array size"
+    - "Direct int comparison, no method calls"
+  gotchas_language_specific:
+    - "int[] return type (primitive array)"
+    - "No autoboxing needed"
+    - "Array bounds are 0-indexed internally"
+
+review_questions:
+  - "Why return int[] instead of List<Integer>?"
+  - "How does Java handle the 1-indexed requirement?"
+  - "Is there a risk of integer overflow with the sum?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:167:two_sum_ii:java:two_pointers:v1:solution"
+    lang: "java"
+    role: "solution"
+    path: "../code/sol_java_two_pointers.java"
+    render:
+      syntax: "java"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-08"
+    change: "Initial Java OOP two pointers solution"

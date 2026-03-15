@@ -1,0 +1,74 @@
+schema_version: 3
+solution_id: "sol:lc:167:two_sum_ii:go:two_pointers:v1"
+problem_id: "lc:167:two_sum_ii_input_array_is_sorted"
+language: "go"
+paradigm: "imperative"
+
+approach:
+  name: "Two Pointers on Sorted Array"
+  tags:
+    - "two-pointers"
+    - "sorted-array"
+    - "slice"
+
+complexity:
+  time: "O(n)"
+  space: "O(1)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Go's multiple assignment initializes both pointers in one line.
+    Slice literal []int{a, b} creates the return value cleanly.
+
+    Key advantages in Go:
+    - Multiple assignment: left, right := 0, n-1
+    - Slice literal for return
+    - Explicit if-else blocks
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `numbers = [-1,0]`, `target = -1`:
+
+    1. left=0, right=1 → sum = -1+0 = -1 == target → return [1, 2]
+
+pitfalls:
+  - "[]int{left+1, right+1} for 1-indexed return"
+  - "No ternary operator; explicit if-else"
+  - "len(numbers)-1 for right pointer init"
+
+tradeoffs:
+  - "Very concise for this simple problem"
+  - "No imports needed"
+  - "Go's lack of ternary makes code slightly longer"
+
+comparison_notes:
+  highlights:
+    - "left, right := 0, len(numbers)-1"
+    - "[]int{a, b} slice literal"
+    - "Explicit if-else for control flow"
+  gotchas_language_specific:
+    - "No ternary operator in Go"
+    - ":= for short variable declaration"
+    - "Slice returns new header, same backing"
+
+review_questions:
+  - "Why use multiple assignment for initialization?"
+  - "How does Go's slice return differ from array return?"
+  - "Is there a risk with empty input?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:167:two_sum_ii:go:two_pointers:v1:solution"
+    lang: "go"
+    role: "solution"
+    path: "../code/sol_go_two_pointers.go"
+    render:
+      syntax: "go"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-08"
+    change: "Initial Go two pointers solution"

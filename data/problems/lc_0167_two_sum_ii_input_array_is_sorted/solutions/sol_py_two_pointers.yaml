@@ -1,0 +1,76 @@
+schema_version: 3
+solution_id: "sol:lc:167:two_sum_ii:python:two_pointers:v1"
+problem_id: "lc:167:two_sum_ii_input_array_is_sorted"
+language: "python"
+paradigm: "imperative"
+
+approach:
+  name: "Two Pointers on Sorted Array"
+  tags:
+    - "two-pointers"
+    - "sorted-array"
+    - "opposite-direction"
+
+complexity:
+  time: "O(n)"
+  space: "O(1)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Python's clean syntax makes the two-pointer approach very readable.
+    The sorted property guarantees convergence to the unique solution.
+
+    Key advantages in Python:
+    - Tuple unpacking for pointer initialization
+    - Clean elif chain for three-way comparison
+    - List literal for 1-indexed return
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `numbers = [2,7,11,15]`, `target = 9`:
+
+    1. left=0, right=3 → sum = 2+15 = 17 > 9 → right--
+    2. left=0, right=2 → sum = 2+11 = 13 > 9 → right--
+    3. left=0, right=1 → sum = 2+7 = 9 == target → return [1, 2]
+
+pitfalls:
+  - "Return [left + 1, right + 1] for 1-indexed"
+  - "Use elif, not nested if-else"
+  - "Guaranteed to find solution; empty return is safety net"
+
+tradeoffs:
+  - "Simplest approach for sorted + target sum"
+  - "O(1) space satisfies constraint"
+  - "Doesn't need sorting step (already sorted)"
+
+comparison_notes:
+  highlights:
+    - "left, right = 0, len(numbers) - 1 tuple unpacking"
+    - "elif for clean three-way branching"
+    - "[left + 1, right + 1] for 1-indexed return"
+  gotchas_language_specific:
+    - "list[int] type hint (Python 3.9+)"
+    - "Return empty list as fallback"
+    - "numbers is already sorted, no sort needed"
+
+review_questions:
+  - "Why does this always converge to the answer?"
+  - "How does this compare to Two Sum I's hash map approach?"
+  - "What's the proof of correctness for two pointers on sorted array?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:167:two_sum_ii:python:two_pointers:v1:solution"
+    lang: "python"
+    role: "solution"
+    path: "../code/sol_py_two_pointers.py"
+    render:
+      syntax: "python"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-08"
+    change: "Initial Python two pointers solution"

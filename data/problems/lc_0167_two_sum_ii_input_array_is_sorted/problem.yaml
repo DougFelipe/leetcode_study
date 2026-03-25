@@ -117,17 +117,17 @@ content:
         direction: "TD"
         code: |
           flowchart TD
-            A[Start] --> B[left=0, right=n-1]
-            B --> C{left < right?}
-            C -- Yes --> D["sum = numbers[left] + numbers[right]"]
-            D --> E{sum == target?}
-            E -- Yes --> F["Return [left+1, right+1]"]
-            E -- No --> G{sum < target?}
-            G -- Yes --> H[left++]
-            G -- No --> I[right--]
+            A["Start"] --> B["left=0, right=n-1"]
+            B --> C{"left < right?"}
+            C -- "Yes" --> D["sum = numbers left + numbers right"]
+            D --> E{"sum == target?"}
+            E -- "Yes" --> F["Return left+1, right+1"]
+            E -- "No" --> G{"sum < target?"}
+            G -- "Yes" --> H["left++"]
+            G -- "No" --> I["right--"]
             H --> C
             I --> C
-            C -- No --> J[Should not reach here]
+            C -- "No" --> J["Should not reach here"]
 
     alternative_approaches:
       - name: "Binary Search"

@@ -105,17 +105,17 @@ content:
         direction: "TD"
         code: |
           flowchart TD
-            A[Start] --> B[Initialize left=0, maxLen=0, set=empty]
-            B --> C{right < s.length?}
-            C -- Yes --> D{s[right] in set?}
-            D -- Yes --> E[Remove s[left] from set]
-            E --> F[left++]
+            A["Start"] --> B["Initialize left=0, maxLen=0, set=empty"]
+            B --> C{"right < s.length?"}
+            C -- "Yes" --> D{"s right in set?"}
+            D -- "Yes" --> E["Remove s left from set"]
+            E --> F["left++"]
             F --> D
-            D -- No --> G[Add s[right] to set]
-            G --> H[maxLen = max of maxLen and right-left+1]
-            H --> I[right++]
+            D -- "No" --> G["Add s right to set"]
+            G --> H["maxLen = max of maxLen and right-left+1"]
+            H --> I["right++"]
             I --> C
-            C -- No --> J[Return maxLen]
+            C -- "No" --> J["Return maxLen"]
 
     alternative_approaches:
       - name: "Brute Force"

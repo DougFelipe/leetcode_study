@@ -113,25 +113,25 @@ content:
         direction: "TD"
         code: |
           flowchart TD
-            A[Start] --> B[Sort nums]
-            B --> C{i < n-2?}
-            C -- Yes --> D{nums[i] > 0?}
-            D -- Yes --> J[Return result]
-            D -- No --> E{Duplicate i? skip}
-            E -- Yes --> C2[i++]
+            A["Start"] --> B["Sort nums"]
+            B --> C{"i < n-2?"}
+            C -- "Yes" --> D{"nums[i] > 0?"}
+            D -- "Yes" --> J["Return result"]
+            D -- "No" --> E{"Duplicate i? skip"}
+            E -- "Yes" --> C2["i++"]
             C2 --> C
-            E -- No --> F[left=i+1, right=n-1]
-            F --> G{left < right?}
-            G -- Yes --> H["sum = nums[i]+nums[left]+nums[right]"]
-            H --> I1{sum == 0?}
-            I1 -- Yes --> K[Add triplet, skip dups, move both]
-            I1 -- "sum < 0" --> L[left++]
-            I1 -- "sum > 0" --> M[right--]
+            E -- "No" --> F["left=i+1, right=n-1"]
+            F --> G{"left < right?"}
+            G -- "Yes" --> H["sum = nums[i]+nums[left]+nums[right]"]
+            H --> I1{"sum == 0?"}
+            I1 -- "Yes" --> K["Add triplet, skip dups, move both"]
+            I1 -- "sum < 0" --> L["left++"]
+            I1 -- "sum > 0" --> M["right--"]
             K --> G
             L --> G
             M --> G
-            G -- No --> C2
-            C -- No --> J
+            G -- "No" --> C2
+            C -- "No" --> J
 
     alternative_approaches:
       - name: "Brute Force"

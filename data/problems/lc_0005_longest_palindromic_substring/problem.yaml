@@ -94,14 +94,14 @@ content:
         direction: "TD"
         code: |
           flowchart TD
-            A[Start] --> B[Initialize start=0, maxLen=1]
-            B --> C{i < s.length?}
-            C -- Yes --> D["Expand odd: center = i"]
+            A["Start"] --> B["Initialize start=0, maxLen=1"]
+            B --> C{"i < s.length?"}
+            C -- "Yes" --> D["Expand odd: center = i"]
             D --> E["Expand even: center = i, i+1"]
             E --> F["Update start/maxLen if longer found"]
-            F --> G[i++]
+            F --> G["i++"]
             G --> C
-            C -- No --> H["Return s[start : start+maxLen]"]
+            C -- "No" --> H["Return s start to start+maxLen"]
 
     alternative_approaches:
       - name: "Dynamic Programming"

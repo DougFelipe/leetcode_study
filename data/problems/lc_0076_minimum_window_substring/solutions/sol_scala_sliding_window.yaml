@@ -1,0 +1,78 @@
+schema_version: 3
+solution_id: "sol:lc:76:min_window:scala:sliding_window:v1"
+problem_id: "lc:76:minimum_window_substring"
+language: "scala"
+paradigm: "functional"
+
+approach:
+  name: "Sliding Window with Mutable Maps"
+  tags:
+    - "sliding-window"
+    - "mutable-map"
+    - "imperative-functional"
+
+complexity:
+  time: "O(m + n)"
+  space: "O(m + n)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Scala uses mutable.Map with withDefaultValue(0) for convenient frequency
+    counting. The imperative sliding window is mixed with Scala's expression-oriented
+    syntax for the final result.
+
+    Key advantages in Scala:
+    - mutable.Map with withDefaultValue(0)
+    - Direct += for increment
+    - if-expression for conditional return
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `s = "ADOBECODEBANC"`, `t = "ABC"`:
+
+    1. need = Map(A->1, B->1, C->1) with default 0
+    2. Slide window, increment/decrement counts
+    3. When have == required, shrink and track min
+    4. Return s.substring(minStart, minStart + minLen)
+
+pitfalls:
+  - "withDefaultValue(0) avoids key-not-found errors"
+  - "need.contains(c) checks key existence"
+  - "Int.MaxValue for initial sentinel"
+
+tradeoffs:
+  - "Mutable maps are imperative but efficient"
+  - "withDefaultValue simplifies counting logic"
+  - "Could use tail recursion but imperative is clearer here"
+
+comparison_notes:
+  highlights:
+    - "mutable.Map with withDefaultValue"
+    - "Direct += for increment"
+    - "if-expression for result"
+  gotchas_language_specific:
+    - "mutable.Map from scala.collection.mutable"
+    - "withDefaultValue sets default for missing keys"
+    - "s.substring uses Java String semantics"
+
+review_questions:
+  - "Why use mutable maps instead of immutable?"
+  - "How does withDefaultValue work?"
+  - "Could this be rewritten with tail recursion?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:76:min_window:scala:sliding_window:v1:solution"
+    lang: "scala"
+    role: "solution"
+    path: "../code/sol_scala_sliding_window.scala"
+    render:
+      syntax: "scala"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-12"
+    change: "Initial Scala sliding window solution"

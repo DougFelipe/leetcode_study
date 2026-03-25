@@ -103,19 +103,19 @@ content:
         direction: "TD"
         code: |
           flowchart TD
-            A[Start] --> B{len nums1 > len nums2?}
-            B -- Yes --> C[Swap nums1 and nums2]
-            C --> D[Binary search on nums1]
-            B -- No --> D
-            D --> E[partition1 = mid]
-            E --> F["partition2 = (m+n+1)/2 - partition1"]
-            F --> G{maxLeft1 <= minRight2 AND maxLeft2 <= minRight1?}
-            G -- Yes --> H{Total is odd?}
-            H -- Yes --> I["Return max(maxLeft1, maxLeft2)"]
-            H -- No --> J["Return avg of max(lefts) and min(rights)"]
-            G -- maxLeft1 > minRight2 --> K[Move partition1 left]
+            A["Start"] --> B{"len nums1 > len nums2?"}
+            B -- "Yes" --> C["Swap nums1 and nums2"]
+            C --> D["Binary search on nums1"]
+            B -- "No" --> D
+            D --> E["partition1 = mid"]
+            E --> F["partition2 = m+n+1 /2 - partition1"]
+            F --> G{"maxLeft1 <= minRight2 AND maxLeft2 <= minRight1?"}
+            G -- "Yes" --> H{"Total is odd?"}
+            H -- "Yes" --> I["Return max of maxLeft1, maxLeft2"]
+            H -- "No" --> J["Return avg of max lefts and min rights"]
+            G -- "maxLeft1 > minRight2" --> K["Move partition1 left"]
             K --> D
-            G -- maxLeft2 > minRight1 --> L[Move partition1 right]
+            G -- "maxLeft2 > minRight1" --> L["Move partition1 right"]
             L --> D
 
     alternative_approaches:

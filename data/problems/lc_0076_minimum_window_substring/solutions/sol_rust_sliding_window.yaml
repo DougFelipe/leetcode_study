@@ -1,0 +1,79 @@
+schema_version: 3
+solution_id: "sol:lc:76:min_window:rust:sliding_window:v1"
+problem_id: "lc:76:minimum_window_substring"
+language: "rust"
+paradigm: "functional"
+
+approach:
+  name: "Sliding Window with HashMap"
+  tags:
+    - "sliding-window"
+    - "hashmap"
+    - "ownership"
+
+complexity:
+  time: "O(m + n)"
+  space: "O(m + n)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Rust's HashMap with entry API provides clean frequency tracking.
+    The or_insert pattern handles missing keys elegantly.
+    String slicing with .to_string() creates the result.
+
+    Key advantages in Rust:
+    - HashMap with entry().or_insert(0)
+    - Pattern matching with if let for optional values
+    - Byte-level operations for ASCII efficiency
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `s = "ADOBECODEBANC"`, `t = "ABC"`:
+
+    1. Build need HashMap from t bytes
+    2. Slide window on s bytes
+    3. Use entry API for frequency tracking
+    4. if let Some for safe need lookup
+    5. Return s[start..end].to_string()
+
+pitfalls:
+  - "entry().or_insert(0) for safe initialization"
+  - "if let Some for optional pattern matching"
+  - "usize::MAX for sentinel (no negative values)"
+
+tradeoffs:
+  - "Byte-level operations are fast for ASCII"
+  - "HashMap entry API is idiomatic but verbose"
+  - "String slice creates new owned String"
+
+comparison_notes:
+  highlights:
+    - "HashMap entry API"
+    - "if let Some for pattern matching"
+    - "s[start..end].to_string() for result"
+  gotchas_language_specific:
+    - "entry().or_insert(0) returns mutable reference"
+    - ".get_mut().unwrap() for in-place decrement"
+    - "usize cannot be negative"
+
+review_questions:
+  - "How does the entry API work in Rust?"
+  - "Why use if let instead of match?"
+  - "How does ownership affect string return?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:76:min_window:rust:sliding_window:v1:solution"
+    lang: "rust"
+    role: "solution"
+    path: "../code/sol_rust_sliding_window.rs"
+    render:
+      syntax: "rust"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-12"
+    change: "Initial Rust sliding window solution"

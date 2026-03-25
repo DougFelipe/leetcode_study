@@ -1,0 +1,80 @@
+schema_version: 3
+solution_id: "sol:lc:76:min_window:python:sliding_window:v1"
+problem_id: "lc:76:minimum_window_substring"
+language: "python"
+paradigm: "imperative"
+
+approach:
+  name: "Sliding Window with Counter"
+  tags:
+    - "sliding-window"
+    - "counter"
+    - "frequency-map"
+
+complexity:
+  time: "O(m + n)"
+  space: "O(m + n)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Python's Counter from collections provides convenient frequency counting.
+    The sliding window expands right to satisfy all chars, then shrinks left
+    to minimize the window.
+
+    Key advantages in Python:
+    - Counter(t) for instant frequency map
+    - dict.get(key, 0) for safe access
+    - String slicing s[left:right+1] for result extraction
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `s = "ADOBECODEBANC"`, `t = "ABC"`:
+
+    1. need = {A:1, B:1, C:1}, required = 3
+    2. Expand right until have == 3 at index 5 ("ADOBEC")
+    3. Shrink left: remove A → have drops → window = "DOBEC"
+    4. Continue expanding right...
+    5. At right=10, window "BANC" → length 4, update result
+    6. Final result: "BANC"
+
+pitfalls:
+  - "Counter(t) handles duplicates automatically"
+  - "Use == not >= when checking window[char] == need[char] for have increment"
+  - "float('inf') for initial min_len"
+
+tradeoffs:
+  - "Counter is convenient but dict works too"
+  - "String slicing creates new string each time — only done on update"
+  - "O(m + n) is optimal for this problem"
+
+comparison_notes:
+  highlights:
+    - "Counter(t) for frequency map"
+    - "dict.get(char, 0) for safe increment"
+    - "s[left:right+1] for result"
+  gotchas_language_specific:
+    - "Counter subtraction can produce zero/negative counts"
+    - "String slicing is O(k) where k is slice length"
+    - "float('inf') for initial comparison"
+
+review_questions:
+  - "Why use == instead of >= for incrementing 'have'?"
+  - "When exactly do we decrement 'have'?"
+  - "How does Counter handle characters not in t?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:76:min_window:python:sliding_window:v1:solution"
+    lang: "python"
+    role: "solution"
+    path: "../code/sol_py_sliding_window.py"
+    render:
+      syntax: "python"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-12"
+    change: "Initial Python sliding window solution"

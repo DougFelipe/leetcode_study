@@ -1,0 +1,296 @@
+schema_version: 3
+problem_id: "lc:76:minimum_window_substring"
+slug: "lc_0076_minimum_window_substring"
+title: "76. Minimum Window Substring"
+
+source:
+  platform: "leetcode"
+  id: 76
+  slug: "minimum-window-substring"
+  url: "https://leetcode.com/problems/minimum-window-substring/"
+
+catalog:
+  difficulty: "hard"
+  topics:
+    - "Hash Table"
+    - "String"
+    - "Sliding Window"
+  patterns:
+    - "Sliding Window"
+    - "Two Pointers"
+    - "Frequency Map"
+  companies:
+    - "Amazon"
+    - "Microsoft"
+    - "Google"
+    - "Facebook"
+    - "Apple"
+    - "LinkedIn"
+    - "Uber"
+
+constraints:
+  summary: "1 <= m, n <= 10^5; s and t consist of uppercase and lowercase English letters"
+  notes_md: |
+    - m == s.length
+    - n == t.length
+    - 1 <= m, n <= 10^5
+    - s and t consist of uppercase and lowercase English letters
+
+study:
+  status: "solved"
+  priority: 5
+  confidence: 3
+  created_at: "2024-02-12"
+  solved_at: "2024-02-12"
+  time_spent_min: 60
+  review:
+    srs_enabled: true
+    next_review: "2024-03-12"
+    interval_days: 30
+  mistakes:
+    - "Not tracking how many required characters are satisfied"
+    - "Shrinking window incorrectly when a character leaves"
+    - "Off-by-one when extracting the result substring"
+
+content:
+  statement_md: |
+    Given two strings `s` and `t` of lengths `m` and `n` respectively, return the **minimum window
+    substring** of `s` such that every character in `t` (including duplicates) is included in the window.
+    If there is no such substring, return the empty string `""`.
+
+    The testcases will be generated such that the answer is **unique**.
+
+    **Example 1:**
+    ```
+    Input: s = "ADOBECODEBANC", t = "ABC"
+    Output: "BANC"
+    Explanation: The minimum window substring "BANC" includes 'A', 'B', and 'C' from string t.
+    ```
+
+    **Example 2:**
+    ```
+    Input: s = "a", t = "a"
+    Output: "a"
+    Explanation: The entire string s is the minimum window.
+    ```
+
+    **Example 3:**
+    ```
+    Input: s = "a", t = "aa"
+    Output: ""
+    Explanation: Both 'a's from t must be included in the window.
+    Since the largest window of s only has one 'a', return empty string.
+    ```
+
+  editorial_summary_md: |
+    Use a sliding window with two frequency maps: one for the required characters in t,
+    and one for the current window. Track how many distinct characters are fully satisfied.
+    Expand right to include more characters; shrink left to minimize the window when all
+    characters are satisfied.
+
+  key_insights:
+    - "Two frequency maps: need (from t) and window (current window in s)"
+    - "Track 'have' vs 'need' count of distinct satisfied characters"
+    - "Expand right pointer to satisfy all required characters"
+    - "Shrink left pointer to minimize window size while still valid"
+    - "Update result only when all required characters are present"
+
+  pitfalls:
+    - "Must handle duplicate characters in t correctly"
+    - "A character is 'satisfied' only when window count >= need count"
+    - "Shrinking must decrement 'have' when a required char drops below needed"
+    - "Return empty string if no valid window exists"
+
+  review_questions:
+    - "What is the difference between 'have' and 'need' counters?"
+    - "When do we shrink the window?"
+    - "How do we handle characters in s that are not in t?"
+
+  editorial:
+    algorithm_blueprint:
+      compact_md: "Build need map from t -> Expand right -> When have == need, shrink left -> Track min window"
+      mermaid:
+        type: "flowchart"
+        direction: "TD"
+        code: |
+          flowchart TD
+            A["Start"] --> B["Build need map from t"]
+            B --> C["left=0, have=0, minLen=INF"]
+            C --> D{"right < len s?"}
+            D -- "Yes" --> E["Add s right to window map"]
+            E --> F{"window char == need char?"}
+            F -- "Yes" --> G["have++"]
+            F -- "No" --> H["skip"]
+            G --> I{"have == required?"}
+            H --> I
+            I -- "Yes" --> J["Update min if smaller"]
+            J --> K["Remove s left from window"]
+            K --> L{"window char < need char?"}
+            L -- "Yes" --> M["have--"]
+            L -- "No" --> N["skip"]
+            M --> O["left++"]
+            N --> O
+            O --> I
+            I -- "No" --> P["right++"]
+            P --> D
+            D -- "No" --> Q["Return min window or empty"]
+
+    alternative_approaches:
+      - name: "Brute Force"
+        idea_md: "Check all substrings of s and verify if each contains all characters of t."
+        time: "O(m^2 * n)"
+        space: "O(m + n)"
+        preserve_indices: true
+        when_to_use_md: "Never in practice — only for understanding."
+        why_not_md: "Too slow for m, n up to 10^5."
+        pitfalls:
+          - "TLE for large inputs"
+          - "Redundant character counting"
+
+      - name: "Optimized Sliding Window with Filtered s"
+        idea_md: "Pre-filter s to only include characters in t, then slide window on filtered list."
+        time: "O(m + n)"
+        space: "O(m + n)"
+        preserve_indices: true
+        when_to_use_md: "When s is much longer than t and has many irrelevant characters."
+        why_not_md: "Adds complexity; standard sliding window is usually sufficient."
+        pitfalls:
+          - "Must store original indices"
+          - "More complex implementation"
+
+    when_not_to_use:
+      heuristics_md: |
+        The sliding window approach is optimal for this problem.
+        Consider alternatives when:
+        - Both strings are very short (brute force is simpler)
+        - The problem requires ALL minimum windows, not just one
+      scenarios:
+        - scenario: "Need all minimum windows of same length"
+          why_md: "Standard approach returns on first minimum found."
+          recommended_instead:
+            - name: "Modified Sliding Window"
+              note_md: "Collect all windows of minimum length"
+
+    common_mistakes:
+      - mistake: "Not counting duplicate characters in t"
+        why_md: "If t = 'aa', the window must contain at least 2 'a's."
+        fix_md: "Use a frequency map, not a set, for tracking required characters."
+        example_bad_md: |
+          ```python
+          need = set(t)  # Wrong! Loses duplicate info
+          ```
+        example_good_md: |
+          ```python
+          need = Counter(t)  # Correct! Tracks frequencies
+          ```
+        tags:
+          - "duplicates"
+          - "frequency"
+
+      - mistake: "Not shrinking the window after finding a valid one"
+        why_md: "The first valid window may not be the smallest."
+        fix_md: "Use a while loop to shrink from the left while the window remains valid."
+        tags:
+          - "optimization"
+          - "window-shrink"
+
+    complexity_notes:
+      compact_md: "Time: O(m + n), Space: O(m + n)"
+      detailed_md: |
+        ## Time Complexity: O(m + n)
+        - Building need map from t: O(n)
+        - Each character in s is visited at most twice (once by right, once by left)
+        - Total: O(m + n)
+
+        ## Space Complexity: O(m + n)
+        - Need map: O(n) for characters in t
+        - Window map: O(m) in worst case
+        - Constant extra variables
+      notes:
+        - "Each pointer moves at most m times"
+        - "Hash map operations are O(1) average"
+      gotchas:
+        - "Space is O(52) if only English letters, effectively O(1)"
+        - "The follow-up asks for O(m + n) which this achieves"
+      references:
+        - label: "Minimum Window Substring"
+          url: "https://leetcode.com/problems/minimum-window-substring/editorial/"
+
+solutions_index:
+  - solution_id: "sol:lc:76:min_window:python:sliding_window:v1"
+    language: "python"
+    paradigm: "imperative"
+    title: "Python Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "counter"
+    solution_ref: "solutions/sol_py_sliding_window.yaml"
+
+  - solution_id: "sol:lc:76:min_window:go:sliding_window:v1"
+    language: "go"
+    paradigm: "imperative"
+    title: "Go Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "map"
+    solution_ref: "solutions/sol_go_sliding_window.yaml"
+
+  - solution_id: "sol:lc:76:min_window:java:sliding_window:v1"
+    language: "java"
+    paradigm: "oop_classic"
+    title: "Java OOP Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "hashmap"
+      - "oop"
+    solution_ref: "solutions/sol_java_sliding_window.yaml"
+
+  - solution_id: "sol:lc:76:min_window:kotlin:sliding_window:v1"
+    language: "kotlin"
+    paradigm: "oop_classic"
+    title: "Kotlin Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "mutablemap"
+    solution_ref: "solutions/sol_kotlin_sliding_window.yaml"
+
+  - solution_id: "sol:lc:76:min_window:javascript:sliding_window:v1"
+    language: "javascript"
+    paradigm: "oop_prototype"
+    title: "JavaScript Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "map"
+    solution_ref: "solutions/sol_js_sliding_window.yaml"
+
+  - solution_id: "sol:lc:76:min_window:scala:sliding_window:v1"
+    language: "scala"
+    paradigm: "functional"
+    title: "Scala Functional Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "tail-recursion"
+    solution_ref: "solutions/sol_scala_sliding_window.yaml"
+
+  - solution_id: "sol:lc:76:min_window:rust:sliding_window:v1"
+    language: "rust"
+    paradigm: "functional"
+    title: "Rust Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "hashmap"
+      - "ownership"
+    solution_ref: "solutions/sol_rust_sliding_window.yaml"
+
+history:
+  - at: "2024-02-12"
+    change: "Initial problem setup"
+  - at: "2024-02-12"
+    change: "Added multi-language solutions"

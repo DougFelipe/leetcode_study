@@ -1,0 +1,78 @@
+schema_version: 3
+solution_id: "sol:lc:76:min_window:go:sliding_window:v1"
+problem_id: "lc:76:minimum_window_substring"
+language: "go"
+paradigm: "imperative"
+
+approach:
+  name: "Sliding Window with Map"
+  tags:
+    - "sliding-window"
+    - "map"
+    - "byte-level"
+
+complexity:
+  time: "O(m + n)"
+  space: "O(m + n)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Go uses map[byte]int for frequency tracking. Accessing string bytes
+    directly with s[i] is efficient for ASCII input. Slice syntax
+    s[start:end] extracts the result.
+
+    Key advantages in Go:
+    - map[byte]int for frequency tracking
+    - Direct byte access s[i]
+    - Slice syntax for result extraction
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `s = "a"`, `t = "a"`:
+
+    1. need = {a:1}, required = 1
+    2. right=0: window[a]=1, have=1
+    3. Shrink: minLen=1, minStart=0
+    4. Return "a"
+
+pitfalls:
+  - "map returns zero value for missing keys (useful!)"
+  - "len(s)+1 as sentinel for minLen"
+  - "s[start:end] is exclusive end"
+
+tradeoffs:
+  - "Byte-level access works for ASCII only"
+  - "Zero value of map is convenient for counting"
+  - "No need for explicit initialization of map values"
+
+comparison_notes:
+  highlights:
+    - "map[byte]int for frequency"
+    - "need[c] > 0 checks existence and frequency"
+    - "s[start:end] for result"
+  gotchas_language_specific:
+    - "map access returns zero for missing keys"
+    - "s[i] returns byte, not rune"
+    - "for range over string gives rune, but index access gives byte"
+
+review_questions:
+  - "Why use len(s)+1 as sentinel instead of math.MaxInt?"
+  - "How does Go's zero-value map access help here?"
+  - "When would byte-level access fail?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:76:min_window:go:sliding_window:v1:solution"
+    lang: "go"
+    role: "solution"
+    path: "../code/sol_go_sliding_window.go"
+    render:
+      syntax: "go"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-12"
+    change: "Initial Go sliding window solution"

@@ -103,19 +103,19 @@ content:
         direction: "TD"
         code: |
           flowchart TD
-            A[Start] --> B[left=0, right=n-1]
-            B --> C{left < right?}
-            C -- Yes --> D{s[left] not alnum?}
-            D -- Yes --> E[left++]
+            A["Start"] --> B["left=0, right=n-1"]
+            B --> C{"left < right?"}
+            C -- "Yes" --> D{"s left not alnum?"}
+            D -- "Yes" --> E["left++"]
             E --> C
-            D -- No --> F{s[right] not alnum?}
-            F -- Yes --> G[right--]
+            D -- "No" --> F{"s right not alnum?"}
+            F -- "Yes" --> G["right--"]
             G --> C
-            F -- No --> H{"lower(s[left]) == lower(s[right])?"}
-            H -- Yes --> I[left++, right--]
+            F -- "No" --> H{"lower left == lower right?"}
+            H -- "Yes" --> I["left++, right--"]
             I --> C
-            H -- No --> J[Return false]
-            C -- No --> K[Return true]
+            H -- "No" --> J["Return false"]
+            C -- "No" --> K["Return true"]
 
     alternative_approaches:
       - name: "Filter + Reverse"

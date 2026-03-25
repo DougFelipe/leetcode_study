@@ -1,7 +1,5 @@
 package main
 
-import "unicode"
-
 // isPalindrome checks if a string is a valid palindrome (alphanumeric, case-insensitive)
 // Time: O(n), Space: O(1)
 func isPalindrome(s string) bool {

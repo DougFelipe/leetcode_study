@@ -92,14 +92,14 @@ content:
         direction: "TD"
         code: |
           flowchart TD
-            A[Start] --> B[Initialize map: value -> index]
-            B --> C{For each i, x in nums}
-            C --> D[y = target - x]
-            D --> E{y in map?}
-            E -- Yes --> F[Return map_y, i]
-            E -- No --> G[map_x = i]
+            A["Start"] --> B["Initialize map: value to index"]
+            B --> C{"For each i, x in nums"}
+            C --> D["y = target - x"]
+            D --> E{"y in map?"}
+            E -- "Yes" --> F["Return map y, i"]
+            E -- "No" --> G["map x = i"]
             G --> C
-            C --> H[End]
+            C --> H["End"]
 
     alternative_approaches:
       - name: "Brute Force"

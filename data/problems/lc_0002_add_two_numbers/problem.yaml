@@ -107,16 +107,16 @@ content:
         direction: "TD"
         code: |
           flowchart TD
-            A[Start] --> B[Initialize dummy head, carry = 0]
-            B --> C{l1 or l2 or carry?}
-            C -- Yes --> D[Get x from l1 or 0]
-            D --> E[Get y from l2 or 0]
-            E --> F[sum = x + y + carry]
-            F --> G[carry = sum / 10]
-            G --> H[Create node with sum % 10]
-            H --> I[Advance l1, l2 if exist]
+            A["Start"] --> B["Initialize dummy head, carry = 0"]
+            B --> C{"l1 or l2 or carry?"}
+            C -- "Yes" --> D["Get x from l1 or 0"]
+            D --> E["Get y from l2 or 0"]
+            E --> F["sum = x + y + carry"]
+            F --> G["carry = sum / 10"]
+            G --> H["Create node with sum % 10"]
+            H --> I["Advance l1, l2 if exist"]
             I --> C
-            C -- No --> J[Return dummy.next]
+            C -- "No" --> J["Return dummy.next"]
 
     alternative_approaches:
       - name: "Recursive Solution"

@@ -1,0 +1,78 @@
+schema_version: 3
+solution_id: "sol:lc:424:char_replacement:kotlin:sliding_window:v1"
+problem_id: "lc:424:longest_repeating_character_replacement"
+language: "kotlin"
+paradigm: "oop_classic"
+
+approach:
+  name: "Sliding Window with IntArray"
+  tags:
+    - "sliding-window"
+    - "intarray"
+    - "maxof"
+
+complexity:
+  time: "O(n)"
+  space: "O(1)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Kotlin's IntArray(26) provides efficient frequency tracking.
+    The maxOf() function cleanly updates maxFreq. s.indices gives
+    the iteration range.
+
+    Key advantages in Kotlin:
+    - IntArray(26) for primitive int array
+    - maxOf() for clean max comparison
+    - s.indices for range iteration
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `s = "ABAB"`, `k = 2`:
+
+    1. IntArray(26) initialized to zeros
+    2. Each char updates freq and maxFreq via maxOf
+    3. Window grows to 4, never becomes invalid
+    4. Return s.length - left = 4 - 0 = 4
+
+pitfalls:
+  - "IntArray for primitive, Array<Int> for boxed"
+  - "s[i] - 'A' gives Int index"
+  - "maxOf is Kotlin stdlib, not Math.max"
+
+tradeoffs:
+  - "IntArray avoids boxing overhead"
+  - "maxOf is idiomatic Kotlin"
+  - "s.indices is cleaner than 0 until s.length"
+
+comparison_notes:
+  highlights:
+    - "IntArray(26) for primitive array"
+    - "maxOf() for max comparison"
+    - "s.indices for iteration"
+  gotchas_language_specific:
+    - "IntArray vs Array<Int> performance"
+    - "Char arithmetic in Kotlin"
+    - "s.length is a property, not method"
+
+review_questions:
+  - "When would you prefer Array<Int> over IntArray?"
+  - "What does s.indices return?"
+  - "How does maxOf differ from Math.max in Kotlin?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:424:char_replacement:kotlin:sliding_window:v1:solution"
+    lang: "kotlin"
+    role: "solution"
+    path: "../code/sol_kotlin_sliding_window.kt"
+    render:
+      syntax: "kotlin"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-15"
+    change: "Initial Kotlin sliding window solution"

@@ -1,0 +1,80 @@
+schema_version: 3
+solution_id: "sol:lc:424:char_replacement:python:sliding_window:v1"
+problem_id: "lc:424:longest_repeating_character_replacement"
+language: "python"
+paradigm: "imperative"
+
+approach:
+  name: "Sliding Window with Max Frequency"
+  tags:
+    - "sliding-window"
+    - "frequency-array"
+    - "max-frequency"
+
+complexity:
+  time: "O(n)"
+  space: "O(1)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Python uses a list of 26 for frequency tracking. ord() converts chars
+    to indices. The key insight is maxFreq never decreases — we only want
+    to find a window LONGER than the current best.
+
+    Key advantages in Python:
+    - [0] * 26 for fixed-size frequency array
+    - ord(c) - ord('A') for character indexing
+    - len(s) - left gives final result
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `s = "AABABBA"`, `k = 1`:
+
+    1. right=0 (A): freq[A]=1, maxFreq=1, window=1, valid (0 <= 1)
+    2. right=1 (A): freq[A]=2, maxFreq=2, window=2, valid (0 <= 1)
+    3. right=2 (B): freq[B]=1, maxFreq=2, window=3, valid (1 <= 1)
+    4. right=3 (A): freq[A]=3, maxFreq=3, window=4, valid (1 <= 1)
+    5. right=4 (B): freq[B]=2, maxFreq=3, window=5, invalid (2 > 1) → slide left
+    6. Continue... final result = 4 ("AABA" with B→A, or "BBBB" section)
+
+pitfalls:
+  - "ord('A') is 65"
+  - "maxFreq only increases, never call max(freq)"
+  - "Result is len(s) - left, not right - left + 1"
+
+tradeoffs:
+  - "Array of 26 is faster than dict for uppercase-only"
+  - "Final result len(s) - left relies on window never shrinking"
+  - "Single pass with no inner loop"
+
+comparison_notes:
+  highlights:
+    - "[0] * 26 for frequency"
+    - "ord() for char to index"
+    - "len(s) - left for result"
+  gotchas_language_specific:
+    - "ord() returns int"
+    - "List of 26 is more Pythonic than dict for fixed alphabet"
+    - "No need for max(freq) — O(26) scan is unnecessary"
+
+review_questions:
+  - "Why is the result len(s) - left?"
+  - "What would change if s had lowercase letters too?"
+  - "Why is using if instead of while correct?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:424:char_replacement:python:sliding_window:v1:solution"
+    lang: "python"
+    role: "solution"
+    path: "../code/sol_py_sliding_window.py"
+    render:
+      syntax: "python"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-15"
+    change: "Initial Python sliding window solution"

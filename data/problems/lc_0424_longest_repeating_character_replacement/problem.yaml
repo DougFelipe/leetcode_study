@@ -1,0 +1,277 @@
+schema_version: 3
+problem_id: "lc:424:longest_repeating_character_replacement"
+slug: "lc_0424_longest_repeating_character_replacement"
+title: "424. Longest Repeating Character Replacement"
+
+source:
+  platform: "leetcode"
+  id: 424
+  slug: "longest-repeating-character-replacement"
+  url: "https://leetcode.com/problems/longest-repeating-character-replacement/"
+
+catalog:
+  difficulty: "medium"
+  topics:
+    - "Hash Table"
+    - "String"
+    - "Sliding Window"
+  patterns:
+    - "Sliding Window"
+    - "Frequency Count"
+    - "Max Frequency Tracking"
+  companies:
+    - "Amazon"
+    - "Google"
+    - "Microsoft"
+    - "Facebook"
+    - "Bloomberg"
+
+constraints:
+  summary: "1 <= s.length <= 10^5; s consists of only uppercase English letters; 0 <= k <= s.length"
+  notes_md: |
+    - 1 <= s.length <= 10^5
+    - s consists of only uppercase English letters
+    - 0 <= k <= s.length
+
+study:
+  status: "solved"
+  priority: 5
+  confidence: 4
+  created_at: "2024-02-15"
+  solved_at: "2024-02-15"
+  time_spent_min: 35
+  review:
+    srs_enabled: true
+    next_review: "2024-03-15"
+    interval_days: 30
+  mistakes:
+    - "Not realizing maxFreq does not need to be decremented"
+    - "Shrinking window too aggressively instead of just sliding"
+    - "Forgetting that we only care about the max frequency character"
+
+content:
+  statement_md: |
+    You are given a string `s` and an integer `k`. You can choose any character of the string
+    and change it to any other uppercase English character. You can perform this operation at most `k` times.
+
+    Return the length of the longest substring containing the same letter you can get after
+    performing the above operations.
+
+    **Example 1:**
+    ```
+    Input: s = "ABAB", k = 2
+    Output: 4
+    Explanation: Replace the two 'A's with two 'B's or vice versa.
+    ```
+
+    **Example 2:**
+    ```
+    Input: s = "AABABBA", k = 1
+    Output: 4
+    Explanation: Replace the one 'A' in the middle with 'B' and form "AABBBBA".
+    The substring "BBBB" has the longest repeating letters, which is 4.
+    ```
+
+  editorial_summary_md: |
+    Use a sliding window that tracks character frequencies. The key insight is that a window
+    is valid when: windowSize - maxFrequency <= k (the number of characters to replace is at most k).
+    When invalid, slide the window by incrementing left. The maxFreq variable never needs to
+    decrease because we only care about finding a LONGER valid window.
+
+  key_insights:
+    - "Window is valid when windowSize - maxFreq <= k"
+    - "maxFreq tracks the count of the most frequent character in the window"
+    - "maxFreq never needs to decrease — we only want longer windows"
+    - "When window is invalid, slide left by 1 (don't shrink with while)"
+    - "Result is the largest valid window size seen"
+
+  pitfalls:
+    - "maxFreq does NOT need to be decremented when left moves"
+    - "Use if (not while) to slide the window — we want max window size"
+    - "Only uppercase English letters means array of size 26 suffices"
+
+  review_questions:
+    - "Why doesn't maxFreq need to decrease when shrinking the window?"
+    - "What is the invariant that makes the window valid?"
+    - "Why use if instead of while for the left pointer?"
+
+  editorial:
+    algorithm_blueprint:
+      compact_md: "Expand right -> Update freq and maxFreq -> If invalid slide left by 1 -> Track window size"
+      mermaid:
+        type: "flowchart"
+        direction: "TD"
+        code: |
+          flowchart TD
+            A["Start"] --> B["left=0, maxFreq=0, freq array"]
+            B --> C{"right < len s?"}
+            C -- "Yes" --> D["freq of s right ++"]
+            D --> E["maxFreq = max of maxFreq, freq of s right"]
+            E --> F{"windowSize - maxFreq > k?"}
+            F -- "Yes" --> G["freq of s left --"]
+            G --> H["left++"]
+            H --> I["right++"]
+            F -- "No" --> I
+            I --> C
+            C -- "No" --> J["Return len s - left"]
+
+    alternative_approaches:
+      - name: "Sliding Window with While Loop"
+        idea_md: "Use while loop to shrink window and recalculate maxFreq each time."
+        time: "O(26n)"
+        space: "O(1)"
+        preserve_indices: true
+        when_to_use_md: "When you want a more intuitive shrink approach."
+        why_not_md: "Recalculating maxFreq after each shrink adds unnecessary work."
+        pitfalls:
+          - "Must recalculate maxFreq from frequency array"
+          - "Slightly slower due to inner loop"
+
+      - name: "Binary Search + Check"
+        idea_md: "Binary search on the answer length, then check if a valid window of that length exists."
+        time: "O(n log n)"
+        space: "O(1)"
+        preserve_indices: true
+        when_to_use_md: "When the sliding window insight is not obvious."
+        why_not_md: "O(n) sliding window is simpler and faster."
+        pitfalls:
+          - "More complex implementation"
+          - "Log factor is unnecessary"
+
+    when_not_to_use:
+      heuristics_md: |
+        The sliding window with maxFreq is optimal for this problem.
+        Consider alternatives when:
+        - The character set is very large (maxFreq recalc becomes expensive)
+        - The problem requires tracking positions, not just length
+      scenarios:
+        - scenario: "Need to return the actual substring, not just length"
+          why_md: "Must also track the window boundaries, not just the size."
+          recommended_instead:
+            - name: "Modified Sliding Window"
+              note_md: "Track start position alongside length"
+
+    common_mistakes:
+      - mistake: "Decrementing maxFreq when left moves"
+        why_md: "maxFreq represents the historical maximum. Decreasing it would require rescanning the frequency array, and it's unnecessary because a smaller maxFreq can never produce a longer window."
+        fix_md: "Never decrement maxFreq. The window will only grow when a new maxFreq is found."
+        example_bad_md: |
+          ```python
+          # Wrong: recalculating maxFreq each time
+          maxFreq = max(freq)  # O(26) per step
+          ```
+        example_good_md: |
+          ```python
+          # Correct: only update maxFreq upward
+          maxFreq = max(maxFreq, freq[c])
+          ```
+        tags:
+          - "optimization"
+          - "key-insight"
+
+      - mistake: "Using while loop to shrink window"
+        why_md: "While loop shrinks too much. We only need to slide the window by 1 when invalid because we're looking for the LONGEST window."
+        fix_md: "Use if instead of while for the invalid window check."
+        tags:
+          - "sliding-window"
+          - "optimization"
+
+    complexity_notes:
+      compact_md: "Time: O(n), Space: O(1)"
+      detailed_md: |
+        ## Time Complexity: O(n)
+        - Single pass through the string
+        - Each character processed at most twice (right and left)
+        - maxFreq update is O(1)
+
+        ## Space Complexity: O(1)
+        - Frequency array of size 26 (uppercase English letters)
+        - Constant extra variables
+      notes:
+        - "The frequency array is fixed size 26, so space is constant"
+        - "No inner while loop means exactly O(n) operations"
+      gotchas:
+        - "Some solutions use O(26n) with while loop — still O(n) but slower"
+        - "Using a HashMap instead of array is O(1) amortized but slower in practice"
+      references:
+        - label: "Longest Repeating Character Replacement"
+          url: "https://leetcode.com/problems/longest-repeating-character-replacement/editorial/"
+
+solutions_index:
+  - solution_id: "sol:lc:424:char_replacement:python:sliding_window:v1"
+    language: "python"
+    paradigm: "imperative"
+    title: "Python Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "frequency-array"
+    solution_ref: "solutions/sol_py_sliding_window.yaml"
+
+  - solution_id: "sol:lc:424:char_replacement:go:sliding_window:v1"
+    language: "go"
+    paradigm: "imperative"
+    title: "Go Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "byte-array"
+    solution_ref: "solutions/sol_go_sliding_window.yaml"
+
+  - solution_id: "sol:lc:424:char_replacement:java:sliding_window:v1"
+    language: "java"
+    paradigm: "oop_classic"
+    title: "Java OOP Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "array"
+      - "oop"
+    solution_ref: "solutions/sol_java_sliding_window.yaml"
+
+  - solution_id: "sol:lc:424:char_replacement:kotlin:sliding_window:v1"
+    language: "kotlin"
+    paradigm: "oop_classic"
+    title: "Kotlin Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "intarray"
+    solution_ref: "solutions/sol_kotlin_sliding_window.yaml"
+
+  - solution_id: "sol:lc:424:char_replacement:javascript:sliding_window:v1"
+    language: "javascript"
+    paradigm: "oop_prototype"
+    title: "JavaScript Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "array"
+    solution_ref: "solutions/sol_js_sliding_window.yaml"
+
+  - solution_id: "sol:lc:424:char_replacement:scala:sliding_window:v1"
+    language: "scala"
+    paradigm: "functional"
+    title: "Scala Functional Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "array"
+    solution_ref: "solutions/sol_scala_sliding_window.yaml"
+
+  - solution_id: "sol:lc:424:char_replacement:rust:sliding_window:v1"
+    language: "rust"
+    paradigm: "functional"
+    title: "Rust Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "array"
+      - "ownership"
+    solution_ref: "solutions/sol_rust_sliding_window.yaml"
+
+history:
+  - at: "2024-02-15"
+    change: "Initial problem setup"
+  - at: "2024-02-15"
+    change: "Added multi-language solutions"

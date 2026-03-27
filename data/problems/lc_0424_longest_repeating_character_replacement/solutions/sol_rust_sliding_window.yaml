@@ -1,0 +1,79 @@
+schema_version: 3
+solution_id: "sol:lc:424:char_replacement:rust:sliding_window:v1"
+problem_id: "lc:424:longest_repeating_character_replacement"
+language: "rust"
+paradigm: "functional"
+
+approach:
+  name: "Sliding Window with Fixed Array"
+  tags:
+    - "sliding-window"
+    - "array"
+    - "ownership"
+
+complexity:
+  time: "O(n)"
+  space: "O(1)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Rust uses [0i32; 26] for stack-allocated frequency array.
+    Byte operations on s.as_bytes() avoid UTF-8 overhead.
+    The .max() method on i32 provides clean comparison.
+
+    Key advantages in Rust:
+    - [0i32; 26] stack-allocated fixed array
+    - as_bytes() for efficient byte access
+    - .max() method on primitives
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `s = "AABABBA"`, `k = 1`:
+
+    1. Convert to bytes for efficient access
+    2. Track freq[26] and max_freq
+    3. Cast to i32 for arithmetic with k
+    4. When invalid, slide left
+    5. Return (s.len() - left) as i32 = 4
+
+pitfalls:
+  - "usize cannot be negative — careful with subtraction"
+  - "Cast to i32 for comparison with k"
+  - "b'A' for byte literal"
+
+tradeoffs:
+  - "Byte operations are fastest for ASCII"
+  - "i32 casts needed for LeetCode signature"
+  - "Stack array avoids heap allocation"
+
+comparison_notes:
+  highlights:
+    - "[0i32; 26] fixed array"
+    - "as_bytes() for byte access"
+    - ".max() for comparison"
+  gotchas_language_specific:
+    - "usize subtraction can overflow"
+    - "(s[i] - b'A') as usize for indexing"
+    - "Return type is i32 per LeetCode"
+
+review_questions:
+  - "Why use i32 for freq instead of usize?"
+  - "How does as_bytes() differ from chars()?"
+  - "What happens if we use usize subtraction incorrectly?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:424:char_replacement:rust:sliding_window:v1:solution"
+    lang: "rust"
+    role: "solution"
+    path: "../code/sol_rust_sliding_window.rs"
+    render:
+      syntax: "rust"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-15"
+    change: "Initial Rust sliding window solution"

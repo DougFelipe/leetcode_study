@@ -1,0 +1,73 @@
+schema_version: 3
+solution_id: "sol:lc:904:fruit_baskets:javascript:sliding_window:v1"
+problem_id: "lc:904:fruit_into_baskets"
+language: "javascript"
+paradigm: "oop_prototype"
+
+approach:
+  name: "Sliding Window with Map"
+  tags:
+    - "sliding-window"
+    - "es6-map"
+    - "delete"
+
+complexity:
+  time: "O(n)"
+  space: "O(1)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    JavaScript ES6 Map tracks frequencies. basket.delete() removes keys.
+    basket.size gives distinct count. || 0 pattern for safe default.
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `fruits = [1,2,3,2,2]`:
+
+    1. new Map() for basket
+    2. Expand right, increment counts with .set()
+    3. While basket.size > 2, shrink left and .delete() when 0
+    4. Track Math.max of maxLen
+    5. Return 4
+
+pitfalls:
+  - "Map.get() returns undefined, not 0"
+  - "|| 0 pattern for safe default"
+  - "basket.delete() removes key-value pair"
+
+tradeoffs:
+  - "Map is cleaner than plain object for numeric keys"
+  - ".size property for count"
+  - ".delete() returns boolean"
+
+comparison_notes:
+  highlights:
+    - "new Map() for frequency"
+    - "|| 0 for safe default"
+    - ".delete() for removal"
+  gotchas_language_specific:
+    - "Map.get returns undefined for missing"
+    - ".size is a property, not method"
+    - "=== 0 for strict zero check"
+
+review_questions:
+  - "Why use Map instead of plain object?"
+  - "What does .delete() return?"
+  - "How does || 0 handle falsy values?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:904:fruit_baskets:javascript:sliding_window:v1:solution"
+    lang: "javascript"
+    role: "solution"
+    path: "../code/sol_js_sliding_window.js"
+    render:
+      syntax: "javascript"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-18"
+    change: "Initial JavaScript sliding window solution"

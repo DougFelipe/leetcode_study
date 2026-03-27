@@ -1,0 +1,74 @@
+schema_version: 3
+solution_id: "sol:lc:904:fruit_baskets:java:sliding_window:v1"
+problem_id: "lc:904:fruit_into_baskets"
+language: "java"
+paradigm: "oop_classic"
+
+approach:
+  name: "Sliding Window with HashMap"
+  tags:
+    - "sliding-window"
+    - "hashmap"
+    - "oop"
+
+complexity:
+  time: "O(n)"
+  space: "O(1)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Java HashMap with getOrDefault for frequency tracking. basket.remove()
+    deletes entries when count reaches 0. basket.size() gives distinct count.
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `fruits = [0,1,2,2]`:
+
+    1. right=0: basket={0:1}, size=1, maxLen=1
+    2. right=1: basket={0:1,1:1}, size=2, maxLen=2
+    3. right=2: basket={0:1,1:1,2:1}, size=3 > 2 → shrink
+       - Remove 0 → basket={1:1,2:1}, left=1
+    4. right=3: basket={1:1,2:2}, size=2, maxLen=3
+    5. Return 3
+
+pitfalls:
+  - "basket.get() returns Integer (nullable)"
+  - "basket.remove() deletes key entirely"
+  - "Integer comparison safe here since values are small"
+
+tradeoffs:
+  - "HashMap autoboxes int keys to Integer"
+  - "getOrDefault avoids null checks"
+  - "size() tracks distinct count"
+
+comparison_notes:
+  highlights:
+    - "HashMap for frequency"
+    - "getOrDefault for safe access"
+    - "remove() for key cleanup"
+  gotchas_language_specific:
+    - "Autoboxing int to Integer for HashMap key"
+    - "basket.get() can return null"
+    - "== comparison safe for small Integer values"
+
+review_questions:
+  - "Why is Integer == safe for small values but not large ones?"
+  - "What's the cost of autoboxing?"
+  - "Could we use int[] instead of HashMap?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:904:fruit_baskets:java:sliding_window:v1:solution"
+    lang: "java"
+    role: "solution"
+    path: "../code/sol_java_sliding_window.java"
+    render:
+      syntax: "java"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-18"
+    change: "Initial Java OOP sliding window solution"

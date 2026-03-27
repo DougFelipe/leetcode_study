@@ -1,0 +1,72 @@
+schema_version: 3
+solution_id: "sol:lc:904:fruit_baskets:go:sliding_window:v1"
+problem_id: "lc:904:fruit_into_baskets"
+language: "go"
+paradigm: "imperative"
+
+approach:
+  name: "Sliding Window with Map"
+  tags:
+    - "sliding-window"
+    - "map"
+    - "delete"
+
+complexity:
+  time: "O(n)"
+  space: "O(1)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Go uses map[int]int for frequency tracking. delete() builtin removes
+    keys. len(basket) gives distinct count. Explicit if for max comparison.
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `fruits = [1,2,1]`:
+
+    1. right=0: basket={1:1}, len=1, maxLen=1
+    2. right=1: basket={1:1,2:1}, len=2, maxLen=2
+    3. right=2: basket={1:2,2:1}, len=2, maxLen=3
+    4. Return 3 (all trees picked)
+
+pitfalls:
+  - "delete() is a builtin, not a method"
+  - "Map returns zero for missing keys"
+  - "len() on map gives key count"
+
+tradeoffs:
+  - "Map is heap-allocated"
+  - "delete is O(1) amortized"
+  - "Explicit if avoids float conversion for max"
+
+comparison_notes:
+  highlights:
+    - "map[int]int for frequency"
+    - "delete(basket, key) for removal"
+    - "len(basket) for size"
+  gotchas_language_specific:
+    - "delete on missing key is no-op"
+    - "Map iteration order is random"
+    - "Zero value for missing keys"
+
+review_questions:
+  - "What happens if delete is called on a missing key?"
+  - "Why not use a slice instead of map?"
+  - "How does Go's map handle concurrent access?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:904:fruit_baskets:go:sliding_window:v1:solution"
+    lang: "go"
+    role: "solution"
+    path: "../code/sol_go_sliding_window.go"
+    render:
+      syntax: "go"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-18"
+    change: "Initial Go sliding window solution"

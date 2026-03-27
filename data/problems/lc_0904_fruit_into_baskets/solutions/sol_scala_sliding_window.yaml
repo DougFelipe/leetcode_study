@@ -1,0 +1,73 @@
+schema_version: 3
+solution_id: "sol:lc:904:fruit_baskets:scala:sliding_window:v1"
+problem_id: "lc:904:fruit_into_baskets"
+language: "scala"
+paradigm: "functional"
+
+approach:
+  name: "Sliding Window with Mutable Map"
+  tags:
+    - "sliding-window"
+    - "mutable-map"
+    - "withdefaultvalue"
+
+complexity:
+  time: "O(n)"
+  space: "O(1)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Scala's mutable.Map with withDefaultValue(0) simplifies counting.
+    basket.remove() deletes keys. basket.size tracks distinct types.
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `fruits = [1,2,3,2,2]`:
+
+    1. mutable.Map with default 0
+    2. Increment with += 1
+    3. When size > 2, shrink and remove keys at 0
+    4. math.max for tracking
+    5. Return 4
+
+pitfalls:
+  - "withDefaultValue returns 0 for missing keys"
+  - "basket.remove() returns Option"
+  - "basket.size gives Int"
+
+tradeoffs:
+  - "Mutable map is imperative but efficient"
+  - "withDefaultValue avoids getOrElse"
+  - "Could use tail recursion but clearer with vars"
+
+comparison_notes:
+  highlights:
+    - "mutable.Map with withDefaultValue"
+    - "+= for increment"
+    - "basket.remove() for cleanup"
+  gotchas_language_specific:
+    - "import scala.collection.mutable needed"
+    - "withDefaultValue vs getOrElse"
+    - "basket.size is method"
+
+review_questions:
+  - "How does withDefaultValue affect basket.contains?"
+  - "Could this be purely functional with foldLeft?"
+  - "What does basket.remove() return?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:904:fruit_baskets:scala:sliding_window:v1:solution"
+    lang: "scala"
+    role: "solution"
+    path: "../code/sol_scala_sliding_window.scala"
+    render:
+      syntax: "scala"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-02-18"
+    change: "Initial Scala sliding window solution"

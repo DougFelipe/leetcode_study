@@ -1,0 +1,294 @@
+schema_version: 3
+problem_id: "lc:904:fruit_into_baskets"
+slug: "lc_0904_fruit_into_baskets"
+title: "904. Fruit Into Baskets"
+
+source:
+  platform: "leetcode"
+  id: 904
+  slug: "fruit-into-baskets"
+  url: "https://leetcode.com/problems/fruit-into-baskets/"
+
+catalog:
+  difficulty: "medium"
+  topics:
+    - "Array"
+    - "Hash Table"
+    - "Sliding Window"
+  patterns:
+    - "Sliding Window"
+    - "At Most K Distinct"
+    - "Two Pointers"
+  companies:
+    - "Amazon"
+    - "Google"
+    - "Microsoft"
+    - "Facebook"
+
+constraints:
+  summary: "1 <= fruits.length <= 10^5; 0 <= fruits[i] < fruits.length"
+  notes_md: |
+    - 1 <= fruits.length <= 10^5
+    - 0 <= fruits[i] < fruits.length
+
+study:
+  status: "solved"
+  priority: 4
+  confidence: 4
+  created_at: "2024-02-18"
+  solved_at: "2024-02-18"
+  time_spent_min: 20
+  review:
+    srs_enabled: true
+    next_review: "2024-03-18"
+    interval_days: 30
+  mistakes:
+    - "Not recognizing this as 'longest subarray with at most 2 distinct elements'"
+    - "Forgetting to update max before shrinking"
+    - "Not removing key from map when count drops to 0"
+
+content:
+  statement_md: |
+    You are visiting a farm that has a single row of fruit trees arranged from left to right.
+    The trees are represented by an integer array `fruits` where `fruits[i]` is the type of
+    fruit the ith tree produces.
+
+    You want to collect as much fruit as possible. However, the owner has some strict rules:
+
+    - You only have **two baskets**, and each basket can only hold a **single type** of fruit.
+      There is no limit on the amount of fruit each basket can hold.
+    - Starting from any tree of your choice, you must pick **exactly one fruit** from every tree
+      (including the start tree) while moving to the right.
+    - Once you reach a tree with fruit that cannot fit in your baskets, you must stop.
+
+    Given the integer array `fruits`, return the **maximum** number of fruits you can pick.
+
+    **Example 1:**
+    ```
+    Input: fruits = [1,2,1]
+    Output: 3
+    Explanation: We can pick from all 3 trees.
+    ```
+
+    **Example 2:**
+    ```
+    Input: fruits = [0,1,2,2]
+    Output: 3
+    Explanation: We can pick from trees [1,2,2].
+    If we had started at the first tree, we would only pick from trees [0,1].
+    ```
+
+    **Example 3:**
+    ```
+    Input: fruits = [1,2,3,2,2]
+    Output: 4
+    Explanation: We can pick from trees [2,3,2,2].
+    If we had started at the first tree, we would only pick from trees [1,2].
+    ```
+
+  editorial_summary_md: |
+    This is equivalent to finding the **longest subarray with at most 2 distinct elements**.
+    Use a sliding window with a hash map tracking fruit type frequencies. When the window
+    has more than 2 distinct types, shrink from the left until only 2 remain.
+
+  key_insights:
+    - "This is 'longest subarray with at most K distinct' where K=2"
+    - "Sliding window with a frequency map for fruit types"
+    - "Shrink window when map has more than 2 keys"
+    - "Remove key from map when its count drops to 0"
+    - "Track maximum window size throughout"
+
+  pitfalls:
+    - "Must remove entries from map when count reaches 0"
+    - "Update max BEFORE shrinking, not after"
+    - "The window always contains at most 2 distinct fruit types"
+
+  review_questions:
+    - "How would you generalize this to K baskets?"
+    - "Why must we remove map entries when count reaches 0?"
+    - "What is the relationship between this problem and problem 3?"
+
+  editorial:
+    algorithm_blueprint:
+      compact_md: "Expand right -> Add to freq map -> While more than 2 types, shrink left -> Track max window"
+      mermaid:
+        type: "flowchart"
+        direction: "TD"
+        code: |
+          flowchart TD
+            A["Start"] --> B["left=0, maxLen=0, freq map"]
+            B --> C{"right < len fruits?"}
+            C -- "Yes" --> D["freq of fruits right ++"]
+            D --> E{"map size > 2?"}
+            E -- "Yes" --> F["freq of fruits left --"]
+            F --> G{"freq of fruits left == 0?"}
+            G -- "Yes" --> H["Remove key from map"]
+            G -- "No" --> I["left++"]
+            H --> I
+            I --> E
+            E -- "No" --> J["maxLen = max of maxLen, right-left+1"]
+            J --> K["right++"]
+            K --> C
+            C -- "No" --> L["Return maxLen"]
+
+    alternative_approaches:
+      - name: "Brute Force"
+        idea_md: "Check all subarrays and count distinct fruit types."
+        time: "O(n^2)"
+        space: "O(n)"
+        preserve_indices: true
+        when_to_use_md: "Never in practice — only for understanding."
+        why_not_md: "Too slow for n up to 10^5."
+        pitfalls:
+          - "TLE for large inputs"
+          - "Redundant counting"
+
+      - name: "Sliding Window with Last Seen Index"
+        idea_md: "Track the last index of each fruit type. When 3 types appear, jump left to min last-seen + 1."
+        time: "O(n)"
+        space: "O(1)"
+        preserve_indices: true
+        when_to_use_md: "When you want O(1) space by exploiting the K=2 constraint."
+        why_not_md: "Less generalizable; the frequency map approach extends to K distinct."
+        pitfalls:
+          - "Only works for K=2"
+          - "More complex logic"
+
+    when_not_to_use:
+      heuristics_md: |
+        The sliding window with frequency map is the standard approach for 'at most K distinct'.
+        Consider alternatives when:
+        - K is exactly 2 and you need O(1) space
+        - The problem asks for indices, not just length
+      scenarios:
+        - scenario: "Need O(1) space with exactly K=2"
+          why_md: "Last-seen-index approach avoids the map."
+          recommended_instead:
+            - name: "Last Seen Index"
+              note_md: "Track last occurrence of each type"
+
+    common_mistakes:
+      - mistake: "Not removing keys when frequency drops to 0"
+        why_md: "Map size check relies on key count. A key with value 0 still counts as present."
+        fix_md: "Delete the key from the map when its frequency reaches 0."
+        example_bad_md: |
+          ```python
+          basket[fruits[left]] -= 1  # Count is 0 but key still exists!
+          # map.size still shows 3
+          ```
+        example_good_md: |
+          ```python
+          basket[fruits[left]] -= 1
+          if basket[fruits[left]] == 0:
+              del basket[fruits[left]]  # Now map.size is correct
+          ```
+        tags:
+          - "map-cleanup"
+          - "key-removal"
+
+      - mistake: "Not recognizing the problem pattern"
+        why_md: "The story about baskets obscures the underlying pattern."
+        fix_md: "Translate: 2 baskets = at most 2 distinct elements in subarray."
+        tags:
+          - "pattern-recognition"
+          - "abstraction"
+
+    complexity_notes:
+      compact_md: "Time: O(n), Space: O(1)"
+      detailed_md: |
+        ## Time Complexity: O(n)
+        - Each element is added and removed from the window at most once
+        - Map operations are O(1) average
+        - Total: O(n)
+
+        ## Space Complexity: O(1)
+        - The map has at most 3 entries at any time
+        - Constant extra variables
+      notes:
+        - "Although we use a map, it never exceeds 3 entries"
+        - "This makes the space effectively O(1)"
+      gotchas:
+        - "Map with at most 3 keys is O(1) space, not O(n)"
+        - "Generalizing to K distinct would make space O(K)"
+      references:
+        - label: "Fruit Into Baskets"
+          url: "https://leetcode.com/problems/fruit-into-baskets/editorial/"
+
+solutions_index:
+  - solution_id: "sol:lc:904:fruit_baskets:python:sliding_window:v1"
+    language: "python"
+    paradigm: "imperative"
+    title: "Python Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "dict"
+    solution_ref: "solutions/sol_py_sliding_window.yaml"
+
+  - solution_id: "sol:lc:904:fruit_baskets:go:sliding_window:v1"
+    language: "go"
+    paradigm: "imperative"
+    title: "Go Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "map"
+    solution_ref: "solutions/sol_go_sliding_window.yaml"
+
+  - solution_id: "sol:lc:904:fruit_baskets:java:sliding_window:v1"
+    language: "java"
+    paradigm: "oop_classic"
+    title: "Java OOP Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "hashmap"
+      - "oop"
+    solution_ref: "solutions/sol_java_sliding_window.yaml"
+
+  - solution_id: "sol:lc:904:fruit_baskets:kotlin:sliding_window:v1"
+    language: "kotlin"
+    paradigm: "oop_classic"
+    title: "Kotlin Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "mutablemap"
+    solution_ref: "solutions/sol_kotlin_sliding_window.yaml"
+
+  - solution_id: "sol:lc:904:fruit_baskets:javascript:sliding_window:v1"
+    language: "javascript"
+    paradigm: "oop_prototype"
+    title: "JavaScript Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "map"
+    solution_ref: "solutions/sol_js_sliding_window.yaml"
+
+  - solution_id: "sol:lc:904:fruit_baskets:scala:sliding_window:v1"
+    language: "scala"
+    paradigm: "functional"
+    title: "Scala Functional Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "mutable-map"
+    solution_ref: "solutions/sol_scala_sliding_window.yaml"
+
+  - solution_id: "sol:lc:904:fruit_baskets:rust:sliding_window:v1"
+    language: "rust"
+    paradigm: "functional"
+    title: "Rust Sliding Window Solution"
+    status: "done"
+    approach_tags:
+      - "sliding-window"
+      - "hashmap"
+      - "ownership"
+    solution_ref: "solutions/sol_rust_sliding_window.yaml"
+
+history:
+  - at: "2024-02-18"
+    change: "Initial problem setup"
+  - at: "2024-02-18"
+    change: "Added multi-language solutions"

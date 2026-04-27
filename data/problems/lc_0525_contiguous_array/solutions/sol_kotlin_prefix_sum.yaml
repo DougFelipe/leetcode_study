@@ -1,0 +1,68 @@
+schema_version: 3
+solution_id: "sol:lc:525:contiguous_array:kotlin:prefix_sum:v1"
+problem_id: "lc:525:contiguous_array"
+language: "kotlin"
+paradigm: "oop_classic"
+
+approach:
+  name: "Prefix Sum + First Occurrence MutableMap"
+  tags: ["prefix-sum", "first-occurrence", "mutablemap"]
+
+complexity:
+  time: "O(n)"
+  space: "O(n)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Kotlin's `mutableMapOf(0 to -1)` for initialization. `containsKey` before
+    insert to preserve first occurrence. `!!` for safe non-null unboxing.
+    `nums.indices` for clean range iteration.
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `nums = [0,1]`:
+    1. map={0:-1}. i=0 (0): prefix=-1, not in map → map[-1]=0
+    2. i=1 (1): prefix=0, in map at -1 → maxLen=maxOf(0,1-(-1))=2
+    3. Return 2
+
+pitfalls:
+  - "!! is safe because containsKey guards it"
+  - "mutableMapOf(0 to -1) for init"
+  - "containsKey to avoid overwriting"
+
+tradeoffs:
+  - "mutableMapOf is idiomatic"
+  - "!! after containsKey is safe"
+  - "maxOf for Kotlin max"
+
+comparison_notes:
+  highlights:
+    - "mutableMapOf(0 to -1)"
+    - "containsKey check"
+    - "firstSeen[prefix]!! for non-null"
+  gotchas_language_specific:
+    - "!! throws NPE if null — safe here"
+    - "0 to -1 creates a Pair"
+    - "nums.indices vs 0 until nums.size"
+
+review_questions:
+  - "When is !! safe in Kotlin?"
+  - "What does containsKey check vs []?"
+  - "How does mutableMapOf(0 to -1) work?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:525:contiguous_array:kotlin:prefix_sum:v1:solution"
+    lang: "kotlin"
+    role: "solution"
+    path: "../code/sol_kotlin_prefix_sum.kt"
+    render:
+      syntax: "kotlin"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-04-26"
+    change: "Initial Kotlin solution"

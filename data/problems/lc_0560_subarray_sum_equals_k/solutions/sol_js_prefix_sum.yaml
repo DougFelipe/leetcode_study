@@ -1,0 +1,54 @@
+schema_version: 3
+solution_id: "sol:lc:560:subarray_sum:javascript:prefix_sum:v1"
+problem_id: "lc:560:subarray_sum_equals_k"
+language: "javascript"
+paradigm: "oop_prototype"
+
+approach:
+  name: "Prefix Sum + ES6 Map"
+  tags: ["prefix-sum", "es6-map", "or-zero"]
+
+complexity:
+  time: "O(n)"
+  space: "O(n)"
+
+text:
+  rationale_md: |
+    ES6 Map initialized with `[[0, 1]]` in the constructor.
+    `|| 0` pattern handles undefined from `.get()` cleanly.
+    `for...of` for clean array iteration.
+
+  walkthrough_md: |
+    nums=[1,1,1], k=2:
+    map=Map{0=>1}. num=1→prefix=1, get(-1)||0=0. num=1→prefix=2, get(0)||0=1→count=1.
+    num=1→prefix=3, get(1)||0=1→count=2. Return 2.
+
+pitfalls:
+  - "new Map([[0, 1]]) for init"
+  - ".get() returns undefined not 0"
+
+tradeoffs:
+  - "Map is cleaner than plain object"
+  - "|| 0 is concise default"
+
+comparison_notes:
+  highlights: ["new Map([[0, 1]])", ".get() || 0", "for...of"]
+  gotchas_language_specific: [".get() returns undefined", "|| 0 handles falsy 0 correctly here"]
+
+review_questions:
+  - "Why does || 0 work even when the stored value is 0?"
+  - "Could a plain object replace Map here?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:560:subarray_sum:javascript:prefix_sum:v1:solution"
+    lang: "javascript"
+    role: "solution"
+    path: "../code/sol_js_prefix_sum.js"
+    render:
+      syntax: "javascript"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-04-26"
+    change: "Initial JavaScript prefix sum solution"

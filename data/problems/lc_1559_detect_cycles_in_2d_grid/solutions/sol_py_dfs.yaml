@@ -1,0 +1,74 @@
+schema_version: 3
+solution_id: "sol:lc:1559:detect_cycles:python:dfs:v1"
+problem_id: "lc:1559:detect_cycles_in_2d_grid"
+language: "python"
+paradigm: "imperative"
+
+approach:
+  name: "DFS with Parent Tracking"
+  tags:
+    - "dfs"
+    - "parent-tracking"
+    - "recursion"
+    - "visited-array"
+
+complexity:
+  time: "O(m * n)"
+  space: "O(m * n)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Python's nested function `dfs` closes over `visited`, `grid`, `m`, `n`,
+    keeping the code concise. Tuple unpacking for direction deltas is idiomatic.
+    Using -1 as the initial parent sentinel works since valid indices are >= 0.
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `grid = [["a","a","a","a"],["a","b","b","a"],["a","b","b","a"],["a","a","a","a"]]`:
+
+    1. Start DFS from (0,0), mark visited
+    2. Explore neighbors with same char 'a'
+    3. Eventually reach a cell whose neighbor is already visited and not parent
+    4. Return True — cycle detected among 'a' cells
+
+pitfalls:
+  - "dirs as list of tuples for clean unpacking"
+  - "-1 sentinel for initial parent is safe since valid indices >= 0"
+  - "Nested function closes over outer variables"
+
+tradeoffs:
+  - "Recursive DFS risks stack overflow for 500x500 grids"
+  - "Nested function avoids class boilerplate"
+  - "List comprehension for visited is clean"
+
+comparison_notes:
+  highlights:
+    - "Nested function for DFS"
+    - "Tuple unpacking for dirs"
+    - "Closure over grid and visited"
+  gotchas_language_specific:
+    - "Python recursion limit is 1000 by default"
+    - "sys.setrecursionlimit may be needed for large grids"
+    - "List of lists for 2D visited"
+
+review_questions:
+  - "How would you convert this to iterative BFS?"
+  - "Why is -1 a safe sentinel for parent coordinates?"
+  - "What Python limit might cause issues on 500x500 grids?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:1559:detect_cycles:python:dfs:v1:solution"
+    lang: "python"
+    role: "solution"
+    path: "../code/sol_py_dfs.py"
+    render:
+      syntax: "python"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-04-26"
+    change: "Initial Python DFS solution"

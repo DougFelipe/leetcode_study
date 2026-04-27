@@ -1,0 +1,74 @@
+schema_version: 3
+solution_id: "sol:lc:560:subarray_sum:python:prefix_sum:v1"
+problem_id: "lc:560:subarray_sum_equals_k"
+language: "python"
+paradigm: "imperative"
+
+approach:
+  name: "Prefix Sum + Dict"
+  tags:
+    - "prefix-sum"
+    - "dict"
+    - "hash-map"
+
+complexity:
+  time: "O(n)"
+  space: "O(n)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Python dict with get(key, 0) provides clean default handling.
+    The {0: 1} initialization handles subarrays whose prefix sum equals k
+    from the start. Single pass with no auxiliary array needed.
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `nums = [1,1,1]`, `k = 2`:
+
+    1. prefix_count = {0:1}, prefix=0, count=0
+    2. num=1: prefix=1, look for 1-2=-1 → 0. map={0:1,1:1}
+    3. num=1: prefix=2, look for 2-2=0 → found 1. count=1. map={0:1,1:1,2:1}
+    4. num=1: prefix=3, look for 3-2=1 → found 1. count=2. map={0:1,1:1,2:1,3:1}
+    5. Return 2
+
+pitfalls:
+  - "{0: 1} initialization is mandatory"
+  - "Update map AFTER looking up prefix - k"
+  - "Works with negative numbers unlike sliding window"
+
+tradeoffs:
+  - "dict.get(key, 0) is clean"
+  - "No auxiliary array needed"
+  - "Single pass"
+
+comparison_notes:
+  highlights:
+    - "{0: 1} init"
+    - "dict.get for safe lookup"
+    - "Running prefix, no array"
+  gotchas_language_specific:
+    - "dict.get vs defaultdict — either works"
+    - "Order matters: lookup before insert"
+    - "Prefix can be negative — dict handles this"
+
+review_questions:
+  - "Trace through [1,1,1], k=2 manually"
+  - "Why must we look up before inserting?"
+  - "What happens if k=0?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:560:subarray_sum:python:prefix_sum:v1:solution"
+    lang: "python"
+    role: "solution"
+    path: "../code/sol_py_prefix_sum.py"
+    render:
+      syntax: "python"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-04-26"
+    change: "Initial Python prefix sum solution"

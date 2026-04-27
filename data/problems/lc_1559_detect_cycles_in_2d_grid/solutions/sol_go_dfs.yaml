@@ -1,0 +1,72 @@
+schema_version: 3
+solution_id: "sol:lc:1559:detect_cycles:go:dfs:v1"
+problem_id: "lc:1559:detect_cycles_in_2d_grid"
+language: "go"
+paradigm: "imperative"
+
+approach:
+  name: "DFS with Parent Tracking"
+  tags:
+    - "dfs"
+    - "parent-tracking"
+    - "closure"
+
+complexity:
+  time: "O(m * n)"
+  space: "O(m * n)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Go uses a closure (func literal) for DFS, capturing grid and visited.
+    The var dfs func(...) pattern enables recursion via a named function variable.
+    Byte comparison grid[r][c] works since grid is [][]byte.
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `grid = [["a","b","b"],["b","z","b"],["b","b","a"]]`:
+
+    1. DFS from (0,0)='a', explores neighbors with 'a'
+    2. No same-char cycle possible — all 'a' cells are not connected in a loop
+    3. Returns false
+
+pitfalls:
+  - "var dfs func(...) needed before assignment for recursion"
+  - "grid is [][]byte in Go, not [][]string"
+  - "make([][]bool, m) with inner make for visited"
+
+tradeoffs:
+  - "Closure captures grid and visited cleanly"
+  - "var dfs func() is idiomatic for recursive closures"
+  - "byte comparison is O(1)"
+
+comparison_notes:
+  highlights:
+    - "var dfs func for recursive closure"
+    - "[][]byte for grid"
+    - "make for visited allocation"
+  gotchas_language_specific:
+    - "var dfs must be declared before use in assignment"
+    - "grid is byte not char in Go"
+    - "Goroutine stack grows, no easy overflow"
+
+review_questions:
+  - "Why use var dfs func(...) instead of a named function?"
+  - "What type is grid in Go LeetCode problems?"
+  - "How does Go handle deep recursion differently from Java?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:1559:detect_cycles:go:dfs:v1:solution"
+    lang: "go"
+    role: "solution"
+    path: "../code/sol_go_dfs.go"
+    render:
+      syntax: "go"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-04-26"
+    change: "Initial Go DFS solution"

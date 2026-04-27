@@ -1,0 +1,72 @@
+schema_version: 3
+solution_id: "sol:lc:1559:detect_cycles:kotlin:dfs:v1"
+problem_id: "lc:1559:detect_cycles_in_2d_grid"
+language: "kotlin"
+paradigm: "oop_classic"
+
+approach:
+  name: "DFS with Parent Tracking"
+  tags:
+    - "dfs"
+    - "parent-tracking"
+    - "local-function"
+
+complexity:
+  time: "O(m * n)"
+  space: "O(m * n)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Kotlin uses a local function `dfs` that closes over the outer scope variables.
+    The in operator for range checks (`nr !in 0 until m`) is idiomatic Kotlin.
+    Array(m) { BooleanArray(n) } creates a 2D Boolean array.
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `grid = [["a","a","a","a"],...]`:
+
+    1. Local function dfs closes over grid, visited, m, n, dirs
+    2. For each unvisited cell, call dfs(-1, -1) as parent sentinel
+    3. When a visited non-parent same-char neighbor is found, return true
+
+pitfalls:
+  - "BooleanArray is primitive, not boxed"
+  - "!in for range exclusion check"
+  - "Local function can be recursive in Kotlin"
+
+tradeoffs:
+  - "Local function is cleaner than separate private method"
+  - "!in 0 until m is idiomatic and readable"
+  - "Array(m) { BooleanArray(n) } initializes to false"
+
+comparison_notes:
+  highlights:
+    - "Local fun dfs for recursion"
+    - "!in 0 until m for bounds check"
+    - "Array with lambda initializer"
+  gotchas_language_specific:
+    - "BooleanArray vs Array<Boolean>"
+    - "Char comparison with != works"
+    - "Local function captures outer scope"
+
+review_questions:
+  - "What's the difference between BooleanArray and Array<Boolean>?"
+  - "How does !in work for range checks?"
+  - "Can local functions in Kotlin be tail-recursive?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:1559:detect_cycles:kotlin:dfs:v1:solution"
+    lang: "kotlin"
+    role: "solution"
+    path: "../code/sol_kotlin_dfs.kt"
+    render:
+      syntax: "kotlin"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-04-26"
+    change: "Initial Kotlin DFS solution"

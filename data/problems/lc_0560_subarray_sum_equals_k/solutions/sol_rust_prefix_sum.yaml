@@ -1,0 +1,56 @@
+schema_version: 3
+solution_id: "sol:lc:560:subarray_sum:rust:prefix_sum:v1"
+problem_id: "lc:560:subarray_sum_equals_k"
+language: "rust"
+paradigm: "functional"
+
+approach:
+  name: "Prefix Sum + HashMap with Entry API"
+  tags: ["prefix-sum", "hashmap", "entry-api"]
+
+complexity:
+  time: "O(n)"
+  space: "O(n)"
+
+text:
+  rationale_md: |
+    Rust HashMap with entry API for clean upsert. `.copied().unwrap_or(0)`
+    handles `Option<&i32>` from `.get()`. `insert(0, 1)` for initialization.
+    i32 for prefix sum is safe within the given constraints.
+
+  walkthrough_md: |
+    nums=[1,1,1], k=2:
+    map={0:1}. num=1→prefix=1, get(-1)=None→0. entry(1)+=1.
+    num=1→prefix=2, get(0)=Some(1)→count=1. entry(2)+=1.
+    num=1→prefix=3, get(1)=Some(1)→count=2. Return 2.
+
+pitfalls:
+  - ".get() returns Option<&V> — use .copied()"
+  - "entry().or_insert(0) for upsert"
+  - "insert(0, 1) before loop"
+
+tradeoffs:
+  - "Entry API avoids double lookup"
+  - ".copied() converts Option<&i32> to Option<i32>"
+
+comparison_notes:
+  highlights: [".get().copied().unwrap_or(0)", "entry().or_insert(0)", "insert(0, 1)"]
+  gotchas_language_specific: ["HashMap::get returns Option<&V>", ".copied() for Copy types"]
+
+review_questions:
+  - "Why use .copied() before .unwrap_or()?"
+  - "How does the entry API avoid double lookup?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:560:subarray_sum:rust:prefix_sum:v1:solution"
+    lang: "rust"
+    role: "solution"
+    path: "../code/sol_rust_prefix_sum.rs"
+    render:
+      syntax: "rust"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-04-26"
+    change: "Initial Rust prefix sum solution"

@@ -1,0 +1,265 @@
+schema_version: 3
+problem_id: "lc:525:contiguous_array"
+slug: "lc_0525_contiguous_array"
+title: "525. Contiguous Array"
+
+source:
+  platform: "leetcode"
+  id: 525
+  slug: "contiguous-array"
+  url: "https://leetcode.com/problems/contiguous-array/"
+
+catalog:
+  difficulty: "medium"
+  topics:
+    - "Array"
+    - "Hash Table"
+    - "Prefix Sum"
+  patterns:
+    - "Prefix Sum"
+    - "First Occurrence Map"
+    - "Transform and Reduce"
+  companies:
+    - "Amazon"
+    - "Google"
+    - "Facebook"
+    - "Microsoft"
+    - "Bloomberg"
+
+constraints:
+  summary: "1 <= nums.length <= 10^5; nums[i] is either 0 or 1"
+  notes_md: |
+    - 1 <= nums.length <= 10^5
+    - nums[i] is either 0 or 1
+
+study:
+  status: "solved"
+  priority: 5
+  confidence: 4
+  created_at: "2024-04-26"
+  solved_at: "2024-04-26"
+  time_spent_min: 25
+  review:
+    srs_enabled: true
+    next_review: "2024-05-26"
+    interval_days: 30
+  mistakes:
+    - "Not recognizing that equal 0s and 1s means the transformed sum is 0"
+    - "Storing the last index instead of the FIRST index in the map"
+    - "Not initializing the map with {0: -1}"
+
+content:
+  statement_md: |
+    Given a binary array `nums`, return the **maximum length** of a contiguous subarray
+    with an equal number of `0` and `1`.
+
+    **Example 1:**
+    ```
+    Input: nums = [0,1]
+    Output: 2
+    Explanation: [0, 1] is the longest contiguous subarray with equal 0s and 1s.
+    ```
+
+    **Example 2:**
+    ```
+    Input: nums = [0,1,0]
+    Output: 2
+    Explanation: [0, 1] (or [1, 0]) is a longest contiguous subarray.
+    ```
+
+    **Example 3:**
+    ```
+    Input: nums = [0,1,1,1,1,1,0,0,0]
+    Output: 6
+    Explanation: [1,1,1,0,0,0] is the longest subarray with equal 0s and 1s.
+    ```
+
+  editorial_summary_md: |
+    **Key transformation**: replace every `0` with `-1`. Now equal 0s and 1s means
+    the subarray sum is 0. The problem becomes: **longest subarray with sum 0**.
+
+    Use a running prefix sum. When the same prefix sum appears again at index j,
+    the subarray between the first occurrence (index i) and j has sum 0 — length j - i.
+    Store the **first** occurrence of each prefix sum in a hash map.
+    Initialize with `{0: -1}` to handle subarrays starting from index 0.
+
+  key_insights:
+    - "Replace 0 → -1: equal 0s and 1s means subarray sum == 0"
+    - "Track the FIRST index where each prefix sum appears"
+    - "When prefix sum repeats at j, subarray (i+1..j) has sum 0 — length = j - i"
+    - "Initialize first_seen = {0: -1} to handle subarrays starting at index 0"
+    - "Unlike LC 560, store FIRST index (not frequency) — we want MAX length"
+
+  pitfalls:
+    - "Store FIRST index, not last — otherwise you miss longer subarrays"
+    - "{0: -1} initialization is key — the -1 gives correct length j - (-1) = j + 1"
+    - "The transformation 0 → -1 is the entire insight"
+    - "Do NOT overwrite existing map entries"
+
+  review_questions:
+    - "Why replace 0 with -1 specifically?"
+    - "Why initialize first_seen with {0: -1} and not {0: 0}?"
+    - "Why store first occurrence instead of last?"
+
+  editorial:
+    algorithm_blueprint:
+      compact_md: "Replace 0 with -1 conceptually -> Running prefix sum -> If seen before: update max length -> Else: store first index"
+      mermaid:
+        type: "flowchart"
+        direction: "TD"
+        code: |
+          flowchart TD
+            A["Start"] --> B["first seen map = 0 to -1"]
+            B --> C["prefix = 0, maxLen = 0"]
+            C --> D{"For each i, num in nums"}
+            D --> E["prefix += 1 if num==1 else -1"]
+            E --> F{"prefix in first seen?"}
+            F -- "Yes" --> G["maxLen = max of maxLen, i - first seen prefix"]
+            F -- "No" --> H["first seen prefix = i"]
+            G --> D
+            H --> D
+            D --> I["Return maxLen"]
+
+    alternative_approaches:
+      - name: "Brute Force"
+        idea_md: "Check all subarrays, count 0s and 1s in each."
+        time: "O(n^2)"
+        space: "O(1)"
+        preserve_indices: true
+        when_to_use_md: "Only as correctness baseline."
+        why_not_md: "Too slow for n up to 10^5."
+        pitfalls:
+          - "TLE for large inputs"
+
+      - name: "Prefix Sum Array + HashMap (Two-Pass)"
+        idea_md: "Build full prefix array, then scan with HashMap for first occurrences."
+        time: "O(n)"
+        space: "O(n)"
+        preserve_indices: true
+        when_to_use_md: "Equivalent to running approach but two-pass."
+        why_not_md: "Running approach achieves same in one pass."
+        pitfalls:
+          - "Needs explicit prefix array"
+
+    when_not_to_use:
+      heuristics_md: |
+        The prefix sum + first-occurrence map is the canonical O(n) solution.
+        Consider alternatives when:
+        - You need all such subarrays (not just the longest)
+        - The constraint is not binary (0/1)
+      scenarios:
+        - scenario: "Need all maximum-length subarrays"
+          why_md: "Map stores only the first occurrence per prefix sum."
+          recommended_instead:
+            - name: "Store list of indices per prefix"
+              note_md: "Then find all pairs at max distance"
+
+    common_mistakes:
+      - mistake: "Overwriting existing map entries"
+        why_md: "We want the FIRST occurrence to maximize the distance j - i. If we update the map on revisit, we lose the earlier index."
+        fix_md: "Only insert into the map if the prefix sum is NOT already present."
+        example_bad_md: |
+          ```python
+          # Wrong: overwrites first occurrence
+          first_seen[prefix] = i  # Always updates
+          ```
+        example_good_md: |
+          ```python
+          # Correct: only store first occurrence
+          if prefix not in first_seen:
+              first_seen[prefix] = i
+          ```
+        tags:
+          - "first-occurrence"
+          - "max-length"
+
+      - mistake: "Initializing map with {0: 0} instead of {0: -1}"
+        why_md: "If prefix returns to 0 at index j, the subarray spans from 0 to j (length j+1). The formula j - first_seen[0] = j - (-1) = j + 1 is correct only with -1."
+        fix_md: "Initialize first_seen = {0: -1}."
+        tags:
+          - "initialization"
+          - "off-by-one"
+
+    complexity_notes:
+      compact_md: "Time: O(n), Space: O(n)"
+      detailed_md: |
+        ## Time Complexity: O(n)
+        - Single pass through nums
+        - Hash map operations are O(1) average
+        - Total: O(n)
+
+        ## Space Complexity: O(n)
+        - Hash map stores at most n+1 distinct prefix sums
+        - Prefix sums range from -n to n
+      notes:
+        - "Prefix sums range from -n to n — 2n+1 possible values"
+        - "In practice the map may be much smaller"
+      gotchas:
+        - "This problem is essentially LC 560 with k=0 after the 0→-1 transform"
+        - "First-occurrence map vs frequency map: very different use cases"
+      references:
+        - label: "Contiguous Array"
+          url: "https://leetcode.com/problems/contiguous-array/editorial/"
+
+solutions_index:
+  - solution_id: "sol:lc:525:contiguous_array:python:prefix_sum:v1"
+    language: "python"
+    paradigm: "imperative"
+    title: "Python Prefix Sum + First Occurrence Map"
+    status: "done"
+    approach_tags: ["prefix-sum", "first-occurrence", "dict"]
+    solution_ref: "solutions/sol_py_prefix_sum.yaml"
+
+  - solution_id: "sol:lc:525:contiguous_array:go:prefix_sum:v1"
+    language: "go"
+    paradigm: "imperative"
+    title: "Go Prefix Sum + First Occurrence Map"
+    status: "done"
+    approach_tags: ["prefix-sum", "first-occurrence", "map"]
+    solution_ref: "solutions/sol_go_prefix_sum.yaml"
+
+  - solution_id: "sol:lc:525:contiguous_array:java:prefix_sum:v1"
+    language: "java"
+    paradigm: "oop_classic"
+    title: "Java OOP Prefix Sum + First Occurrence HashMap"
+    status: "done"
+    approach_tags: ["prefix-sum", "first-occurrence", "hashmap", "oop"]
+    solution_ref: "solutions/sol_java_prefix_sum.yaml"
+
+  - solution_id: "sol:lc:525:contiguous_array:kotlin:prefix_sum:v1"
+    language: "kotlin"
+    paradigm: "oop_classic"
+    title: "Kotlin Prefix Sum + First Occurrence MutableMap"
+    status: "done"
+    approach_tags: ["prefix-sum", "first-occurrence", "mutablemap"]
+    solution_ref: "solutions/sol_kotlin_prefix_sum.yaml"
+
+  - solution_id: "sol:lc:525:contiguous_array:javascript:prefix_sum:v1"
+    language: "javascript"
+    paradigm: "oop_prototype"
+    title: "JavaScript Prefix Sum + First Occurrence Map"
+    status: "done"
+    approach_tags: ["prefix-sum", "first-occurrence", "map"]
+    solution_ref: "solutions/sol_js_prefix_sum.yaml"
+
+  - solution_id: "sol:lc:525:contiguous_array:scala:prefix_sum:v1"
+    language: "scala"
+    paradigm: "functional"
+    title: "Scala Prefix Sum with foldLeft"
+    status: "done"
+    approach_tags: ["prefix-sum", "first-occurrence", "foldleft"]
+    solution_ref: "solutions/sol_scala_prefix_sum.yaml"
+
+  - solution_id: "sol:lc:525:contiguous_array:rust:prefix_sum:v1"
+    language: "rust"
+    paradigm: "functional"
+    title: "Rust Prefix Sum + First Occurrence HashMap"
+    status: "done"
+    approach_tags: ["prefix-sum", "first-occurrence", "hashmap"]
+    solution_ref: "solutions/sol_rust_prefix_sum.yaml"
+
+history:
+  - at: "2024-04-26"
+    change: "Initial problem setup"
+  - at: "2024-04-26"
+    change: "Added multi-language solutions"

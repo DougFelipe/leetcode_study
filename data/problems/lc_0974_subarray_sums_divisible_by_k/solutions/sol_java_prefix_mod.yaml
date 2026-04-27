@@ -1,0 +1,70 @@
+schema_version: 3
+solution_id: "sol:lc:974:divisible_sum:java:prefix_mod:v1"
+problem_id: "lc:974:subarray_sums_divisible_by_k"
+language: "java"
+paradigm: "oop_classic"
+
+approach:
+  name: "Prefix Mod + Frequency Array with Normalization"
+  tags: ["prefix-sum", "modulo", "array", "normalization"]
+
+complexity:
+  time: "O(n)"
+  space: "O(k)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Java's `%` operator returns negative values for negative dividends.
+    The normalization `((prefix % k) + k) % k` ensures the remainder
+    is always in [0, k-1] and safe to use as an array index.
+    int[k] is auto-initialized to 0.
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `nums = [5]`, `k = 9`:
+
+    1. freq=new int[9] (all 0), freq[0]=1
+    2. num=5: prefix=((5%9)+9)%9=5. count+=freq[5]=0. freq[5]=1
+    3. Return 0
+
+pitfalls:
+  - "Java -3 % 5 == -3, not 2"
+  - "Normalization: ((x % k) + k) % k"
+  - "int[] auto-initialized to 0"
+
+tradeoffs:
+  - "Two mod operations for normalization"
+  - "Array is faster than HashMap"
+  - "int safe for nums up to 10^4 * 3*10^4 = 3*10^8 — fits in int"
+
+comparison_notes:
+  highlights:
+    - "((prefix % k) + k) % k normalization"
+    - "int[k] freq array"
+    - "Enhanced for loop"
+  gotchas_language_specific:
+    - "Java % returns sign of dividend"
+    - "Must normalize before indexing"
+    - "int overflow: prefix can reach 3*10^8 max — safe"
+
+review_questions:
+  - "What does Java return for -3 % 5?"
+  - "Why add k before the second % k?"
+  - "Could prefix overflow int for this problem?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:974:divisible_sum:java:prefix_mod:v1:solution"
+    lang: "java"
+    role: "solution"
+    path: "../code/sol_java_prefix_mod.java"
+    render:
+      syntax: "java"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-04-26"
+    change: "Initial Java prefix mod solution"

@@ -1,0 +1,303 @@
+schema_version: 3
+problem_id: "lc:1559:detect_cycles_in_2d_grid"
+slug: "lc_1559_detect_cycles_in_2d_grid"
+title: "1559. Detect Cycles in 2D Grid"
+
+source:
+  platform: "leetcode"
+  id: 1559
+  slug: "detect-cycles-in-2d-grid"
+  url: "https://leetcode.com/problems/detect-cycles-in-2d-grid/"
+
+catalog:
+  difficulty: "medium"
+  topics:
+    - "Array"
+    - "Depth-First Search"
+    - "Breadth-First Search"
+    - "Union Find"
+    - "Matrix"
+  patterns:
+    - "DFS on Grid"
+    - "BFS on Grid"
+    - "Cycle Detection"
+    - "Union Find"
+  companies:
+    - "Amazon"
+    - "Google"
+    - "Microsoft"
+
+constraints:
+  summary: "1 <= m, n <= 500; grid consists only of lowercase English letters"
+  notes_md: |
+    - m == grid.length
+    - n == grid[i].length
+    - 1 <= m, n <= 500
+    - grid consists only of lowercase English letters
+
+study:
+  status: "solved"
+  priority: 4
+  confidence: 3
+  created_at: "2024-04-26"
+  solved_at: "2024-04-26"
+  time_spent_min: 45
+  review:
+    srs_enabled: true
+    next_review: "2024-05-26"
+    interval_days: 30
+  mistakes:
+    - "Moving back to the parent cell and incorrectly flagging it as a cycle"
+    - "Forgetting to check for same character before exploring neighbors"
+    - "Not tracking visited cells globally across multiple DFS calls"
+
+content:
+  statement_md: |
+    Given a 2D array of characters `grid` of size `m x n`, you need to find if there exists
+    any cycle consisting of the **same value** in `grid`.
+
+    A cycle is a path of **length 4 or more** in the grid that starts and ends at the same cell.
+    From a given cell, you can move to one of the cells adjacent to it — in one of the four
+    directions (up, down, left, or right), if it has the **same value** of the current cell.
+
+    Also, you **cannot** move to the cell that you visited in your **last move**. For example,
+    the cycle `(1,1) -> (1,2) -> (1,1)` is **invalid** because from `(1,2)` we visited `(1,1)`
+    which was the last visited cell.
+
+    Return `true` if any cycle of the same value exists in `grid`, otherwise, return `false`.
+
+    **Example 1:**
+    ```
+    Input: grid = [["a","a","a","a"],["a","b","b","a"],["a","b","b","a"],["a","a","a","a"]]
+    Output: true
+    Explanation: There are two valid cycles shown in different colors.
+    ```
+
+    **Example 2:**
+    ```
+    Input: grid = [["c","c","c","a"],["c","d","c","c"],["c","c","e","c"],["f","c","c","c"]]
+    Output: true
+    Explanation: There is only one valid cycle.
+    ```
+
+    **Example 3:**
+    ```
+    Input: grid = [["a","b","b"],["b","z","b"],["b","b","a"]]
+    Output: false
+    ```
+
+  editorial_summary_md: |
+    The key insight is that a cycle exists if DFS reaches an already-visited cell that is
+    NOT the immediate parent (previous cell). Track visited cells globally across all DFS
+    calls. Pass the parent coordinates to each DFS call to avoid the trivial back-edge.
+    Only explore neighbors with the same character value.
+
+  key_insights:
+    - "A cycle is detected when DFS visits a cell that is already visited AND is not the parent"
+    - "Must track parent (previous cell) to avoid false positives on back-edges"
+    - "Only explore neighbors with the same character"
+    - "visited[][] must persist across multiple DFS starts to avoid re-checking"
+    - "Cycle must have length >= 4, but the parent-tracking naturally enforces this"
+
+  pitfalls:
+    - "Returning to parent is NOT a cycle — must skip the immediate previous cell"
+    - "Must check same character before visiting neighbor"
+    - "visited must be shared globally, not per-DFS"
+    - "A path of length 2 (A->B->A) is invalid — parent tracking prevents this"
+
+  review_questions:
+    - "Why do we pass parent coordinates instead of just a direction?"
+    - "Why does visited need to be global across all DFS calls?"
+    - "Could Union Find solve this? What would be the approach?"
+
+  editorial:
+    algorithm_blueprint:
+      compact_md: "For each unvisited cell -> DFS with parent tracking -> If visited neighbor != parent -> cycle found"
+      mermaid:
+        type: "flowchart"
+        direction: "TD"
+        code: |
+          flowchart TD
+            A["Start"] --> B["For each cell r,c in grid"]
+            B --> C{"visited r,c?"}
+            C -- "Yes" --> B
+            C -- "No" --> D["DFS from r,c with parent=-1,-1"]
+            D --> E["Mark visited r,c = true"]
+            E --> F["For each neighbor nr,nc"]
+            F --> G{"Same char AND not parent?"}
+            G -- "No" --> F
+            G -- "Yes" --> H{"Already visited?"}
+            H -- "Yes" --> I["Return true - cycle found"]
+            H -- "No" --> J["DFS nr,nc with parent r,c"]
+            J --> K{"DFS returned true?"}
+            K -- "Yes" --> I
+            K -- "No" --> F
+            F --> L["All neighbors done - return false"]
+            L --> B
+            B --> M["Return false - no cycle"]
+
+    alternative_approaches:
+      - name: "BFS with Parent Tracking"
+        idea_md: "BFS from each unvisited cell. Track parent in the BFS queue. If a visited neighbor is not the parent, a cycle exists."
+        time: "O(m * n)"
+        space: "O(m * n)"
+        preserve_indices: true
+        when_to_use_md: "When you prefer iterative over recursive traversal."
+        why_not_md: "DFS is simpler to implement; BFS requires storing parent per cell in queue."
+        pitfalls:
+          - "Must store parent per cell, not globally"
+          - "BFS parent can differ from DFS parent"
+
+      - name: "Union Find"
+        idea_md: "For each cell, union it with same-character neighbors. A cycle exists if two cells being unioned already share the same root."
+        time: "O(m * n * alpha(m*n))"
+        space: "O(m * n)"
+        preserve_indices: true
+        when_to_use_md: "When you want to detect all connected components and cycles simultaneously."
+        why_not_md: "More complex to implement; DFS/BFS is more intuitive."
+        pitfalls:
+          - "Only union cells with same character"
+          - "Cycle found when find(a) == find(b) before union"
+
+    when_not_to_use:
+      heuristics_md: |
+        DFS/BFS with parent tracking is the most intuitive approach for this problem.
+        Consider alternatives when:
+        - You need to count cycles, not just detect them
+        - You need the actual cycle path
+      scenarios:
+        - scenario: "Need to count the number of distinct cycles"
+          why_md: "DFS cycle detection only reports existence, not count."
+          recommended_instead:
+            - name: "Modified DFS"
+              note_md: "Track cycle membership separately"
+
+    common_mistakes:
+      - mistake: "Not tracking the parent cell"
+        why_md: "Without parent tracking, DFS immediately goes back to the cell it came from, falsely detecting a cycle."
+        fix_md: "Pass (parentRow, parentCol) to each DFS call. Skip the neighbor if (nr == parentRow && nc == parentCol)."
+        example_bad_md: |
+          ```python
+          # Wrong: goes back to parent, detects false cycle
+          if visited[nr][nc]:
+              return True  # Parent is already visited!
+          ```
+        example_good_md: |
+          ```python
+          # Correct: skip parent
+          if nr == pr and nc == pc:
+              continue
+          if visited[nr][nc]:
+              return True
+          ```
+        tags:
+          - "parent-tracking"
+          - "false-positive"
+
+      - mistake: "Not checking same character before recursing"
+        why_md: "The cycle must consist of the same character. Exploring different characters leads to incorrect results."
+        fix_md: "Only explore neighbors where grid[nr][nc] == grid[r][c]."
+        tags:
+          - "character-check"
+          - "constraint"
+
+    complexity_notes:
+      compact_md: "Time: O(m * n), Space: O(m * n)"
+      detailed_md: |
+        ## Time Complexity: O(m * n)
+        - Each cell is visited at most once
+        - DFS explores at most 4 neighbors per cell
+        - Total: O(4 * m * n) = O(m * n)
+
+        ## Space Complexity: O(m * n)
+        - visited array: O(m * n)
+        - DFS call stack: O(m * n) in worst case (snake-like path)
+      notes:
+        - "Each cell is marked visited before recursing, preventing revisits"
+        - "The outer loop ensures all connected components are checked"
+      gotchas:
+        - "Grid can be up to 500x500 = 250,000 cells"
+        - "Deep recursion may cause stack overflow for very large grids — BFS avoids this"
+      references:
+        - label: "Detect Cycles in 2D Grid"
+          url: "https://leetcode.com/problems/detect-cycles-in-2d-grid/editorial/"
+
+solutions_index:
+  - solution_id: "sol:lc:1559:detect_cycles:python:dfs:v1"
+    language: "python"
+    paradigm: "imperative"
+    title: "Python DFS with Parent Tracking"
+    status: "done"
+    approach_tags:
+      - "dfs"
+      - "parent-tracking"
+      - "recursion"
+    solution_ref: "solutions/sol_py_dfs.yaml"
+
+  - solution_id: "sol:lc:1559:detect_cycles:go:dfs:v1"
+    language: "go"
+    paradigm: "imperative"
+    title: "Go DFS with Parent Tracking"
+    status: "done"
+    approach_tags:
+      - "dfs"
+      - "parent-tracking"
+    solution_ref: "solutions/sol_go_dfs.yaml"
+
+  - solution_id: "sol:lc:1559:detect_cycles:java:dfs:v1"
+    language: "java"
+    paradigm: "oop_classic"
+    title: "Java OOP DFS with Parent Tracking"
+    status: "done"
+    approach_tags:
+      - "dfs"
+      - "parent-tracking"
+      - "oop"
+    solution_ref: "solutions/sol_java_dfs.yaml"
+
+  - solution_id: "sol:lc:1559:detect_cycles:kotlin:dfs:v1"
+    language: "kotlin"
+    paradigm: "oop_classic"
+    title: "Kotlin DFS with Parent Tracking"
+    status: "done"
+    approach_tags:
+      - "dfs"
+      - "parent-tracking"
+    solution_ref: "solutions/sol_kotlin_dfs.yaml"
+
+  - solution_id: "sol:lc:1559:detect_cycles:javascript:dfs:v1"
+    language: "javascript"
+    paradigm: "oop_prototype"
+    title: "JavaScript DFS with Parent Tracking"
+    status: "done"
+    approach_tags:
+      - "dfs"
+      - "parent-tracking"
+    solution_ref: "solutions/sol_js_dfs.yaml"
+
+  - solution_id: "sol:lc:1559:detect_cycles:scala:dfs:v1"
+    language: "scala"
+    paradigm: "functional"
+    title: "Scala DFS with Parent Tracking"
+    status: "done"
+    approach_tags:
+      - "dfs"
+      - "parent-tracking"
+    solution_ref: "solutions/sol_scala_dfs.yaml"
+
+  - solution_id: "sol:lc:1559:detect_cycles:rust:dfs:v1"
+    language: "rust"
+    paradigm: "functional"
+    title: "Rust DFS with Parent Tracking"
+    status: "done"
+    approach_tags:
+      - "dfs"
+      - "parent-tracking"
+      - "ownership"
+    solution_ref: "solutions/sol_rust_dfs.yaml"
+
+history:
+  - at: "2024-04-26"
+    change: "Initial problem setup"
+  - at: "2024-04-26"
+    change: "Added multi-language solutions"

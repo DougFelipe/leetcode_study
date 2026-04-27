@@ -1,0 +1,71 @@
+schema_version: 3
+solution_id: "sol:lc:974:divisible_sum:rust:prefix_mod:v1"
+problem_id: "lc:974:subarray_sums_divisible_by_k"
+language: "rust"
+paradigm: "functional"
+
+approach:
+  name: "Prefix Mod + Vec with Normalization"
+  tags: ["prefix-sum", "modulo", "vec", "normalization"]
+
+complexity:
+  time: "O(n)"
+  space: "O(k)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Rust's `%` returns negative for negative i32 dividends. Normalization
+    `((prefix + num) % k + k) % k` is applied inline. `vec![0i32; k_us]`
+    creates a zero-initialized Vec. Cast to usize for indexing.
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `nums = [4,5,0,-2,-3,1]`, `k = 5`:
+
+    1. freq=vec![0;5], freq[0]=1
+    2. Process each num with i32 arithmetic
+    3. Normalize: ((prefix+num)%k+k)%k
+    4. Lookup and update freq as usize index
+    5. Return 7
+
+pitfalls:
+  - "Rust i32 % can return negative"
+  - "Cast i32 to usize for indexing"
+  - "vec![0i32; k_us] for init"
+
+tradeoffs:
+  - "i32 for arithmetic, usize for index"
+  - "vec! macro for init"
+  - "Normalization same as Java"
+
+comparison_notes:
+  highlights:
+    - "vec![0i32; k_us]"
+    - "((prefix + num) % k + k) % k"
+    - "prefix as usize for index"
+  gotchas_language_specific:
+    - "Rust % same sign as dividend for i32"
+    - "i32 to usize cast after normalization"
+    - "LeetCode return type is i32"
+
+review_questions:
+  - "What does Rust return for -3i32 % 5i32?"
+  - "Why cast prefix to usize only after normalization?"
+  - "Could we use u32 throughout to avoid sign issues?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:974:divisible_sum:rust:prefix_mod:v1:solution"
+    lang: "rust"
+    role: "solution"
+    path: "../code/sol_rust_prefix_mod.rs"
+    render:
+      syntax: "rust"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-04-26"
+    change: "Initial Rust prefix mod solution"

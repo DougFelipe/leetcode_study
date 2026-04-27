@@ -1,0 +1,54 @@
+schema_version: 3
+solution_id: "sol:lc:560:subarray_sum:go:prefix_sum:v1"
+problem_id: "lc:560:subarray_sum_equals_k"
+language: "go"
+paradigm: "imperative"
+
+approach:
+  name: "Prefix Sum + Map"
+  tags: ["prefix-sum", "map", "zero-value"]
+
+complexity:
+  time: "O(n)"
+  space: "O(n)"
+
+text:
+  rationale_md: |
+    Go's map zero value returns 0 for missing keys, making
+    `count += prefixCount[prefix-k]` clean with no explicit nil checks.
+    Map literal `map[int]int{0: 1}` initializes in one line.
+
+  walkthrough_md: |
+    nums=[1,1,1], k=2:
+    map={0:1}. num=1→prefix=1, map[-1]=0. num=1→prefix=2, map[0]=1→count=1.
+    num=1→prefix=3, map[1]=1→count=2. Return 2.
+
+pitfalls:
+  - "Zero value of map[int]int is 0"
+  - "prefixCount[prefix]++ is idiomatic"
+
+tradeoffs:
+  - "No getOrDefault needed thanks to zero value"
+  - "Map literal for init"
+
+comparison_notes:
+  highlights: ["map[int]int{0: 1}", "zero value access", "range over slice"]
+  gotchas_language_specific: ["Go map returns zero for missing key", "not thread-safe"]
+
+review_questions:
+  - "What does Go return for a missing map key?"
+  - "How would you use sync.Map for concurrent access?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:560:subarray_sum:go:prefix_sum:v1:solution"
+    lang: "go"
+    role: "solution"
+    path: "../code/sol_go_prefix_sum.go"
+    render:
+      syntax: "go"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-04-26"
+    change: "Initial Go prefix sum solution"

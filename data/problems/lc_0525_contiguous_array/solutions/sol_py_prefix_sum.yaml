@@ -1,0 +1,77 @@
+schema_version: 3
+solution_id: "sol:lc:525:contiguous_array:python:prefix_sum:v1"
+problem_id: "lc:525:contiguous_array"
+language: "python"
+paradigm: "imperative"
+
+approach:
+  name: "Prefix Sum + First Occurrence Dict"
+  tags: ["prefix-sum", "first-occurrence", "dict"]
+
+complexity:
+  time: "O(n)"
+  space: "O(n)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Python dict with `in` check. `enumerate` for clean index+value iteration.
+    `{0: -1}` initialization handles subarrays starting at index 0.
+    Only insert when prefix NOT in dict — preserves the first occurrence.
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `nums = [0,1,1,1,1,1,0,0,0]`:
+
+    1. first_seen={0:-1}, prefix=0, maxLen=0
+    2. i=0 (0): prefix=-1, not seen → first_seen[-1]=0
+    3. i=1 (1): prefix=0, seen at -1 → maxLen=max(0,1-(-1))=2
+    4. i=2 (1): prefix=1, not seen → first_seen[1]=2
+    5. i=3 (1): prefix=2, not seen → first_seen[2]=3
+    6. i=4 (1): prefix=3, not seen → first_seen[3]=4
+    7. i=5 (1): prefix=4, not seen → first_seen[4]=5
+    8. i=6 (0): prefix=3, seen at 4 → maxLen=max(2,6-4)=2
+    9. i=7 (0): prefix=2, seen at 3 → maxLen=max(2,7-3)=4
+    10. i=8 (0): prefix=1, seen at 2 → maxLen=max(4,8-2)=6
+    11. Return 6
+
+pitfalls:
+  - "Only insert when NOT already in dict"
+  - "{0: -1} not {0: 0}"
+  - "enumerate gives (index, value)"
+
+tradeoffs:
+  - "dict.get not needed — use 'in' check"
+  - "Immutable first occurrence"
+  - "Single pass"
+
+comparison_notes:
+  highlights:
+    - "first_seen = {0: -1}"
+    - "if prefix in first_seen (without overwrite)"
+    - "enumerate for i, num"
+  gotchas_language_specific:
+    - "In Python, -1 % n works as expected"
+    - "dict preserves insertion order"
+    - "No normalization needed (no modulo)"
+
+review_questions:
+  - "Trace nums=[0,1] manually"
+  - "Why {0:-1} and not {0:0}?"
+  - "What happens if we overwrite existing entries?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:525:contiguous_array:python:prefix_sum:v1:solution"
+    lang: "python"
+    role: "solution"
+    path: "../code/sol_py_prefix_sum.py"
+    render:
+      syntax: "python"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-04-26"
+    change: "Initial Python solution"

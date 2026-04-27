@@ -1,0 +1,74 @@
+schema_version: 3
+solution_id: "sol:lc:1559:detect_cycles:scala:dfs:v1"
+problem_id: "lc:1559:detect_cycles_in_2d_grid"
+language: "scala"
+paradigm: "functional"
+
+approach:
+  name: "DFS with Parent Tracking using exists"
+  tags:
+    - "dfs"
+    - "parent-tracking"
+    - "exists"
+    - "functional"
+
+complexity:
+  time: "O(m * n)"
+  space: "O(m * n)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Scala uses Array.ofDim[Boolean] for the visited matrix and a recursive
+    inner def. The exists combinator on dirs makes the neighbor loop more
+    functional. The outer exists on ranges replaces nested for loops.
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `grid = [["a","b","b"],["b","z","b"],["b","b","a"]]`:
+
+    1. exists on (0 until m) starts DFS from each unvisited cell
+    2. No same-char cycle exists in this grid
+    3. All DFS calls return false
+    4. Return false
+
+pitfalls:
+  - "Array.ofDim[Boolean](m, n) auto-initializes to false"
+  - "exists short-circuits on first true"
+  - "case (dr, dc) for tuple destructuring"
+
+tradeoffs:
+  - "exists is functional and short-circuits"
+  - "Inner def dfs can be recursive"
+  - "Mutable visited array is necessary"
+
+comparison_notes:
+  highlights:
+    - "Array.ofDim for 2D init"
+    - "exists for functional loop"
+    - "Tuple destructuring with case"
+  gotchas_language_specific:
+    - "Array.ofDim is mutable"
+    - "exists stops at first true"
+    - "Inner def captures outer scope"
+
+review_questions:
+  - "How does exists differ from forall?"
+  - "Could this be made purely functional without mutable state?"
+  - "Why use Array instead of Vector for visited?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:1559:detect_cycles:scala:dfs:v1:solution"
+    lang: "scala"
+    role: "solution"
+    path: "../code/sol_scala_dfs.scala"
+    render:
+      syntax: "scala"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-04-26"
+    change: "Initial Scala DFS solution"

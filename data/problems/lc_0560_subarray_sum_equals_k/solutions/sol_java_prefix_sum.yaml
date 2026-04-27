@@ -1,0 +1,53 @@
+schema_version: 3
+solution_id: "sol:lc:560:subarray_sum:java:prefix_sum:v1"
+problem_id: "lc:560:subarray_sum_equals_k"
+language: "java"
+paradigm: "oop_classic"
+
+approach:
+  name: "Prefix Sum + HashMap"
+  tags: ["prefix-sum", "hashmap", "oop"]
+
+complexity:
+  time: "O(n)"
+  space: "O(n)"
+
+text:
+  rationale_md: |
+    Java HashMap with getOrDefault for safe lookup. put(0, 1) initializes the empty prefix.
+    Enhanced for-each over nums.
+
+  walkthrough_md: |
+    nums=[1,2,3], k=3:
+    map={0:1}, num=1→prefix=1, look -2→0. num=2→prefix=3, look 0→1, count=1.
+    num=3→prefix=6, look 3→1, count=2. Return 2.
+
+pitfalls:
+  - "getOrDefault avoids NPE"
+  - "put(0,1) before loop"
+
+tradeoffs:
+  - "HashMap autoboxes int to Integer"
+  - "getOrDefault is clean"
+
+comparison_notes:
+  highlights: ["prefixCount.put(0, 1)", "getOrDefault", "enhanced for"]
+  gotchas_language_specific: ["Integer vs int autoboxing", "== vs .equals() for Integer"]
+
+review_questions:
+  - "What is the autoboxing cost of HashMap<Integer,Integer>?"
+  - "How would you use int[] as a frequency array if values were bounded?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:560:subarray_sum:java:prefix_sum:v1:solution"
+    lang: "java"
+    role: "solution"
+    path: "../code/sol_java_prefix_sum.java"
+    render:
+      syntax: "java"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-04-26"
+    change: "Initial Java prefix sum solution"

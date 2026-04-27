@@ -1,0 +1,70 @@
+schema_version: 3
+solution_id: "sol:lc:974:divisible_sum:javascript:prefix_mod:v1"
+problem_id: "lc:974:subarray_sums_divisible_by_k"
+language: "javascript"
+paradigm: "oop_prototype"
+
+approach:
+  name: "Prefix Mod + Array with Normalization"
+  tags: ["prefix-sum", "modulo", "array", "normalization"]
+
+complexity:
+  time: "O(n)"
+  space: "O(k)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    JavaScript's `%` returns negative results for negative operands.
+    `new Array(k).fill(0)` creates a zero-initialized array.
+    Normalization `((x % k) + k) % k` keeps indices in [0, k-1].
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `nums = [4,5,0,-2,-3,1]`, `k = 5`:
+
+    1. freq=Array(5).fill(0), freq[0]=1
+    2. Process each num, normalize remainder
+    3. Count pairs with same remainder
+    4. Return 7
+
+pitfalls:
+  - "JS % can return negative: -3 % 5 === -3"
+  - "new Array(k).fill(0) for zero init"
+  - "=== for strict comparison"
+
+tradeoffs:
+  - "Array.fill(0) for init"
+  - "Normalization needed like Java"
+  - "for...of is clean"
+
+comparison_notes:
+  highlights:
+    - "new Array(k).fill(0)"
+    - "((prefix + num) % k + k) % k"
+    - "for...of"
+  gotchas_language_specific:
+    - "JS % same sign as dividend"
+    - "new Array(k) without fill is sparse"
+    - "Number precision safe for this problem"
+
+review_questions:
+  - "What does JS return for -3 % 5?"
+  - "Why use fill(0) after new Array(k)?"
+  - "Is there a difference from LC 560 JS solution?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:974:divisible_sum:javascript:prefix_mod:v1:solution"
+    lang: "javascript"
+    role: "solution"
+    path: "../code/sol_js_prefix_mod.js"
+    render:
+      syntax: "javascript"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-04-26"
+    change: "Initial JavaScript prefix mod solution"

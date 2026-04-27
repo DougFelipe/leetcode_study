@@ -1,0 +1,281 @@
+schema_version: 3
+problem_id: "lc:560:subarray_sum_equals_k"
+slug: "lc_0560_subarray_sum_equals_k"
+title: "560. Subarray Sum Equals K"
+
+source:
+  platform: "leetcode"
+  id: 560
+  slug: "subarray-sum-equals-k"
+  url: "https://leetcode.com/problems/subarray-sum-equals-k/"
+
+catalog:
+  difficulty: "medium"
+  topics:
+    - "Array"
+    - "Hash Table"
+    - "Prefix Sum"
+  patterns:
+    - "Prefix Sum"
+    - "Hash Map"
+    - "Running Sum"
+  companies:
+    - "Amazon"
+    - "Google"
+    - "Facebook"
+    - "Microsoft"
+    - "Bloomberg"
+    - "Apple"
+
+constraints:
+  summary: "1 <= nums.length <= 2*10^4; -1000 <= nums[i] <= 1000; -10^7 <= k <= 10^7"
+  notes_md: |
+    - 1 <= nums.length <= 2 * 10^4
+    - -1000 <= nums[i] <= 1000
+    - -10^7 <= k <= 10^7
+
+study:
+  status: "solved"
+  priority: 5
+  confidence: 4
+  created_at: "2024-04-26"
+  solved_at: "2024-04-26"
+  time_spent_min: 30
+  review:
+    srs_enabled: true
+    next_review: "2024-05-26"
+    interval_days: 30
+  mistakes:
+    - "Trying to use sliding window — fails because nums can be negative"
+    - "Not initializing prefix_count with {0: 1}"
+    - "Forgetting that sum(i,j) = prefix[j] - prefix[i-1]"
+
+content:
+  statement_md: |
+    Given an array of integers `nums` and an integer `k`, return the **total number of subarrays
+    whose sum equals to** `k`.
+
+    A subarray is a contiguous **non-empty** sequence of elements within an array.
+
+    **Example 1:**
+    ```
+    Input: nums = [1,1,1], k = 2
+    Output: 2
+    ```
+
+    **Example 2:**
+    ```
+    Input: nums = [1,2,3], k = 3
+    Output: 2
+    ```
+
+  editorial_summary_md: |
+    Use a running prefix sum. For each index j, we want to count how many previous
+    indices i exist such that `prefix[j] - prefix[i] == k`, i.e., `prefix[i] == prefix[j] - k`.
+    Store prefix sum frequencies in a hash map. Initialize with `{0: 1}` to handle
+    subarrays starting from index 0.
+
+  key_insights:
+    - "sum(i,j) = prefix[j] - prefix[i-1] — the fundamental prefix sum identity"
+    - "We want prefix[j] - prefix[i] == k, so look for prefix[i] == prefix[j] - k"
+    - "Hash map stores count of each prefix sum seen so far"
+    - "Initialize map with {0: 1} to count subarrays starting at index 0"
+    - "Sliding window DOES NOT work here — negative numbers prevent shrinking"
+
+  pitfalls:
+    - "Sliding window fails because of negative numbers in nums"
+    - "Forgetting {0: 1} initialization misses subarrays from the start"
+    - "Must add to result BEFORE updating the map at each step"
+
+  review_questions:
+    - "Why does sliding window fail for this problem?"
+    - "Why initialize the prefix map with {0: 1}?"
+    - "What does prefix[j] - k represent geometrically?"
+
+  editorial:
+    algorithm_blueprint:
+      compact_md: "Running prefix sum -> For each index look up (prefix - k) in map -> Add count -> Store prefix in map"
+      mermaid:
+        type: "flowchart"
+        direction: "TD"
+        code: |
+          flowchart TD
+            A["Start"] --> B["prefix=0, count=0, map = 0 to 1"]
+            B --> C{"For each num in nums"}
+            C --> D["prefix += num"]
+            D --> E{"prefix - k in map?"}
+            E -- "Yes" --> F["count += map of prefix-k"]
+            E -- "No" --> G["skip"]
+            F --> H["map of prefix ++"]
+            G --> H
+            H --> C
+            C --> I["Return count"]
+
+    alternative_approaches:
+      - name: "Brute Force"
+        idea_md: "Check every pair (i, j) and compute the subarray sum."
+        time: "O(n^2)"
+        space: "O(1)"
+        preserve_indices: true
+        when_to_use_md: "Only for very small n or as a correctness baseline."
+        why_not_md: "O(n^2) is too slow for n up to 2*10^4."
+        pitfalls:
+          - "Two nested loops"
+          - "TLE for large inputs"
+
+      - name: "Prefix Sum Array + Hash Map"
+        idea_md: "Build the full prefix array first, then scan with hash map."
+        time: "O(n)"
+        space: "O(n)"
+        preserve_indices: true
+        when_to_use_md: "Equivalent to the running prefix approach but two-pass."
+        why_not_md: "Running sum achieves the same in one pass with O(1) extra pointer."
+        pitfalls:
+          - "Needs explicit prefix array"
+          - "Same complexity but slightly more memory"
+
+    when_not_to_use:
+      heuristics_md: |
+        The prefix sum + hash map is the canonical O(n) solution.
+        Consider alternatives when:
+        - All numbers are positive (sliding window works and avoids extra space)
+        - You need the actual subarrays, not just the count
+      scenarios:
+        - scenario: "All numbers positive and need longest subarray"
+          why_md: "Sliding window works and is O(1) space."
+          recommended_instead:
+            - name: "Sliding Window"
+              note_md: "Only valid when no negative numbers present"
+
+    common_mistakes:
+      - mistake: "Not initializing prefix_count with {0: 1}"
+        why_md: "If the running prefix equals k exactly at index j, we need prefix[j] - k = 0 to be in the map. Without {0:1}, this subarray is missed."
+        fix_md: "Always initialize the hash map with {0: 1} before the loop."
+        example_bad_md: |
+          ```python
+          prefix_count = {}   # Wrong: misses subarrays starting at 0
+          prefix = 0
+          for num in nums:
+              prefix += num
+              count += prefix_count.get(prefix - k, 0)
+              # prefix = k gives prefix - k = 0 but 0 not in map!
+          ```
+        example_good_md: |
+          ```python
+          prefix_count = {0: 1}  # Correct
+          prefix = 0
+          for num in nums:
+              prefix += num
+              count += prefix_count.get(prefix - k, 0)
+              prefix_count[prefix] = prefix_count.get(prefix, 0) + 1
+          ```
+        tags:
+          - "initialization"
+          - "off-by-one"
+
+      - mistake: "Using sliding window with negative numbers"
+        why_md: "Sliding window assumes adding elements increases the sum and removing decreases it. Negative numbers break this monotonicity."
+        fix_md: "Use prefix sum + hash map for arrays with negative numbers."
+        tags:
+          - "pattern-selection"
+          - "negative-numbers"
+
+    complexity_notes:
+      compact_md: "Time: O(n), Space: O(n)"
+      detailed_md: |
+        ## Time Complexity: O(n)
+        - Single pass through nums
+        - Hash map operations are O(1) average
+        - Total: O(n)
+
+        ## Space Complexity: O(n)
+        - Hash map stores at most n+1 distinct prefix sums
+        - Running prefix sum is O(1)
+      notes:
+        - "Hash map can have at most n+1 entries (one per prefix sum)"
+        - "In practice, collisions are rare and map ops are O(1)"
+      gotchas:
+        - "Prefix sums can range from -n*1000 to n*1000 — map handles this"
+        - "k can be negative — the approach still works"
+      references:
+        - label: "Subarray Sum Equals K"
+          url: "https://leetcode.com/problems/subarray-sum-equals-k/editorial/"
+
+solutions_index:
+  - solution_id: "sol:lc:560:subarray_sum:python:prefix_sum:v1"
+    language: "python"
+    paradigm: "imperative"
+    title: "Python Prefix Sum + Hash Map"
+    status: "done"
+    approach_tags:
+      - "prefix-sum"
+      - "dict"
+    solution_ref: "solutions/sol_py_prefix_sum.yaml"
+
+  - solution_id: "sol:lc:560:subarray_sum:go:prefix_sum:v1"
+    language: "go"
+    paradigm: "imperative"
+    title: "Go Prefix Sum + Hash Map"
+    status: "done"
+    approach_tags:
+      - "prefix-sum"
+      - "map"
+    solution_ref: "solutions/sol_go_prefix_sum.yaml"
+
+  - solution_id: "sol:lc:560:subarray_sum:java:prefix_sum:v1"
+    language: "java"
+    paradigm: "oop_classic"
+    title: "Java OOP Prefix Sum + HashMap"
+    status: "done"
+    approach_tags:
+      - "prefix-sum"
+      - "hashmap"
+      - "oop"
+    solution_ref: "solutions/sol_java_prefix_sum.yaml"
+
+  - solution_id: "sol:lc:560:subarray_sum:kotlin:prefix_sum:v1"
+    language: "kotlin"
+    paradigm: "oop_classic"
+    title: "Kotlin Prefix Sum + HashMap"
+    status: "done"
+    approach_tags:
+      - "prefix-sum"
+      - "mutablemap"
+    solution_ref: "solutions/sol_kotlin_prefix_sum.yaml"
+
+  - solution_id: "sol:lc:560:subarray_sum:javascript:prefix_sum:v1"
+    language: "javascript"
+    paradigm: "oop_prototype"
+    title: "JavaScript Prefix Sum + Map"
+    status: "done"
+    approach_tags:
+      - "prefix-sum"
+      - "map"
+    solution_ref: "solutions/sol_js_prefix_sum.yaml"
+
+  - solution_id: "sol:lc:560:subarray_sum:scala:prefix_sum:v1"
+    language: "scala"
+    paradigm: "functional"
+    title: "Scala Prefix Sum + Map"
+    status: "done"
+    approach_tags:
+      - "prefix-sum"
+      - "foldleft"
+    solution_ref: "solutions/sol_scala_prefix_sum.yaml"
+
+  - solution_id: "sol:lc:560:subarray_sum:rust:prefix_sum:v1"
+    language: "rust"
+    paradigm: "functional"
+    title: "Rust Prefix Sum + HashMap"
+    status: "done"
+    approach_tags:
+      - "prefix-sum"
+      - "hashmap"
+      - "ownership"
+    solution_ref: "solutions/sol_rust_prefix_sum.yaml"
+
+history:
+  - at: "2024-04-26"
+    change: "Initial problem setup"
+  - at: "2024-04-26"
+    change: "Added multi-language solutions"

@@ -1,0 +1,73 @@
+schema_version: 3
+solution_id: "sol:lc:1559:detect_cycles:javascript:dfs:v1"
+problem_id: "lc:1559:detect_cycles_in_2d_grid"
+language: "javascript"
+paradigm: "oop_prototype"
+
+approach:
+  name: "DFS with Parent Tracking"
+  tags:
+    - "dfs"
+    - "parent-tracking"
+    - "closure"
+
+complexity:
+  time: "O(m * n)"
+  space: "O(m * n)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    JavaScript uses a nested function `dfs` that closes over the outer variables.
+    Array.from with map creates the 2D visited array. Destructuring `[dr, dc]`
+    from dirs is clean and idiomatic.
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `grid = [["c","c","c","a"],...]`:
+
+    1. Nested dfs function closes over grid, visited, m, n, dirs
+    2. Outer loops find unvisited cells
+    3. DFS detects cycle in 'c' region
+    4. Returns true
+
+pitfalls:
+  - "Array.from needed for 2D array init"
+  - "=== for strict comparison"
+  - "of in for...of for array destructuring"
+
+tradeoffs:
+  - "Closure is natural in JS for DFS"
+  - "Array.from(...).fill() for 2D visited"
+  - "Destructuring dirs is readable"
+
+comparison_notes:
+  highlights:
+    - "Nested function closure"
+    - "Array.from for 2D init"
+    - "Destructuring for dirs"
+  gotchas_language_specific:
+    - "new Array(n).fill(false) vs Array(n)"
+    - "=== vs == for comparison"
+    - "JS has no stack overflow protection"
+
+review_questions:
+  - "Why use Array.from instead of new Array()?"
+  - "What's the risk of deep recursion in JS?"
+  - "How does closure capture differ from Java instance fields?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:1559:detect_cycles:javascript:dfs:v1:solution"
+    lang: "javascript"
+    role: "solution"
+    path: "../code/sol_js_dfs.js"
+    render:
+      syntax: "javascript"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-04-26"
+    change: "Initial JavaScript DFS solution"

@@ -1,0 +1,257 @@
+schema_version: 3
+problem_id: "lc:974:subarray_sums_divisible_by_k"
+slug: "lc_0974_subarray_sums_divisible_by_k"
+title: "974. Subarray Sums Divisible by K"
+
+source:
+  platform: "leetcode"
+  id: 974
+  slug: "subarray-sums-divisible-by-k"
+  url: "https://leetcode.com/problems/subarray-sums-divisible-by-k/"
+
+catalog:
+  difficulty: "medium"
+  topics:
+    - "Array"
+    - "Hash Table"
+    - "Prefix Sum"
+  patterns:
+    - "Prefix Sum"
+    - "Modular Arithmetic"
+    - "Frequency Count"
+  companies:
+    - "Amazon"
+    - "Google"
+    - "Facebook"
+    - "Microsoft"
+    - "Bloomberg"
+
+constraints:
+  summary: "1 <= nums.length <= 3*10^4; -10^4 <= nums[i] <= 10^4; 2 <= k <= 10^4"
+  notes_md: |
+    - 1 <= nums.length <= 3 * 10^4
+    - -10^4 <= nums[i] <= 10^4
+    - 2 <= k <= 10^4
+
+study:
+  status: "solved"
+  priority: 5
+  confidence: 3
+  created_at: "2024-04-26"
+  solved_at: "2024-04-26"
+  time_spent_min: 35
+  review:
+    srs_enabled: true
+    next_review: "2024-05-26"
+    interval_days: 30
+  mistakes:
+    - "Negative modulo: in Java/Go, prefix % k can be negative"
+    - "Not initializing remainder_count[0] = 1"
+    - "Confusing this with LC 560 — here we check remainder equality, not exact sum"
+
+content:
+  statement_md: |
+    Given an integer array `nums` and an integer `k`, return the **number of non-empty subarrays**
+    that have a sum **divisible by** `k`.
+
+    A **subarray** is a contiguous part of an array.
+
+    **Example 1:**
+    ```
+    Input: nums = [4,5,0,-2,-3,1], k = 5
+    Output: 7
+    Explanation: There are 7 subarrays with a sum divisible by k = 5:
+    [4,5,0,-2,-3,1],[5],[5,0],[5,0,-2,-3],[0],[0,-2,-3],[-2,-3]
+    ```
+
+    **Example 2:**
+    ```
+    Input: nums = [5], k = 9
+    Output: 0
+    ```
+
+  editorial_summary_md: |
+    Use a running prefix sum. A subarray `sum(i,j)` is divisible by `k` iff
+    `prefix[j] % k == prefix[i-1] % k` (by modular arithmetic).
+    Count how many previous indices share the same remainder. Use a frequency
+    array of size k (or hash map). Initialize with `remainder_count[0] = 1`
+    to count subarrays from index 0. Fix negative remainders by adding k before mod.
+
+  key_insights:
+    - "sum(i,j) % k == 0 iff prefix[j] % k == prefix[i-1] % k"
+    - "Track frequency of each remainder (0 to k-1) seen so far"
+    - "Initialize remainder_count[0] = 1 for subarrays starting at index 0"
+    - "Fix negative remainder: ((prefix % k) + k) % k in Java/Go"
+    - "Python % always returns non-negative, so no fix needed"
+    - "For each new remainder r, count += remainder_count[r] then increment it"
+
+  pitfalls:
+    - "Negative modulo: Java, Go, C++ can produce negative results for negative dividends"
+    - "Forgetting remainder_count[0] = 1 initialization"
+    - "This is NOT the same as counting subarrays with sum == k"
+
+  review_questions:
+    - "Why do we check remainder equality instead of sum equality?"
+    - "How do you handle negative remainders in Java vs Python?"
+    - "Why can we use an array of size k instead of a hash map?"
+
+  editorial:
+    algorithm_blueprint:
+      compact_md: "Running prefix mod k -> For each remainder look up freq -> Add freq to count -> Increment freq"
+      mermaid:
+        type: "flowchart"
+        direction: "TD"
+        code: |
+          flowchart TD
+            A["Start"] --> B["freq array size k, freq of 0 = 1"]
+            B --> C["prefix = 0, count = 0"]
+            C --> D{"For each num in nums"}
+            D --> E["prefix = prefix + num mod k plus k mod k"]
+            E --> F["count += freq of prefix"]
+            F --> G["freq of prefix ++"]
+            G --> D
+            D --> H["Return count"]
+
+    alternative_approaches:
+      - name: "Hash Map instead of Array"
+        idea_md: "Use HashMap to track remainder frequencies instead of int[k]."
+        time: "O(n)"
+        space: "O(k)"
+        preserve_indices: true
+        when_to_use_md: "When k is very large and sparse remainders are expected."
+        why_not_md: "Array of size k is always O(k) and faster due to no hashing overhead."
+        pitfalls:
+          - "HashMap has higher constant factor"
+          - "Array is simpler and faster for bounded k"
+
+      - name: "Brute Force"
+        idea_md: "Check every pair (i,j), compute the subarray sum, check divisibility."
+        time: "O(n^2)"
+        space: "O(1)"
+        preserve_indices: true
+        when_to_use_md: "Only as a correctness baseline."
+        why_not_md: "O(n^2) is too slow for n up to 3*10^4."
+        pitfalls:
+          - "TLE for large inputs"
+
+    when_not_to_use:
+      heuristics_md: |
+        The prefix sum + remainder frequency array is the canonical O(n) solution.
+        Consider alternatives when:
+        - k is astronomically large (use HashMap instead)
+        - You need the actual subarrays (track indices per remainder)
+      scenarios:
+        - scenario: "Need the actual subarrays, not just count"
+          why_md: "Frequency count does not store which indices have each remainder."
+          recommended_instead:
+            - name: "Store indices per remainder"
+              note_md: "Map remainder to list of indices, then count pairs"
+
+    common_mistakes:
+      - mistake: "Negative remainder in Java/Go"
+        why_md: "In Java and Go, -3 % 5 == -3, not 2. This causes incorrect array indexing."
+        fix_md: "Normalize with ((prefix % k) + k) % k before looking up the array."
+        example_bad_md: |
+          ```java
+          int rem = prefix % k;
+          count += freq[rem]; // ArrayIndexOutOfBoundsException if rem < 0
+          ```
+        example_good_md: |
+          ```java
+          int rem = ((prefix % k) + k) % k;
+          count += freq[rem];
+          ```
+        tags:
+          - "negative-modulo"
+          - "language-specific"
+
+      - mistake: "Not initializing freq[0] = 1"
+        why_md: "Subarrays starting at index 0 need the empty prefix counted."
+        fix_md: "Set freq[0] = 1 before the loop."
+        tags:
+          - "initialization"
+          - "off-by-one"
+
+    complexity_notes:
+      compact_md: "Time: O(n), Space: O(k)"
+      detailed_md: |
+        ## Time Complexity: O(n)
+        - Single pass through nums
+        - Array access is O(1)
+        - Total: O(n)
+
+        ## Space Complexity: O(k)
+        - Frequency array of size k
+        - Running prefix is O(1)
+      notes:
+        - "Array of size k is O(k) space, not O(n)"
+        - "k >= 2 is guaranteed"
+      gotchas:
+        - "k up to 10^4 — freq array is 10^4 ints = 40KB, trivial"
+        - "Prefix sum can overflow int for large n with large values"
+      references:
+        - label: "Subarray Sums Divisible by K"
+          url: "https://leetcode.com/problems/subarray-sums-divisible-by-k/editorial/"
+
+solutions_index:
+  - solution_id: "sol:lc:974:divisible_sum:python:prefix_mod:v1"
+    language: "python"
+    paradigm: "imperative"
+    title: "Python Prefix Mod + Array"
+    status: "done"
+    approach_tags: ["prefix-sum", "modulo", "array"]
+    solution_ref: "solutions/sol_py_prefix_mod.yaml"
+
+  - solution_id: "sol:lc:974:divisible_sum:go:prefix_mod:v1"
+    language: "go"
+    paradigm: "imperative"
+    title: "Go Prefix Mod + Array"
+    status: "done"
+    approach_tags: ["prefix-sum", "modulo", "array"]
+    solution_ref: "solutions/sol_go_prefix_mod.yaml"
+
+  - solution_id: "sol:lc:974:divisible_sum:java:prefix_mod:v1"
+    language: "java"
+    paradigm: "oop_classic"
+    title: "Java OOP Prefix Mod + Array"
+    status: "done"
+    approach_tags: ["prefix-sum", "modulo", "array", "oop"]
+    solution_ref: "solutions/sol_java_prefix_mod.yaml"
+
+  - solution_id: "sol:lc:974:divisible_sum:kotlin:prefix_mod:v1"
+    language: "kotlin"
+    paradigm: "oop_classic"
+    title: "Kotlin Prefix Mod + IntArray"
+    status: "done"
+    approach_tags: ["prefix-sum", "modulo", "intarray"]
+    solution_ref: "solutions/sol_kotlin_prefix_mod.yaml"
+
+  - solution_id: "sol:lc:974:divisible_sum:javascript:prefix_mod:v1"
+    language: "javascript"
+    paradigm: "oop_prototype"
+    title: "JavaScript Prefix Mod + Array"
+    status: "done"
+    approach_tags: ["prefix-sum", "modulo", "array"]
+    solution_ref: "solutions/sol_js_prefix_mod.yaml"
+
+  - solution_id: "sol:lc:974:divisible_sum:scala:prefix_mod:v1"
+    language: "scala"
+    paradigm: "functional"
+    title: "Scala Prefix Mod with foldLeft"
+    status: "done"
+    approach_tags: ["prefix-sum", "modulo", "foldleft"]
+    solution_ref: "solutions/sol_scala_prefix_mod.yaml"
+
+  - solution_id: "sol:lc:974:divisible_sum:rust:prefix_mod:v1"
+    language: "rust"
+    paradigm: "functional"
+    title: "Rust Prefix Mod + Vec"
+    status: "done"
+    approach_tags: ["prefix-sum", "modulo", "vec"]
+    solution_ref: "solutions/sol_rust_prefix_mod.yaml"
+
+history:
+  - at: "2024-04-26"
+    change: "Initial problem setup"
+  - at: "2024-04-26"
+    change: "Added multi-language solutions"

@@ -1,0 +1,69 @@
+schema_version: 3
+solution_id: "sol:lc:525:contiguous_array:scala:prefix_sum:v1"
+problem_id: "lc:525:contiguous_array"
+language: "scala"
+paradigm: "functional"
+
+approach:
+  name: "Prefix Sum with foldLeft and Immutable Map"
+  tags: ["prefix-sum", "first-occurrence", "foldleft", "immutable-map"]
+
+complexity:
+  time: "O(n)"
+  space: "O(n)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Scala uses `foldLeft` on `zipWithIndex` accumulating `(prefix, maxLen, firstSeen)`.
+    Immutable Map with `+` for insertion — only when key not already present.
+    `math.max` for length. `._2` extracts the result.
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `nums = [0,1]`:
+    1. Init: (0, 0, Map(0->-1))
+    2. (0, i=0): prefix=-1, not in map → (−1, 0, Map(0->-1, -1->0))
+    3. (1, i=1): prefix=0, in map at -1 → len=1-(-1)=2 → (0, 2, map)
+    4. ._2 = 2
+
+pitfalls:
+  - "Only add to map if not already present"
+  - "zipWithIndex gives (value, index) pairs"
+  - "._2 to extract maxLen"
+
+tradeoffs:
+  - "Immutable Map + is O(log n)"
+  - "Fully functional — no mutable state"
+  - "zipWithIndex adds overhead"
+
+comparison_notes:
+  highlights:
+    - "zipWithIndex for (num, i)"
+    - "Immutable Map +"
+    - "pattern match case ((p,m,fs),(num,i))"
+  gotchas_language_specific:
+    - "Map + creates new map"
+    - "._1, ._2, ._3 for tuple access"
+    - "zipWithIndex vs indices"
+
+review_questions:
+  - "Why use zipWithIndex instead of a for loop?"
+  - "What's the cost of immutable Map + ?"
+  - "Could this be faster with mutable state?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:525:contiguous_array:scala:prefix_sum:v1:solution"
+    lang: "scala"
+    role: "solution"
+    path: "../code/sol_scala_prefix_sum.scala"
+    render:
+      syntax: "scala"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-04-26"
+    change: "Initial Scala functional solution"

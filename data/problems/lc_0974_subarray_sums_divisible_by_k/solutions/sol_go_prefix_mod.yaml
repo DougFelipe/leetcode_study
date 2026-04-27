@@ -1,0 +1,70 @@
+schema_version: 3
+solution_id: "sol:lc:974:divisible_sum:go:prefix_mod:v1"
+problem_id: "lc:974:subarray_sums_divisible_by_k"
+language: "go"
+paradigm: "imperative"
+
+approach:
+  name: "Prefix Mod + Slice with Normalization"
+  tags: ["prefix-sum", "modulo", "slice", "normalization"]
+
+complexity:
+  time: "O(n)"
+  space: "O(k)"
+
+text:
+  rationale_md: |
+    # Rationale
+
+    Go's `%` operator also returns negative results for negative dividends.
+    The normalization `((prefix+num)%k + k) % k` is applied inline.
+    `make([]int, k)` creates a zero-initialized slice.
+
+  walkthrough_md: |
+    # Step-by-Step Walkthrough
+
+    Given `nums = [4,5,0,-2,-3,1]`, `k = 5`:
+
+    1. freq=make([]int,5), freq[0]=1
+    2. Walk through, normalizing each remainder
+    3. Count pairs sharing same remainder
+    4. Return 7
+
+pitfalls:
+  - "Go -3 % 5 == -3 (negative!)"
+  - "Normalization mandatory"
+  - "make([]int, k) zero-initialized"
+
+tradeoffs:
+  - "Slice is zero-initialized"
+  - "range over slice gives index, value"
+  - "No map overhead"
+
+comparison_notes:
+  highlights:
+    - "((prefix+num)%k + k) % k inline"
+    - "make([]int, k)"
+    - "range over nums"
+  gotchas_language_specific:
+    - "Go % same as Java — sign of dividend"
+    - "make initializes to zero"
+    - "No generics needed — plain int"
+
+review_questions:
+  - "What does Go return for -3 % 5?"
+  - "Is make([]int, k) zero-initialized?"
+  - "How is this different from LC 560 in Go?"
+
+code_artifacts:
+  - code_id: "code:sol:lc:974:divisible_sum:go:prefix_mod:v1:solution"
+    lang: "go"
+    role: "solution"
+    path: "../code/sol_go_prefix_mod.go"
+    render:
+      syntax: "go"
+      show_line_numbers: true
+      default_view: "code"
+
+history:
+  - at: "2024-04-26"
+    change: "Initial Go prefix mod solution"
